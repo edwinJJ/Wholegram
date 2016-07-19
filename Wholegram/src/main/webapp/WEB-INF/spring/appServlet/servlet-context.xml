@@ -9,6 +9,16 @@
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
+	
+	<!-- 웹소켓 관련 설정 -->
+	<websocket:handlers>
+		<websocket:mapping handler="wsHandler" path="/chat"></websocket:mapping>
+	</websocket:handlers>
+	
+	<beans:bean id="wsHandler" class="net.nigne.wholegram.WSHandler"></beans:bean>
+	
+	
+	
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
 

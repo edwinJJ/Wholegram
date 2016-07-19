@@ -24,9 +24,7 @@ import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.service.BoardService;
 
 
-/**
- * Handles requests for the application home page.
- */
+
 @RestController
 @RequestMapping("/")
 public class UploadController {

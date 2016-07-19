@@ -20,9 +20,6 @@ import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.MemberService;
 
 
-/**
- * Handles requests for the application home page.
- */
 @RestController
 @RequestMapping("/user")
 public class UserController {

@@ -20,9 +20,7 @@ import net.nigne.wholegram.service.LoginService;
 import net.nigne.wholegram.service.MemberService;
 import net.nigne.wholegram.common.Status;
 
-/**
- * Handles requests for the application home page.
- */
+
 @Controller
 @RequestMapping("/*")
 public class LoginController {

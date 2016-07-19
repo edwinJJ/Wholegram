@@ -19,9 +19,6 @@ import net.nigne.wholegram.service.SignService;
 import net.nigne.wholegram.domain.MemberVO;
 
 
-/**
- * Handles requests for the application home page.
- */
 @RestController
 @RequestMapping("/")
 public class SignController{
