@@ -1,4 +1,4 @@
-package net.nigne.wholegram.WSHandler;
+package net.nigne.wholegram.message;
 
 import java.io.IOException;
 import java.util.HashSet;
