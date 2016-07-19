@@ -12,6 +12,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+
 public class WSHandler extends TextWebSocketHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(WSHandler.class);
@@ -46,11 +47,11 @@ public class WSHandler extends TextWebSocketHandler {
 		
 		super.handleMessage(session, message);
 		sendMessage(session, message.getPayload().toString());
-		//logger.info("recevied message : " + message);
+		logger.info("recevied message : " + message);
 	}
 
 	private void sendMessage(WebSocketSession session, String msg) {
-		for(WebSocketSession s : wsSession) {
+/*		for(WebSocketSession s : wsSession) {
 			if(s.isOpen() && !s.getId().equals(session.getId())) {
 				try {
 					s.sendMessage(new TextMessage("From Server" + msg));
@@ -58,17 +59,17 @@ public class WSHandler extends TextWebSocketHandler {
 					e.printStackTrace();
 				}
 			}
-		}
+		}*/
 		
-/*		for(WebSocketSession s : wsSession) {
+		for(WebSocketSession s : wsSession) {
 			if(s.isOpen()) {
 				try {
-					//session.sendMessage(new TextMessage("From Server" + msg)); // 보낸사람에게 다시보냄
+					session.sendMessage(new TextMessage("From Server" + msg)); // 보낸사람에게 다시보냄
 				} catch(IOException e) {
 					e.printStackTrace();
 				}
 			}
-		}*/
+		}
 	}
 
 	/*전송 에러*/
