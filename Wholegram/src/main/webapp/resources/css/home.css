@@ -1,0 +1,198 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	background: #fafafa;
+	font-size: 100%;
+	color: #262626;
+}
+
+h1 {
+	width: 100%;
+	font-size: 15px;
+	font-weight: 200;
+}
+
+a {
+	text-decoration: none;
+}
+
+li {
+	list-style: none;
+}
+
+.fr {
+	float: right;
+}
+
+.fl {
+	float: left;
+}
+
+.fr:after {
+	clear: both;
+	content: '';
+	display: block;
+}
+
+.fl:after {
+	clear: both;
+	content: '';
+	display: block;
+}
+
+#section {
+	max-width: 600px;
+	height: 100%;
+	margin: 0 auto;
+}
+
+#contents {
+	padding-top: 60px;
+}
+
+#cnt_board {
+	height: auto;
+	background: #fff;
+	border: 1px solid #efefef;
+}
+
+#cnt_header {
+	height: 36px;
+	padding: 14px 20px;
+}
+
+#cnt_user_img img {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	margin-top: 6px;
+}
+
+#cnt_header_user {
+	margin-left: 5px;
+	padding-left: 5px;
+	height: 36px;
+}
+
+#cnt_header_user a {
+	display: block;
+	height: 18px;
+}
+
+#cnt_board_img img {
+	max-width: 600px;
+	width: 100%;
+	height: auto;
+}
+
+#cnt_header_date {
+	margin-top: 6px;
+}
+
+#cnt_board_content {
+	padding: 0 24px;
+	height: auto;
+}
+
+#cnt_board_heart {
+	padding-top: 15px;
+}
+
+#cnt_reply {
+	width: 100%;
+	height: 67px;
+	margin-top: 15px;
+	border-top: 1px solid #efefef;
+	display: table;
+}
+
+#cnt_reply .bk_h {
+	display: none;
+}
+
+.test {
+	display: none;	
+}
+
+.test2 {
+	display: none;	
+}
+
+#reply {
+	width: 100%;
+	height: 18px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#reply input {
+	padding-top: 2%;
+	padding-left: 2%;
+	border-style: none;
+}
+
+#heart {
+	padding-top: 15%;
+}
+
+/* option 메뉴 팝업  */
+#popup_wrapper {
+	width: 100%;
+}
+
+#popupLayer {
+	display: none;
+}
+
+#popupLayer .bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000;
+	opacity: 0.7;
+}
+
+#popupContents {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 514px;
+	height: 205px;
+	margin: -102.5px 0 0 -257px;
+}
+
+#popupContents  li {
+	background: #fff;
+	width: 478px;
+	height: 50px;
+	padding: 0px 16px;
+	border: 1px solid #dadada;
+	text-align: center;
+	line-height: 50px;
+}
+
+
+#popupContents  li:hover {
+	background: #efefef;
+	font-weight: 600;
+}
+
+#popupContents li:nth-child(1), #popupContents li:nth-child(2),
+	#popupContents li:nth-child(3) {
+	border-bottom: none;
+}
+
+@media ( max-width : 640px) {
+	body, h1 {
+		font-size: 15px;
+		font-weight: 200;
+	}
+	.user_id {
+		font-weight: bold;
+	}
+}

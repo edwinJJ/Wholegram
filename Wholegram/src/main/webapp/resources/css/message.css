@@ -1,0 +1,15 @@
+.msg_position {
+	position: fixed;
+	width: 250px;
+	height:300px;
+	
+	bottom: 0;
+	right: 0;
+	z-index: 1;
+	opacity: 1;
+}
+
+.msg_content {
+	position: fixed;
+	bottom: 0;	
+}

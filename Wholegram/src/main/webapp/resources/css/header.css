@@ -1,0 +1,52 @@
+#header{
+    width: 1400px;
+    height: 90px;
+    padding-left: 25%;
+	margin:0 auto;
+	padding-top : 30px;
+	padding-bottom: 20px;
+}
+.line {
+	border-bottom:1px solid #DADADA;  
+}
+#header-logo{
+	margin-top: -5px;
+	float: left;
+}
+#header-search {
+	padding-left: 11%;
+}
+#header-upload {
+	padding-left: 11.2%;
+}
+#header-message {
+	padding-left: 2%;
+}
+#header-new_person {
+	padding-left: 2%;
+}
+#header-news {
+	padding-left: 2%;
+}
+#header-user {
+	padding-left: 2%;
+}
+
+@media all and (max-width: 1140px) {
+	#header-user { display: none;}
+}
+@media all and (max-width: 1040px) {
+	#header-news { display: none;}
+}
+@media all and (max-width: 940px) {
+	#header-new_person { display: none;}
+}
+@media all and (max-width: 840px) {
+	#header-message { display: none;}
+}
+@media all and (max-width: 768px) {
+	#header-upload{display: none;}
+}
+@media all and (max-width: 575px) {
+	#header-search {display: none;}
+}

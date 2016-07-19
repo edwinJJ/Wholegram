@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<mvc:interceptors>
+	    <mvc:interceptor> 
+	   	   <mvc:mapping path="/main"/> 
+	       <bean class="net.nigne.wholegram.interceptor.InterCeptor"/>
+	    </mvc:interceptor>
+	    <!-- 추가로 여러개의 인터셉터 설정 가능 
+	    <mvc:interceptor> 
+	   	   <mvc:mapping path="/admin/board_write"/> 
+	       <bean class="com.spring.interceptor.AdminInterCeptor"/>
+	    </mvc:interceptor>
+	    -->
+</mvc:interceptors>
