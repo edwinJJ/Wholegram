@@ -17,6 +17,7 @@ public class BoardDAOImpl implements BoardDAO {
 	private SqlSession session;
 	private static final String namespace="net.nigne.wholegram.mappers.boardMapper";
 	private static final String namespace2 = "net.nigne.wholegram.mapper.UploadMapper";
+	
 	@Override
 	public List<BoardVO> getList() {
 		return session.selectList( namespace + ".getList" );

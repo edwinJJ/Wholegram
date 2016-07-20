@@ -11,6 +11,7 @@
     <script type="text/javascript" src="resources/js/jquery.bxslider.js"></script>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/resources/css/message.css">
 </head>
 <style>
 	
@@ -201,6 +202,9 @@
 			</div>
 		</div>
 	</div>
+	<div id="chat_box"></div>
+	<script src="/resources/js/message.js"></script>
+	
 	
 	<!-- 모듈화 시킬것 -->
 	<script>

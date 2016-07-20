@@ -1,35 +1,30 @@
 package net.nigne.wholegram.controller;
 
-import java.io.IOException;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Locale;
-import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import net.nigne.wholegram.service.ChatService;
 
 @RestController
 @RequestMapping("/message")
 public class MessageController {
 	
-	
-
-	
-	
-	
+	@Inject
+	private ChatService chatservice;
 	
 	/*message 페이지 이동*/
 	@RequestMapping(value = "", method = RequestMethod.GET)
@@ -45,6 +40,22 @@ public class MessageController {
 			return mav;
 		}
 	}
-	
+
+	/* 채팅방 생성 */
+	@RequestMapping(value = "/chatroom/{id}", method = RequestMethod.POST)
+	public ResponseEntity<String> set_chat_room(@PathVariable("id") String id_list, HttpServletRequest request) {
+/*		StringTokenizer stiz = new StringTokenizer(id, ",");
+		HashMap<String, String> id_list = new HashMap<>();
+		int num = 0;
+		while(stiz.hasMoreElements()) {
+			num++;
+			id_list.put("user" + num, stiz.nextToken());
+		}
+*/		
+		
+		int chat_num = chatservice.chat_room();
+		chatservice.user_room(chat_num, id_list);
+		return null;
+	}
 		
 }

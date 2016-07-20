@@ -17,6 +17,8 @@ public class BoardServiceImpl implements BoardService {
 	@Inject
 	private BoardDAO dao;
 	
+/*	전체(혹은 일부)게시물 목록을 담고있는 bList와 사용자가 좋아요를 누른 게시물 목록만 가지고있는 hList를 비교하여
+	같은 게시물 번호를 있다면 그 게시물에 setAldy_heart를 true를 적용시켜, view단에서 이를 활용하여, 좋아요 누른 게시물, 누르지 않은 게시물을 나타내준다.*/
 	@Override
 	public List<BoardVO> getList(List<HeartVO> hList) {
 		List<BoardVO> bList = dao.getList();
@@ -37,7 +39,6 @@ public class BoardServiceImpl implements BoardService {
 			}
 			bhList.add(bv);
 		}
-		
 		return bhList;
 	}
 

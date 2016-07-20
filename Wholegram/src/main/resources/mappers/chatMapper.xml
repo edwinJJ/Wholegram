@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="net.nigne.wholegram.mappers.chatMapper">
+ 	<insert id="chat_room">
+ 		insert into chat values()
+ 	</insert>
+ 	<select id="getchat_room" resultType="int">
+ 		select last_insert_id()
+ 	</select>
+ 	<insert id="user_room">
+ 		insert into chat_user (chat_chat_num, member_user_id) values(#{chat_num}, #{user_id})
+ 	</insert>
+ </mapper>

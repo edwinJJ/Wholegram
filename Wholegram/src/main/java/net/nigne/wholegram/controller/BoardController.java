@@ -53,27 +53,27 @@ public class BoardController {
 		if (user_id != null) {
 			model.addAttribute( "sessionId", user_id );
 			
-			// 게시글에 이미 좋아요를 누른 게시물 목록 추출 
+			// 게시글에 이미 좋아요를 누른 게시물 목록 추출 (DB -> Heart table)
 			List<HeartVO> hList = hService.getaldyList(user_id);
 			
-			// home 게시글 리스트 -> 좋아요 누른/누르지않은 게시물을 구분해서 리스트를 가져옴 
+			// home 게시글 리스트 -> 좋아요 누른/누르지않은 게시물을 구분해서 리스트를 가져옴 (BoardVO에 좋아요 '누른/안누른'을 구분하는 변수가 존재함)
 			List<BoardVO> bList = bService.getList(hList);
 			mav.addObject("bList", bList);
 
-			// home 게시글 댓글 리스트 
+			// home 게시글 댓글 리스트 (각 게시글에 해당되는 댓글들)
 			Iterator<BoardVO> biterator = bList.iterator();
 			List<ReplyVO> rList = new ArrayList<ReplyVO>();
 			List<ReplyVO> replyResult = new ArrayList<ReplyVO>();
 			while (biterator.hasNext()) {
 				BoardVO bv = new BoardVO();
 				bv = biterator.next();
-				rList = rService.getList(bv.getBoard_num());
+				rList = rService.getList(bv.getBoard_num()); // 각 번호에 해당되는 게시글의 댓글리스트를 가져옴
 
 				Iterator<ReplyVO> riterator = rList.iterator();
 				while (riterator.hasNext()) {
 					ReplyVO rv = new ReplyVO();
 					rv = riterator.next();
-					replyResult.add(rv);
+					replyResult.add(rv); // 각 번호에 해당되는 게시글의 목록을 차례로 add시킴. 
 				}
 			}
 			mav.addObject("replyResult", replyResult);

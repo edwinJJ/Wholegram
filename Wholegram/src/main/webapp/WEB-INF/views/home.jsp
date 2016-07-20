@@ -152,9 +152,11 @@
 									</ul>
 									<div id="cnt_reply">
 										<a class="heart" href="#self">
+										<csaf>
 											<br/>
 											<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num} );"></i>
 											<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num} );"></i> 
+										</csaf>
 										</a>
 										<input type="hidden" id="board_num" name="board_num" value="${bd.board_num }" /> 
 										<input type="text" id="content${bd.board_num}" name="content${bd.board_num}" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply(${bd.board_num})" placeholder="댓글달기..." /> 
