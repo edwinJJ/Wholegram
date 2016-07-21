@@ -13,4 +13,10 @@
  	<insert id="user_room">
  		insert into chat_user (chat_chat_num, member_user_id) values(#{chat_num}, #{user_id})
  	</insert>
+ 	<insert id="msgStorage">
+ 		insert into msg_list (chat_chat_num, msg) values(#{chat_num}, #{msg_content})
+ 	</insert>
+ 	<select id="msgGet" resultType="net.nigne.wholegram.domain.MessageVO">
+ 		select msg, written_user_id from msg_list where chat_chat_num = #{chat_num}
+ 	</select>
  </mapper>

@@ -1,14 +1,13 @@
 package net.nigne.wholegram.controller;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,19 +42,18 @@ public class MessageController {
 
 	/* 채팅방 생성 */
 	@RequestMapping(value = "/chatroom/{id}", method = RequestMethod.POST)
-	public ResponseEntity<String> set_chat_room(@PathVariable("id") String id_list, HttpServletRequest request) {
-/*		StringTokenizer stiz = new StringTokenizer(id, ",");
-		HashMap<String, String> id_list = new HashMap<>();
-		int num = 0;
-		while(stiz.hasMoreElements()) {
-			num++;
-			id_list.put("user" + num, stiz.nextToken());
-		}
-*/		
+	public ResponseEntity<Integer> set_chat_room(@PathVariable("id") String id_list, HttpServletRequest request) {
 		
-		int chat_num = chatservice.chat_room();
-		chatservice.user_room(chat_num, id_list);
-		return null;
+		ResponseEntity<Integer> entity = null;
+		try{
+			int chat_num = chatservice.chat_room();		//chat table에 채팅방 번호 생성
+			chatservice.user_room(chat_num, id_list);	//chat_user table에 채팅방 번호에 맞는 유저아이디 입력
+			
+			entity = new ResponseEntity<>(chat_num, HttpStatus.OK);
+		} catch(Exception e) {
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
 	}
 		
 }

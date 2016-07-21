@@ -1,13 +1,14 @@
 package net.nigne.wholegram.service;
 
 import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.nigne.wholegram.domain.MessageVO;
 import net.nigne.wholegram.persistance.ChatDAO;
 
 @Service
@@ -32,5 +33,17 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public void user_room(int chat_num, String id_list) {
 		dao.user_room(chat_num, id_list);
+	}
+
+	/* msg_list에 메시지 내용 저장 */
+	@Override
+	public void msgStorage(HashMap<String, Object> data) {
+		dao.msgStorage(data);
+	}
+
+	/* 메시지 내용 가져옴 */
+	@Override
+	public List<MessageVO> msgGet(int chat_num) {
+		return dao.msgGet(chat_num);
 	}
 }

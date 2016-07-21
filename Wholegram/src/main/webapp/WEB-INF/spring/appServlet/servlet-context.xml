@@ -34,7 +34,7 @@
 	
 	<context:component-scan base-package="net.nigne.wholegram" />
 	
-	
+	<!-- 트랜젝션 -->
 	<tx:annotation-driven/>
 	
 </beans:beans>

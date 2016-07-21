@@ -9,16 +9,14 @@ function check_messageform() {
 		localStorage.setItem("chat", "true");
 		token = localStorage.getItem("chat");
 	}
-	show_message(token);
-	set_chatroom();
+	set_chatroom(token);
 }
 
 
 
 /* 채팅방 생성 */
-function set_chatroom() {
+function set_chatroom(token) {
 	var id = document.getElementById("receive_user").value;
-	console.log(id);
 	var cr_url = "/message/chatroom/" + id;
 
 	$.ajax({
@@ -31,13 +29,8 @@ function set_chatroom() {
 		dataType:'JSON',
 		data: '',
 		success : function(result) {
-			if(result == 1) {
-				user_id_label.style.color = "red";
-				user_id_label.innerHTML = "Id가 이미 있습니다.";
-			} else {
-				user_id_label.style.color = "#009688";
-				user_id_label.innerHTML = "User_ID"
-			}
+			//result : 채팅방 번호
+			show_message(token, result);
 		},
 		error : function(result){
 			alert("e : " + result);
@@ -47,7 +40,7 @@ function set_chatroom() {
 }
 
 /* Message창 보여주기 */
-function show_message(token) {
+function show_message(token, result) {
 	document.getElementById("chat_box").style.display = 'block';
 	if(token == start) {
 		if(typeof(localStorage) !== "undefined") {
@@ -57,7 +50,7 @@ function show_message(token) {
 				+	"<div class='panel-heading'>Message 보내기</div>"
 				+	"<div id='msg_content'>"
 				+	"</div>"
-				+	"<input id='send_msg' class='form-control2 msg_content' type='text' onkeypress='if(event.keyCode==13) {send_message(); return false;}'>" +
+				+	"<input id='send_msg' class='form-control2 msg_content' type='text' onkeypress='if(event.keyCode==13) {send_message(" + result + "); return false;}'>" +
 				"</div>";		
 				document.getElementById("chat_box").innerHTML = html;
 		} else {
@@ -67,17 +60,21 @@ function show_message(token) {
 }
 
 /*메시지 입력받음*/ 
-function send_message() {
+function send_message(result) {
+	
 	var user_name = receive_user.value;
-	var msg = document.getElementById("send_msg");
-	showMessage(msg.value);
-	ws.send(msg.value); 	 //서버로 메시지 전송
+	var msg1 = "{num : " + result + "}";			// 방 번호
+	var msg2 = document.getElementById("send_msg"); // 메시지 내용
+	var msg = (msg1 + msg2.value);
+//	showMessage(msg);
+	ws.send(msg); 	 //서버로 메시지 전송
 	
 	send_msg.value = "";
 }
 
 /*화면에 message를 뿌려줌*/
 function showMessage(msg) {
+	console.log(msg);
 	var msgBox = document.createElement("div");
 	var textnode = document.createTextNode(msg);
 	msgBox.appendChild(textnode);
@@ -90,7 +87,7 @@ function showMessage(msg) {
 }
 
 
-
+// WebSocket Server connection
 var wsUrl = "ws://localhost:8082/chat";
 var ws;
 
@@ -114,6 +111,7 @@ function onOpen(evt) {
 }
 
 function onMessage(evt) {
+	//서버로부터 메시지 받음
 	showMessage(evt.data);
 }
 

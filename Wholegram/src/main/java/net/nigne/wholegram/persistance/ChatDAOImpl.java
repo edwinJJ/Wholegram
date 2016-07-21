@@ -1,7 +1,7 @@
 package net.nigne.wholegram.persistance;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.inject.Inject;
@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import net.nigne.wholegram.domain.MessageVO;
 
 @Repository
 public class ChatDAOImpl implements ChatDAO {
@@ -39,5 +41,15 @@ public class ChatDAOImpl implements ChatDAO {
 			id_map.put("user_id", stiz.nextToken());
 			session.insert(namespace + ".user_room", id_map);
 		}
+	}
+
+	@Override
+	public void msgStorage(HashMap<String, Object> data) {
+		session.insert(namespace + ".msgStorage", data);
+	}
+
+	@Override
+	public List<MessageVO> msgGet(int chat_num) {
+		return session.selectList(namespace + ".msgGet", chat_num);
 	}
 }
