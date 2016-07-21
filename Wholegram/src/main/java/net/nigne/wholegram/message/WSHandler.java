@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
 
+import com.google.gson.Gson; 
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.socket.CloseStatus;
@@ -69,18 +69,20 @@ public class WSHandler extends TextWebSocketHandler {
 
 	@Transactional
 	private void sendMessage(WebSocketSession session, String msg) {
-		
+		System.out.println("test1");
 		Interpretation interpre = new Interpretation();
 		interpre.interpre_Msg(msg);								// msg 해석
 		HashMap<String, Object> data = interpre.getinfo_Msg();	// (채팅방 번호 / 메시지내용)
 		int chat_num = interpre.getmsg_Chatnum();				// (채팅방 번호)
-		
+		System.out.println("test2");
 		List<MessageVO> msglist = new ArrayList<MessageVO>();
 		chatservice.msgStorage(data);							// 본인이 해당된 채팅방에 메시지 저장
 		msglist = chatservice.msgGet(chat_num);					// 본인이 해당된 채팅방으로부터 메시지 꺼내옴
 		
-		
-		
+		System.out.println("test3");
+		MSG m = new MSG();
+		String result = m.GSON(msglist);
+		System.out.println("test4");
 //		Map<String, Object> map = new HashMap<>();
 //		map.put("message", msglist);
 //		ResponseEntity<Map<String,Object>> entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
@@ -97,10 +99,10 @@ public class WSHandler extends TextWebSocketHandler {
 			if(s.isOpen()) {
 				try {
 					System.out.println("test");
-					MSG m = new MSG();
-					m.id="아이디";
+/*					MSG m = new MSG();
+					m.id="아이디";*/
 					//s.sendMessage(new TextMessage(m.toJson()));
-					session.sendMessage(new TextMessage((CharSequence) msglist)); // 보낸사람에게 다시보냄
+					session.sendMessage(new TextMessage(result)); // 보낸사람에게 다시보냄
 					//session.sendMessage((WebSocketMessage<?>) new ResponseEntity(msglist, HttpStatus.OK));
 					//session.sendMessage((WebSocketMessage<?>) msglist);
 					//session.sendMessage(new TextMessage((CharSequence) map));
@@ -130,7 +132,11 @@ public class WSHandler extends TextWebSocketHandler {
 	class MSG{
 		String id;
 		List<String> msg;
-		
+		public String GSON(List<MessageVO> msglist) {
+			Gson gson = new Gson();
+			String result = gson.toJson(msglist);
+			return result;
+		}
 	}
 	
 }
