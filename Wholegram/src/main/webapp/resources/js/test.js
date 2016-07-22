@@ -1,5 +1,5 @@
 var i = 0;
-var a = "ws://localhost:8082/chat";
+var a = "ws://localhost/chat";
 var b;
 
 onmessage = function(event) {
@@ -13,7 +13,7 @@ onmessage = function(event) {
     
     
     
- // WebSocket Server connection
+/* // WebSocket Server connection
     function init() {
     	ws = new WebSocket(wsUrl);  //소켓 객체 생성
     	ws.onopen = function(evt) { // 이벤트 발생시 opOpen()을 실행
@@ -45,7 +45,7 @@ onmessage = function(event) {
     function onError(evt) {
     	
     }
-    
+    */
     
     
     postMessage(b);

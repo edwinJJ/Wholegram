@@ -34,7 +34,7 @@ function set_chatroom(token) {
 			
 			
 			
-			startWebWorker();
+			//startWebWorker();
 		},
 		error : function(result){
 			alert("e : " + result);
@@ -109,18 +109,20 @@ function showMessage(result) {
 
 function startWebWorker() {
 	var w;
-	if(typeof(Worker) !== "undefined") {
-        if(typeof(w) == "undefined") {
-        	alert("a");
-            w = new Worker("/resources/js/test.js");
-        }
-        w.postMessage("test");
-        w.onmessage = function(event) {
-        	alert(event.data);
-        };
-    } else {
-        document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
-    }
+	if (typeof (Worker) !== "undefined") {
+		if (typeof (w) == "undefined") {
+			w = new Worker("/resources/js/test.js");
+		}
+
+		w.postMessage("test");
+		alert(a);
+		console.log(a);
+		w.onmessage = function(event) {
+			alert(event.data);
+		};
+	} else {
+		document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
+	}
 }
 
 
@@ -145,7 +147,7 @@ function startWebWorker() {
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost:8082/chat";
+var wsUrl = "ws://localhost/chat";
 var ws;
 
 function init() {

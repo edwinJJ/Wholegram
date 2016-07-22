@@ -58,4 +58,22 @@ public class MessageController {
 		return entity;
 	}
 		
+	
+	
+	/* test */
+	@RequestMapping(value = "/test/{ws}", method = RequestMethod.POST)
+	public ResponseEntity<String> set_chat_room(@PathVariable("ws") Object ws, HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("ws", ws);
+		
+		ResponseEntity<String> entity = null;
+		try{
+			entity = new ResponseEntity<>("Success", HttpStatus.OK);
+		} catch(Exception e) {
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
 }
