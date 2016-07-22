@@ -275,7 +275,6 @@
 	
 	function setReplyList(data, bno) {
 		var	result	= "";
-
 		$(data).each(function() {	
 			result += "<li><a class='user_id' href='#'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
 			if( sessionId == this.user_id ) {

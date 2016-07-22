@@ -154,6 +154,8 @@
 		}
 	</style>
 	<script>
+		var sessionId = "${sessionId}";				// 접속자 ID
+
 		function addReceive(th) {
  			var id_value = th.value;
 			if(th.checked) {

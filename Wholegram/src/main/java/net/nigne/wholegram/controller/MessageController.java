@@ -25,11 +25,13 @@ public class MessageController {
 	@Inject
 	private ChatService chatservice;
 	
-	/*message 페이지 이동*/
+	/* message 페이지 이동 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ModelAndView message(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		if((session.getAttribute("user_id")) != null) {
+		String user_id = (String)session.getAttribute("user_id");
+		if( user_id != null) {
+			model.addAttribute( "sessionId", user_id );
 			ModelAndView mav = new ModelAndView();		
 			mav.setViewName("message");
 			return mav;
@@ -41,8 +43,8 @@ public class MessageController {
 	}
 
 	/* 채팅방 생성 */
-	@RequestMapping(value = "/chatroom/{id}", method = RequestMethod.POST)
-	public ResponseEntity<Integer> set_chat_room(@PathVariable("id") String id_list, HttpServletRequest request) {
+	@RequestMapping(value = "/chatroom/{ids}", method = RequestMethod.POST)
+	public ResponseEntity<Integer> set_chat_room(@PathVariable("ids") String id_list, HttpServletRequest request) {
 		
 		ResponseEntity<Integer> entity = null;
 		try{

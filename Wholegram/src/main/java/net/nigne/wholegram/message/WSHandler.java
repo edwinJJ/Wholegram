@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import com.google.gson.Gson; 
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,15 +34,18 @@ public class WSHandler extends TextWebSocketHandler {
 
 	@Inject
 	private ChatService chatservice;
-	
+
 	public WSHandler() {
 		logger.info("웹소켓 생성자입니다");
 	}
 
+	
 	/*연결 됫을 때*/
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-
+		
+		//afterPropertiesSet(session);
+		
 		//사용자 정보를 담는다.
 		wsSession.add(session);
 		super.afterConnectionEstablished(session);
@@ -62,31 +64,31 @@ public class WSHandler extends TextWebSocketHandler {
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 		
+		if(message.getPayload().toString().equals("init")) {
+			System.out.println("test");
+		}
+		
 		super.handleMessage(session, message);
 		sendMessage(session, message.getPayload().toString());
-		logger.info("recevied message : " + message);
+		//logger.info("recevied message : " + message);
 	}
 
 	@Transactional
 	private void sendMessage(WebSocketSession session, String msg) {
-		System.out.println("test1");
+		
 		Interpretation interpre = new Interpretation();
 		interpre.interpre_Msg(msg);								// msg 해석
-		HashMap<String, Object> data = interpre.getinfo_Msg();	// (채팅방 번호 / 메시지내용)
+		HashMap<String, Object> data = interpre.getinfo_Msg();	// (채팅방 번호 / 작성자ID / 메시지내용)
 		int chat_num = interpre.getmsg_Chatnum();				// (채팅방 번호)
-		System.out.println("test2");
+		
 		List<MessageVO> msglist = new ArrayList<MessageVO>();
 		chatservice.msgStorage(data);							// 본인이 해당된 채팅방에 메시지 저장
 		msglist = chatservice.msgGet(chat_num);					// 본인이 해당된 채팅방으로부터 메시지 꺼내옴
 		
-		System.out.println("test3");
-		MSG m = new MSG();
-		String result = m.GSON(msglist);
-		System.out.println("test4");
-//		Map<String, Object> map = new HashMap<>();
-//		map.put("message", msglist);
-//		ResponseEntity<Map<String,Object>> entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-/*		for(WebSocketSession s : wsSession) {
+		MessageJSON mj = new MessageJSON();
+		String result = mj.GSON(msglist);						// json으로 변환
+
+		/*		for(WebSocketSession s : wsSession) {
 			if(s.isOpen() && !s.getId().equals(session.getId())) {
 				try {
 					s.sendMessage(new TextMessage("From Server" + msg));
@@ -98,16 +100,7 @@ public class WSHandler extends TextWebSocketHandler {
 		for(WebSocketSession s : wsSession) {
 			if(s.isOpen()) {
 				try {
-					System.out.println("test");
-/*					MSG m = new MSG();
-					m.id="아이디";*/
-					//s.sendMessage(new TextMessage(m.toJson()));
-					session.sendMessage(new TextMessage(result)); // 보낸사람에게 다시보냄
-					//session.sendMessage((WebSocketMessage<?>) new ResponseEntity(msglist, HttpStatus.OK));
-					//session.sendMessage((WebSocketMessage<?>) msglist);
-					//session.sendMessage(new TextMessage((CharSequence) map));
-					//session.sendMessage((WebSocketMessage<?>) entity);
-					
+					session.sendMessage(new TextMessage(result));
 				} catch(IOException e) {
 					e.printStackTrace();
 				}
@@ -129,12 +122,57 @@ public class WSHandler extends TextWebSocketHandler {
 		return super.supportsPartialMessages();
 	}
 	
-	class MSG{
-		String id;
-		List<String> msg;
+	
+	
+	
+	
+	
+	
+	
+	
+	/*클라이언트에게 스레드로 계속 신호보내기*/
+	private void Test(String string, WebSocketSession session) {
+		for(WebSocketSession s : wsSession) {
+			if(s.isOpen()) {
+				try {
+					session.sendMessage(new TextMessage(string));
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	 public void afterPropertiesSet(WebSocketSession session) throws Exception {
+           Thread thread = new Thread(){
+                  int i=0;
+                  @Override
+                  public void run() {
+                         while (true){
+                               try {
+                                      Test("send message index "+ i++, session);
+                                      Thread.sleep(1000);
+                               } catch (InterruptedException e) {
+                                      e.printStackTrace();
+                                      break;
+                               }
+                         }
+                  }
+           };
+           thread.start();
+     }
+
+	
+	 
+	 
+	 
+	 
+	 
+	
+	
+	class MessageJSON {
 		public String GSON(List<MessageVO> msglist) {
 			Gson gson = new Gson();
-			String result = gson.toJson(msglist);
+			String result = gson.toJson(msglist);	
 			return result;
 		}
 	}
