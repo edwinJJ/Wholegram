@@ -43,21 +43,19 @@ public class MessageController {
 	public ModelAndView message(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		String user_id = (String)session.getAttribute("user_id");
+		ModelAndView mav = new ModelAndView();
+		
 		if( user_id != null) {
 			model.addAttribute( "sessionId", user_id );
-			ModelAndView mav = new ModelAndView();		
 			mav.setViewName("message");
 			
-			// 유저가 포함되어있는 채팅방 목록을 가져온다.
-			List<List<Chat_userVO>> roomlist = chatservice.getRoomUsers(user_id);
-			//chatservice.getRoomUser(roomlist);
-			
-			return mav;
+			/*유저가 포함되어있는 각 채팅방에 참여하고 있는 유저 리스트를 가져옴*/
+			List<Chat_userVO> roominfo = chatservice.getRoomUsers(user_id);
+			mav.addObject("roominfo", roominfo);
 		} else {
-			ModelAndView mav = new ModelAndView();
 			mav.setViewName("login");
-			return mav;
 		}
+		return mav;
 	}
 
 	/* 채팅방 생성 */
@@ -66,7 +64,6 @@ public class MessageController {
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
 		id_list += user_id;
-		System.out.println(id_list);
 		ResponseEntity<Integer> entity = null;
 		try{
 			int chat_num = chatservice.chat_room();		//chat table에 채팅방 번호 생성

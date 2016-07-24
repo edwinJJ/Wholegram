@@ -13,5 +13,5 @@ public interface ChatDAO {
 	public void msgStorage(HashMap<String, Object> data);
 	public List<MessageVO> msgGet(int chat_num);
 	public List<Integer> getRoomNumber(String user_id);
-	public List<List<Chat_userVO>> getRoomUser(List<Integer> roomlist);
+	public List<Chat_userVO> getRoomUser(List<Integer> roomlist);
 }

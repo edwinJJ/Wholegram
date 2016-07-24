@@ -1,5 +1,6 @@
 package net.nigne.wholegram.persistance;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -61,12 +62,39 @@ public class ChatDAOImpl implements ChatDAO {
 	}
 
 	@Override
-	public List<List<Chat_userVO>> getRoomUser(List<Integer> roomlist) {
-		Iterator<Integer> room_Iterator = roomlist.listIterator();
+	public List<Chat_userVO> getRoomUser(List<Integer> roomlist) {
+		
+		Iterator<Integer> room_Iterator = roomlist.listIterator();			// 유저가 포함되어있는 방 번호
+		List<Chat_userVO> each_rooms_info = new ArrayList<Chat_userVO>();	// 각 방번호에 속해있는 유저들을 담을 List
+
 		while(room_Iterator.hasNext()) {
-			int room_number = room_Iterator.next();
-			System.out.println(session.selectList(namespace + ".getRoomUser", room_number));
+			int room_number = room_Iterator.next();														/* ex) 방번호 참여유저
+																										 	    1    user1
+																										        1    user2
+			// 각 방 번호와, 방 번호에 포함되어있는 유저 list (DB구조상 Query 결과값의 방 번호가 중복됨)	ex) ==>>   	        1    user3 */
+			List<Chat_userVO> each = session.selectList(namespace + ".getRoomUser", room_number);       
+																										/*      2    user2
+																										        2    user4 . . . 이런식, 그래서 아래에 있는 작업을 해주게 됨 */
+			String each_users = "";
+			int result_room_number = 0;
+			Chat_userVO each_room_info = new Chat_userVO();
+			
+			// 방번호 1개와, 그 방번호에 해당되는 유저들을 1개의 VO객체로 만들기 위한 과정 (이렇게 만들어두면 view에서 jstl로 뿌려주기 간편하다) 
+			Iterator<Chat_userVO> eachit = each.iterator();
+			while(eachit.hasNext()) {
+				Chat_userVO users = eachit.next();
+				each_users += (" / " + users.getMember_user_id());
+				if(!(eachit.hasNext())) {
+					result_room_number = users.getChat_chat_num();
+				}
+			}
+			each_room_info.setChat_chat_num(result_room_number);
+			each_room_info.setMember_user_id(each_users);
+			
+			/*방 1개의 정보(방번호, 참여 유저들) ==  VO객체 1개  를 List에 담는다.*/
+			each_rooms_info.add(each_room_info);
+
 		}
-		return null;
+		return each_rooms_info;
 	}
 }

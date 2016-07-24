@@ -48,9 +48,9 @@ public class ChatServiceImpl implements ChatService {
 		return dao.msgGet(chat_num);
 	}
 
-	/*유저가 포함되어있는 채팅방에 참여하고 있는 유저 리스트를 가져옴*/
+	/*유저가 포함되어있는 각 채팅방에 참여하고 있는 유저 리스트를 가져옴*/
 	@Override
-	public List<List<Chat_userVO>> getRoomUsers(String user_id) {
+	public List<Chat_userVO> getRoomUsers(String user_id) {
 		/*유저가 포함되어있는 채팅방 목록 가져옴*/
 		List<Integer> roomlist = dao.getRoomNumber(user_id);
 		

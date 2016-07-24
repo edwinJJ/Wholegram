@@ -227,7 +227,17 @@
 						<a id="user_search" class="w3-btn-floating w3-ripple w3-teal2" data-toggle="modal" data-target="#myModal" onclick="followingList()" style="text-decoration:none">+</a>
 					</div>
 				</div>
-				<div class="well">
+				<c:forEach items="${roominfo}" var="ri">
+					<div class="well">
+						<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
+						<a href="#" id="chat_aname"><span class="chat_name">채팅방 : ${ri.chat_chat_num } </span></a>
+						<span>${ri.member_user_id}</span>
+						<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
+					</div>
+				</c:forEach>
+				
+				
+<!-- 				<div class="well">
 					<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
 					<a href="#" id="chat_aname"><span class="chat_name">채팅방 1번</span></a>
 					<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
@@ -251,7 +261,7 @@
 					<h4>Dashboard</h4>
 					<p>Some text......</p>
 				</div>
-
+ -->
 				<!-- 메시지보낼 친구 찾는 Modal -->
 				<div class="modal fade" id="myModal" role="dialog">
 					<div class="modal-dialog modal-lg">
