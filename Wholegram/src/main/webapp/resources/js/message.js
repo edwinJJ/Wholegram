@@ -50,7 +50,7 @@ function show_messageform(token, chat_num) {
 			var html = 
 				"<div id='message_container' class='panel2 panel-info msg_position' style='overflow:auto;'>"
 				+	"<span onclick='close_message()' class='w3-closebtn'>&times;</span>" 
-				+	"<div class='panel-heading'>Message 보내기</div>"
+				+	"<div  class='panel-heading'>Message 보내기</div>"
 				+	"<div id='msg_content'>"
 				+	"</div>"
 				+	"<input id='send_msg' class='form-control2 msg_content' type='text' onkeypress='if(event.keyCode==13) {send_message(" + chat_num + "); return false;}'>" +
@@ -75,7 +75,8 @@ function send_message(chat_num) {
 
 /*화면에 message를 뿌려줌*/
 function showMessage(result) {
-
+	document.getElementById("msg_content").innerHTML = "";
+	
 	var object = JSON.parse(result);					// JSON으로 파싱
 	$(object).each(function() {							// 대화목록을 화면에 뿌려줌
 		var msgBox = document.createElement("div");

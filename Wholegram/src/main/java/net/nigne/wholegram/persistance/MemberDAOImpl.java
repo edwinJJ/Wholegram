@@ -1,6 +1,8 @@
 package net.nigne.wholegram.persistance;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +53,19 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public void updatePasswd(MemberVO vo) {
 		session.update(namespace + ".updatePasswd", vo);
+	}
+
+	@Override
+	public List<MemberVO> getFollowinguser_Profile(List<String> user_ids) {
+		List<MemberVO> memberProfile_List = new ArrayList<MemberVO>();
+		
+		for(int i=0; i<user_ids.size(); i++) {
+			String user_id = user_ids.get(i);
+			MemberVO vo = new MemberVO();
+			vo = session.selectOne(namespace + ".getFollowinguser_Profile", user_id);
+			memberProfile_List.add(vo);
+		}
+		return memberProfile_List;
 	}
 
 }

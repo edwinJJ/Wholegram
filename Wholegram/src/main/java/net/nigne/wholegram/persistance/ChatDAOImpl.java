@@ -1,6 +1,7 @@
 package net.nigne.wholegram.persistance;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -10,6 +11,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.MessageVO;
 
 @Repository
@@ -51,5 +53,20 @@ public class ChatDAOImpl implements ChatDAO {
 	@Override
 	public List<MessageVO> msgGet(int chat_num) {
 		return session.selectList(namespace + ".msgGet", chat_num);
+	}
+
+	@Override
+	public List<Integer> getRoomNumber(String user_id) {
+		return session.selectList(namespace + ".getRoomNumber", user_id);
+	}
+
+	@Override
+	public List<List<Chat_userVO>> getRoomUser(List<Integer> roomlist) {
+		Iterator<Integer> room_Iterator = roomlist.listIterator();
+		while(room_Iterator.hasNext()) {
+			int room_number = room_Iterator.next();
+			System.out.println(session.selectList(namespace + ".getRoomUser", room_number));
+		}
+		return null;
 	}
 }

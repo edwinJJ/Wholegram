@@ -19,4 +19,10 @@
  	<select id="msgGet" resultType="net.nigne.wholegram.domain.MessageVO">
  		select msg, written_user_id from msg_list where chat_chat_num = #{chat_num}
  	</select>
+ 	<select id="getRoomNumber" resultType="int">
+ 		select chat_chat_num from chat_user where member_user_id = #{user_id}
+ 	</select>
+ 	<select id="getRoomUser" resultType="net.nigne.wholegram.domain.Chat_userVO">
+ 		select * from chat_user where chat_chat_num = #{room_number}
+ 	</select>
  </mapper>

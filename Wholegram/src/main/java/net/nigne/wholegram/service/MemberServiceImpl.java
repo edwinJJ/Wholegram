@@ -1,5 +1,7 @@
 package net.nigne.wholegram.service;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
@@ -64,5 +66,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void updatePasswd(MemberVO vo) {
 		dao.updatePasswd(vo);
+	}
+
+	/*Following 하고있는 유저 정보(id, profile사진)을 가져온다*/
+	@Override
+	public List<MemberVO> getFollowinguser_Profile(List<String> user_ids) {
+		return dao.getFollowinguser_Profile(user_ids);
 	}
 }

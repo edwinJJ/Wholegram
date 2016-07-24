@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.MessageVO;
 import net.nigne.wholegram.persistance.ChatDAO;
 
@@ -45,5 +46,15 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public List<MessageVO> msgGet(int chat_num) {
 		return dao.msgGet(chat_num);
+	}
+
+	/*유저가 포함되어있는 채팅방에 참여하고 있는 유저 리스트를 가져옴*/
+	@Override
+	public List<List<Chat_userVO>> getRoomUsers(String user_id) {
+		/*유저가 포함되어있는 채팅방 목록 가져옴*/
+		List<Integer> roomlist = dao.getRoomNumber(user_id);
+		
+		/*각 채팅방에 참여하고있는 유저 리스트를 가져옴*/
+		return dao.getRoomUser(roomlist);
 	}
 }

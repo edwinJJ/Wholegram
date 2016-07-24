@@ -165,6 +165,53 @@
 				receive_user.value = text;
 			}
 		}
+		
+		function followingList() {
+			var ig_url = "/message/getFollowing_Userid";
+			$.ajax({
+				type : 'POST',
+				url : ig_url,
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override":"POST",
+				},
+				dataType:'JSON',
+				data: '',
+				success : function(result){
+					showFollowingList(result);
+				},
+				error : function(result){
+					alert("e : " + result);
+				}
+			});
+		}
+		
+		function showFollowingList(result) {
+			var html = "";
+			var identify_count = 0;
+			$(result).each(function() {
+					html +=
+					"<div class='modal-body'>"
+					+	"<div class='panel panel-default'>"
+					+		"<div class='panel-body'>"
+					+        	"<div class='[ form-group ]'>"
+					+				"<img class='user_img' src='/resources/Image/Penguins.jpg'>"
+					+				"<span class='user_nm'>" + this.user_id + "</span>"
+					+				"<input type='checkbox' name='fancy-checkbox-success" + identify_count + "' id='fancy-checkbox-success" + identify_count +"' autocomplete='off' value='" + this.user_id + "' onclick='addReceive(this)'/>"
+					+				"<div class='[ btn-group ] add_chat1'>"
+					+					"<label for='fancy-checkbox-success" + identify_count + "' class='[ btn btn-success ]'>"
+					+                   	"<span class='[ glyphicon glyphicon-ok ] add_chat2'></span>"
+					+                  		"<span> </span>"
+					+                	"</label>"
+					+           	"</div>"
+					+			"</div>"
+					+		"</div>"
+					+	"</div>" +
+					"</div>";
+					identify_count++;
+			});
+			document.getElementById("followingList").innerHTML = html;
+		}
 	</script>
 </head>
 <body>
@@ -177,7 +224,7 @@
 					<div style="text-align: center;">
 						<font style="color: #4375DB; font-size: 20px;">인스타그래머에게</font>
 						<!-- <a id="user_search" href="#" data-toggle="modal" data-target="#myModal"><i class="fa fa-search-plus fa-2x" aria-hidden="true"></i></a> -->
-						<a id="user_search" class="w3-btn-floating w3-ripple w3-teal2" data-toggle="modal" data-target="#myModal" style="text-decoration:none">+</a>
+						<a id="user_search" class="w3-btn-floating w3-ripple w3-teal2" data-toggle="modal" data-target="#myModal" onclick="followingList()" style="text-decoration:none">+</a>
 					</div>
 				</div>
 				<div class="well">
@@ -216,91 +263,7 @@
 							<div>
 								<input id="receive_user" class="w3-input3" type="text" placeholder="받는 사람"> 
 							</div>
-							<div class="modal-body">
-								<div class="panel panel-default">
-									<div class="panel-body">
-								        <div class="[ form-group ]">
-									        <img class="user_img" src="/resources/Image/Penguins.jpg">
-									        <span class="user_nm">User1</span>
-								            <input type="checkbox" name="fancy-checkbox-success1" id="fancy-checkbox-success1" autocomplete="off" value="User1" onclick="addReceive(this)"/>
-								            <div class="[ btn-group ] add_chat1">
-								                <label for="fancy-checkbox-success1" class="[ btn btn-success ]">
-								                    <span class="[ glyphicon glyphicon-ok ] add_chat2"></span>
-								                    <span> </span>
-								                </label>
-								            </div>
-								        </div>
-									</div>
-								</div>
-							</div>
-							<div class="modal-body">
-								<div class="panel panel-default">
-									<div class="panel-body">
-								        <div class="[ form-group ]">
-									        <span><img class="user_img" src="/resources/Image/Penguins.jpg"></span>
-									        <span class="user_nm">User2</span>
-								            <input type="checkbox" name="fancy-checkbox-success2" id="fancy-checkbox-success2" autocomplete="off" value="User2" onclick="addReceive(this)"/>
-								            <div class="[ btn-group ] add_chat1">
-								                <label for="fancy-checkbox-success2" class="[ btn btn-success ]">
-								                    <span class="[ glyphicon glyphicon-ok ] add_chat2"></span>
-								                    <span> </span>
-								                </label>
-								            </div>
-								        </div>
-									</div>
-								</div>
-							</div>
-							<div class="modal-body">
-								<div class="panel panel-default">
-									<div class="panel-body">
-								        <div class="[ form-group ]">
-									        <span><img class="user_img" src="/resources/Image/Penguins.jpg"></span>
-									        <span class="user_nm">User3</span>
-								            <input type="checkbox" name="fancy-checkbox-success3" id="fancy-checkbox-success3" autocomplete="off" value="User3" onclick="addReceive(this)"/>
-								            <div class="[ btn-group ] add_chat1">
-								                <label for="fancy-checkbox-success3" class="[ btn btn-success ]">
-								                    <span class="[ glyphicon glyphicon-ok ] add_chat2"></span>
-								                    <span> </span>
-								                </label>
-								            </div>
-								        </div>
-									</div>
-								</div>
-							</div>
-							<div class="modal-body">
-								<div class="panel panel-default">
-									<div class="panel-body">
-								        <div class="[ form-group ]">
-									        <span><img class="user_img" src="/resources/Image/Penguins.jpg"></span>
-									        <span class="user_nm">User4</span>
-								            <input type="checkbox" name="fancy-checkbox-success4" id="fancy-checkbox-success4" autocomplete="off" value="User4" onclick="addReceive(this)"/>
-								            <div class="[ btn-group ] add_chat1">
-								                <label for="fancy-checkbox-success4" class="[ btn btn-success ]">
-								                    <span class="[ glyphicon glyphicon-ok ] add_chat2"></span>
-								                    <span> </span>
-								                </label>
-								            </div>
-								        </div>
-									</div>
-								</div>
-							</div>
-							<div class="modal-body">
-								<div class="panel panel-default">
-									<div class="panel-body">
-								        <div class="[ form-group ]">
-									        <span><img class="user_img" src="/resources/Image/Penguins.jpg"></span>
-									        <span class="user_nm">User5</span>
-								            <input type="checkbox" name="fancy-checkbox-success5" id="fancy-checkbox-success5" autocomplete="off" value="User5" onclick="addReceive(this)"/>
-								            <div class="[ btn-group ] add_chat1">
-								                <label for="fancy-checkbox-success5" class="[ btn btn-success ]">
-								                    <span class="[ glyphicon glyphicon-ok ] add_chat2"></span>
-								                    <span> </span>
-								                </label>
-								            </div>
-								        </div>
-									</div>
-								</div>
-							</div>
+							<div id="followingList"></div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default" data-dismiss="modal" onclick="check_messageform()">메시지 보내기</button>
 							</div>
