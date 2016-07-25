@@ -23,7 +23,7 @@ public class Interpretation {
 		chat_num = Integer.parseInt(msg.substring(7, sub_pos));		// 방번호
 		
 		int sub_pos2 = msg.indexOf("]");
-		written_user_id = msg.substring(20, sub_pos2);				// 작성자
+		written_user_id = msg.substring(sub_pos + 10, sub_pos2);	// 작성자
 
 		msg_content = msg.substring(sub_pos2+1);					// 메시지 내용
 		

@@ -144,78 +144,31 @@ function send_message(chat_num) {
 function showMessage(result) {
 	document.getElementById("msg_content").innerHTML = "";
 	
-	var object = JSON.parse(result);					// JSON으로 파싱
-	$(object).each(function() {							// 대화목록을 화면에 뿌려줌
-		var msgBox = document.createElement("div");
-		var lineBox = document.createElement("br");
-		var textnode = document.createTextNode(this.written_user_id + " : " + this.msg);
-//		lineBox.appendChild(textnode);
-//		msgBox.appendChild(lineBox);
-//		textnode.appendChild(lineBox);
-		msgBox.appendChild(textnode);
-		if(sessionId == this.written_user_id) {
-			msgBox.style.float = "right";
-			//msgBox.style.white-space = "normal";
-		}
-		document.getElementById("msg_content").appendChild(msgBox);
-		var el = document.getElementById('message_container'); 	// 스크롤 항상 최신(아래)으로 유지
-		if (el.scrollHeight > 0) {
-			el.scrollTop = el.scrollHeight;
-		}
-	});
-
+	var html = "";
+	var object = JSON.parse(result);							// JSON으로 파싱
+	$(object).each(function() {									// 대화목록을 화면에 뿌려줌
 	
-}
-
-
-
-
-
-
-
-/*
-
-function startWebWorker() {
-	var w;
-	if (typeof (Worker) !== "undefined") {
-		if (typeof (w) == "undefined") {
-			w = new Worker("/resources/js/test.js");
-			
+		var msgBox = document.createElement("div");
+		if(sessionId == this.written_user_id) {					// 사용자(본인)이 작성한 글이면 오른쪽으로 출력
+			msgBox.style.float = "right";
+			var textnode = document.createTextNode(this.msg);
+		} else {												// 다른 사용자가 작성한 글이면 왼쪽으로 출력
+			var textnode = document.createTextNode(this.written_user_id + " : " + this.msg);
 		}
-
-		w.postMessage("test");
-//		alert(a);
-//		console.log(a);
-		w.onmessage = function(event) {
-			alert("test : " + event.data);
-		};
-	} else {
-		document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
+		msgBox.appendChild(textnode);
+		document.getElementById("msg_content").appendChild(msgBox);
+		msgBox.style.clear = "both";
+	});
+	
+	var el = document.getElementById('message_container'); 	// 스크롤 항상 최신(아래)으로 유지
+	if (el.scrollHeight > 0) {
+		el.scrollTop = el.scrollHeight;
 	}
 }
 
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost:8082/chat";
+var wsUrl = "ws://localhost/chat";
 var ws;
 
 function init() {
@@ -264,28 +217,13 @@ function close_message() {
 
 
 
-
-/*if(token == start) {
-	console.log("a");
-} else {
-	console.log("b");
-	init();	
-}*/
-
-
 /* Web Socket Connection */
 init();
 
 /*
-페이지간 이동시 메시지창이 열린상태에서 이동하면 token == "ture" == start 이다    (=> show_messageform을 통해 메시지창을 계속 열어준다.)
+페이지간 이동시 메시지창이 열린상태에서 이동하면 token == "ture" == start 이다    (=> getChatRoom을 통해 메시지창을 계속 열어준다.)
 페이지간 이동시 메시지창이 닫힌상태에서 이동했으면 token == "false" == fail      (=> 메시지창이 열리지 않는다.)*/
 if(token == start) {
 	getChatRoom(chat_num)
 }
-
-
-
-//startWebWorker();
-
-
 

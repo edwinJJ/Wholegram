@@ -84,6 +84,10 @@
 			height: auto;
 			background: #ccc;
 		}
+		.menu_design {
+			float: right;
+			
+		}
 		.form-group input[type="checkbox"] {
 		    display: none;
 		}
