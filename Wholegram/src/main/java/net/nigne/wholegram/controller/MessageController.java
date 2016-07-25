@@ -1,9 +1,8 @@
 package net.nigne.wholegram.controller;
 
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.MemberVO;
+import net.nigne.wholegram.domain.Msg_listVO;
 import net.nigne.wholegram.service.ChatService;
 import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.MemberService;
@@ -79,7 +79,6 @@ public class MessageController {
 	/* 채팅상대 고를 때(팔로잉 유저 목록 불러오기) */
 	@RequestMapping(value = "/getFollowing_Userid", method = RequestMethod.POST)
 	public ResponseEntity<List<MemberVO>> get_following_ids(HttpServletRequest request) {
-		
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
 		ResponseEntity<List<MemberVO>> entity = null;
@@ -96,4 +95,42 @@ public class MessageController {
 		return entity;
 	}
 	
+	/* 채팅방 목록 가져오기 */
+	@RequestMapping(value = "/roomList", method = RequestMethod.POST)
+	public ResponseEntity<List<Chat_userVO>> getRoomList(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		
+		ResponseEntity<List<Chat_userVO>> entity = null;
+		try{
+			entity = new ResponseEntity<>(chatservice.getRoomUsers(user_id), HttpStatus.OK);
+		} catch(Exception e) {
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+
+	/* 채팅방 정보(대화목록, 작성자) 가져오기 */
+	@RequestMapping(value = "/getRoomData/{chat_chat_num}", method = RequestMethod.POST)
+	public ResponseEntity<List<Msg_listVO>> getRoomData(@PathVariable("chat_chat_num") int chat_chat_num, HttpServletRequest request) {
+
+		List<Msg_listVO> ml = chatservice.msgGet(chat_chat_num);
+/*		Iterator<Msg_listVO> it = ml.iterator();
+		while(it.hasNext()) {
+			Msg_listVO vo = new Msg_listVO();
+			vo = it.next();
+			System.out.println(vo.getMsg());
+			System.out.println(vo.getWritten_user_id());
+		}
+*/		
+		
+		ResponseEntity<List<Msg_listVO>> entity = null;
+		try{
+			entity = new ResponseEntity<>(chatservice.msgGet(chat_chat_num), HttpStatus.OK);
+		} catch(Exception e) {
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
 }

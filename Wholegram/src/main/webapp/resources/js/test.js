@@ -1,5 +1,5 @@
 var i = 0;
-var a = "ws://localhost/chat";
+var a = "ws://localhost:8082/chat";
 var b;
 
 onmessage = function(event) {
@@ -11,6 +11,7 @@ onmessage = function(event) {
     console.log(a);
     console.log(b);
     
+    event.data += " hello";
     
     
 /* // WebSocket Server connection
@@ -48,6 +49,6 @@ onmessage = function(event) {
     */
     
     
-    postMessage(b);
+    postMessage("hello");
 }
 

@@ -79,6 +79,8 @@
 		}
 	</style>
 	<script>
+		var sessionId = "${sessionId}";				// 접속자 ID
+	
 		function update_passwd(){
 			check_passwd();
 		}

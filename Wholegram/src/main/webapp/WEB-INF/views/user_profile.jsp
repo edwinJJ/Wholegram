@@ -81,6 +81,8 @@
 		}
 	</style>
 	<script>
+		var sessionId = "${sessionId}";				// 접속자 ID
+	
 		function msg() { 
 			if((user_name.value != "") && (user_id.value != "") && (info.value != "") && (email.value != "") && (phone.value != "") && (gender.value != "")) {
 				alert("프로필을 제출하였습니다.");

@@ -9,8 +9,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import com.google.gson.Gson; 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +19,11 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.google.gson.Gson;
+
 import net.nigne.wholegram.common.Interpretation;
 import net.nigne.wholegram.domain.MessageVO;
+import net.nigne.wholegram.domain.Msg_listVO;
 import net.nigne.wholegram.service.ChatService;
 
 @RequestMapping("/chat")
@@ -43,7 +44,7 @@ public class WSHandler extends TextWebSocketHandler {
 	/*연결 됫을 때*/
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		
+		System.out.println("연결");
 		//afterPropertiesSet(session);
 		
 		//사용자 정보를 담는다.
@@ -54,7 +55,7 @@ public class WSHandler extends TextWebSocketHandler {
 	/*연결이 끊어 졌을 때*/
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		
+		System.out.println("끊김");
 		//사용자 정보 삭제
 		wsSession.remove(session);
 		super.afterConnectionClosed(session, status);
@@ -63,11 +64,7 @@ public class WSHandler extends TextWebSocketHandler {
 	/*메시지 전송됫을 때*/
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-		
-		if(message.getPayload().toString().equals("init")) {
-			System.out.println("test");
-		}
-		
+
 		super.handleMessage(session, message);
 		sendMessage(session, message.getPayload().toString());
 		//logger.info("recevied message : " + message);
@@ -81,7 +78,7 @@ public class WSHandler extends TextWebSocketHandler {
 		HashMap<String, Object> data = interpre.getinfo_Msg();	// (채팅방 번호 / 작성자ID / 메시지내용)
 		int chat_num = interpre.getmsg_Chatnum();				// (채팅방 번호)
 		
-		List<MessageVO> msglist = new ArrayList<MessageVO>();
+		List<Msg_listVO> msglist = new ArrayList<Msg_listVO>();
 		chatservice.msgStorage(data);							// 본인이 해당된 채팅방에 메시지 저장
 		msglist = chatservice.msgGet(chat_num);					// 본인이 해당된 채팅방으로부터 메시지 꺼내옴
 		
@@ -170,7 +167,7 @@ public class WSHandler extends TextWebSocketHandler {
 	
 	
 	class MessageJSON {
-		public String GSON(List<MessageVO> msglist) {
+		public String GSON(List<Msg_listVO> msglist) {
 			Gson gson = new Gson();
 			String result = gson.toJson(msglist);	
 			return result;

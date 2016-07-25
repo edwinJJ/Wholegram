@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.nigne.wholegram.domain.HeartVO;
 
@@ -32,6 +33,7 @@ public class HeartDAOImpl implements HeartDAO {
 		return session.selectList( namespace + ".getList", board_num );
 	}
 
+	@Transactional
 	@Override
 	public int checkHeart(String user_id, int board_num) {
 		Map<String, Object> data = new HashMap<>();

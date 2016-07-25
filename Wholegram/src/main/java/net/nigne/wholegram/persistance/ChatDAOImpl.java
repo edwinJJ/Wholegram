@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.MessageVO;
+import net.nigne.wholegram.domain.Msg_listVO;
 
 @Repository
 public class ChatDAOImpl implements ChatDAO {
@@ -52,7 +53,7 @@ public class ChatDAOImpl implements ChatDAO {
 	}
 
 	@Override
-	public List<MessageVO> msgGet(int chat_num) {
+	public List<Msg_listVO> msgGet(int chat_num) {
 		return session.selectList(namespace + ".msgGet", chat_num);
 	}
 
@@ -61,6 +62,7 @@ public class ChatDAOImpl implements ChatDAO {
 		return session.selectList(namespace + ".getRoomNumber", user_id);
 	}
 
+	@Transactional
 	@Override
 	public List<Chat_userVO> getRoomUser(List<Integer> roomlist) {
 		
@@ -78,8 +80,8 @@ public class ChatDAOImpl implements ChatDAO {
 			String each_users = "";
 			int result_room_number = 0;
 			Chat_userVO each_room_info = new Chat_userVO();
-			
-			// 방번호 1개와, 그 방번호에 해당되는 유저들을 1개의 VO객체로 만들기 위한 과정 (이렇게 만들어두면 view에서 jstl로 뿌려주기 간편하다) 
+																			//  방번호          참여유저
+			// 방번호 1개와, 그 방번호에 해당되는 유저들을 1개의 VO객체로 만들기 위한 과정 ==>  1    user1,user2,user3  이런형태로 만듬 ==> (이렇게 만들어두면 view에서 jstl로 뿌려주기 간편하다) 
 			Iterator<Chat_userVO> eachit = each.iterator();
 			while(eachit.hasNext()) {
 				Chat_userVO users = eachit.next();

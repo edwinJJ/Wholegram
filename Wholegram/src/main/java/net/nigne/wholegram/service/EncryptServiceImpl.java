@@ -3,11 +3,13 @@ package net.nigne.wholegram.service;
 import java.security.MessageDigest;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EncryptServiceImpl implements EncryptService {
 
 	/* 암호화 */
+	@Transactional
 	@Override
 	public String shaEncrypt(String passwd) {
 		try {

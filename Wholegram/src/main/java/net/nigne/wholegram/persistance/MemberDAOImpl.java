@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.nigne.wholegram.domain.MemberVO;
 
@@ -55,6 +56,7 @@ public class MemberDAOImpl implements MemberDAO {
 		session.update(namespace + ".updatePasswd", vo);
 	}
 
+	@Transactional
 	@Override
 	public List<MemberVO> getFollowinguser_Profile(List<String> user_ids) {
 		List<MemberVO> memberProfile_List = new ArrayList<MemberVO>();

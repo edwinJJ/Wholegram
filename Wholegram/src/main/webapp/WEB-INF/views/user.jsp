@@ -179,6 +179,8 @@
 		}
 	</style>
 	<script>
+		var sessionId = "${sessionId}";				// 접속자 ID
+	
 		function profile_edit() {
 			location.href="/user/update_form";
 		}

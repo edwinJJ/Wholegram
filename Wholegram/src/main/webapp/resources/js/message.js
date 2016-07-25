@@ -11,6 +11,7 @@ function check_messageform() {
 		token = localStorage.getItem("chat");
 	}
 	set_chatroom(token);
+	
 }
 
 /* 채팅방 생성 */
@@ -31,7 +32,7 @@ function set_chatroom(token) {
 			localStorage.setItem("chat_num", result);
 			chat_num = localStorage.getItem("chat_num");	// 채팅방 번호 localStroage에 저장
 			show_messageform(token, chat_num);				// 메시지 창 보여주기
-			
+			add_chatroom();									// 채팅방 목록 가져오기
 			
 			
 			//startWebWorker();
@@ -39,7 +40,44 @@ function set_chatroom(token) {
 		error : function(result){
 			alert("e : " + result);
 		}
-	})
+	});
+}
+
+/* 채팅방 목록 가져오기 */
+function add_chatroom() {
+
+	var rl_url = "/message/roomList";
+	$.ajax({
+		type: 'POST',
+		url: rl_url,
+		headers:{
+			"Content-Type" : "application/json",
+			"X-HTTP-Method-Override":"POST",
+		},
+		dataType:'JSON',
+		data: '',
+		success : function(roomList) {
+			showRoomList(roomList);
+		},
+		error : function(BadRequest){
+			alert("error : " + BadRequest);
+		}
+	});
+}
+
+/* 새로운 채팅방 생성과 동시에 채팅방 목록 새로 갱신 */
+function showRoomList(roomList) {
+	var html = "";
+	$(roomList).each(function() {
+		html +=
+			"<div class='well'>"
+			+	"<span><img class='chat_img' src='/resources/Image/Penguins.jpg'></span>"
+			+	"<a href='#' class='chat_aname' onclick='getChatRoom(this.chat_chat_num)'><span class='chat_name'>채팅방 : " + this.chat_chat_num + " </span></a>"
+			+	"<span>" + this.member_user_id + "</span>"
+			+	"<span><img class='chat_content' src='/resources/Image/Penguins.jpg'></span>" +
+			"</div>"
+	});
+	document.getElementById("roomList").innerHTML = html;
 }
 
 /* Message창 보여주기 */
@@ -62,6 +100,35 @@ function show_messageform(token, chat_num) {
 	}
 }
 
+
+
+/* (현재 채팅방이 닫혀있는 상태에서) 채팅방 목록중에서 선택한 채팅방의 데이터를 가져온다  or  (페이지이동or새로고침) 했을시에 기존에 열려있던 채팅방의 데이터를 가져온다*/
+function getChatRoom(chat_chat_num) {
+	var roomInfo_url = "/message/getRoomData/" + chat_chat_num;
+		$.ajax({
+		type : 'POST',
+		url : roomInfo_url,
+		headers : {
+			"Content-Type" : "application/json",
+			"X-HTTP-Method-Override":"POST",
+		},
+		dataType:'text',
+		data: '',
+		success : function(result){
+			localStorage.setItem("chat", "true");			// localStorage의 chat을 true로 설정 (메시지창을 보여주기 위함, 규칙)
+			localStorage.setItem("chat_num", chat_chat_num);// localStorage의 chat_num을 유저가 선택한 채팅방 번호로 설정 (새로고침 or 페이지 이동시에 열어두고있던 채팅방의 정보를 가져오기 위함)
+			show_messageform("true", chat_chat_num);		// 메시지창 보여주기
+			showMessage(result);							// 메시지 내용 보여주기
+		},
+		error : function(result){
+			alert("error : " + result);
+		}
+	}); 
+}
+
+
+
+
 /*메시지 입력받음*/ 
 function send_message(chat_num) {
 	var msg1 = "{num : " + chat_num + "}";					// 방 번호 추가
@@ -80,26 +147,24 @@ function showMessage(result) {
 	var object = JSON.parse(result);					// JSON으로 파싱
 	$(object).each(function() {							// 대화목록을 화면에 뿌려줌
 		var msgBox = document.createElement("div");
-		var textnode = document.createTextNode(this.msg);
+		var lineBox = document.createElement("br");
+		var textnode = document.createTextNode(this.written_user_id + " : " + this.msg);
+//		lineBox.appendChild(textnode);
+//		msgBox.appendChild(lineBox);
+//		textnode.appendChild(lineBox);
 		msgBox.appendChild(textnode);
+		if(sessionId == this.written_user_id) {
+			msgBox.style.float = "right";
+			//msgBox.style.white-space = "normal";
+		}
 		document.getElementById("msg_content").appendChild(msgBox);
-		var el = document.getElementById('message_container'); 
+		var el = document.getElementById('message_container'); 	// 스크롤 항상 최신(아래)으로 유지
 		if (el.scrollHeight > 0) {
 			el.scrollTop = el.scrollHeight;
 		}
 	});
 
 	
-/*	var msgBox = document.createElement("div");
-	var textnode = document.createTextNode(msg);
-	msgBox.appendChild(textnode);
-	document.getElementById("msg_content").appendChild(msgBox);
-	
-	var el = document.getElementById('message_container'); 
-	if (el.scrollHeight > 0) {
-		el.scrollTop = el.scrollHeight;
-	}
-*/
 }
 
 
@@ -107,27 +172,29 @@ function showMessage(result) {
 
 
 
+
+/*
 
 function startWebWorker() {
 	var w;
 	if (typeof (Worker) !== "undefined") {
 		if (typeof (w) == "undefined") {
 			w = new Worker("/resources/js/test.js");
+			
 		}
 
 		w.postMessage("test");
-		alert(a);
-		console.log(a);
+//		alert(a);
+//		console.log(a);
 		w.onmessage = function(event) {
-			alert(event.data);
+			alert("test : " + event.data);
 		};
 	} else {
 		document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
 	}
 }
 
-
-
+*/
 
 
 
@@ -148,7 +215,7 @@ function startWebWorker() {
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost/chat";
+var wsUrl = "ws://localhost:8082/chat";
 var ws;
 
 function init() {
@@ -205,8 +272,20 @@ function close_message() {
 	init();	
 }*/
 
+
+/* Web Socket Connection */
 init();
+
+/*
+페이지간 이동시 메시지창이 열린상태에서 이동하면 token == "ture" == start 이다    (=> show_messageform을 통해 메시지창을 계속 열어준다.)
+페이지간 이동시 메시지창이 닫힌상태에서 이동했으면 token == "false" == fail      (=> 메시지창이 열리지 않는다.)*/
 if(token == start) {
-	show_messageform(token, chat_num);
-	//ws.send("init");
+	getChatRoom(chat_num)
 }
+
+
+
+//startWebWorker();
+
+
+

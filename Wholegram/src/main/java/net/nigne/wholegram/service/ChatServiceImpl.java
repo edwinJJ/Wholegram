@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.MessageVO;
+import net.nigne.wholegram.domain.Msg_listVO;
 import net.nigne.wholegram.persistance.ChatDAO;
 
 @Service
@@ -42,13 +43,14 @@ public class ChatServiceImpl implements ChatService {
 		dao.msgStorage(data);
 	}
 
-	/* 메시지 내용 가져옴 */
+	/* 메시지 내용, 작성자 가져옴 */
 	@Override
-	public List<MessageVO> msgGet(int chat_num) {
+	public List<Msg_listVO> msgGet(int chat_num) {
 		return dao.msgGet(chat_num);
 	}
 
 	/*유저가 포함되어있는 각 채팅방에 참여하고 있는 유저 리스트를 가져옴*/
+	@Transactional
 	@Override
 	public List<Chat_userVO> getRoomUsers(String user_id) {
 		/*유저가 포함되어있는 채팅방 목록 가져옴*/
@@ -57,4 +59,5 @@ public class ChatServiceImpl implements ChatService {
 		/*각 채팅방에 참여하고있는 유저 리스트를 가져옴*/
 		return dao.getRoomUser(roomlist);
 	}
+
 }

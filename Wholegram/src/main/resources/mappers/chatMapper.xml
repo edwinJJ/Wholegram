@@ -25,4 +25,7 @@
  	<select id="getRoomUser" resultType="net.nigne.wholegram.domain.Chat_userVO">
  		select * from chat_user where chat_chat_num = #{room_number}
  	</select>
+ 	<select id="getRoomData" resultType="net.nigne.wholegram.domain.Msg_listVO">
+ 		select msg, written_user_id from msg_list where chat_chat_num = #{roomNumber}
+ 	</select>
  </mapper>

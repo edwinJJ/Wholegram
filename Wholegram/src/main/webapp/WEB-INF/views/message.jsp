@@ -38,8 +38,8 @@
 			width: 65px;
 			height: 65px;
 		}
-		#chat_aname {
-			text-decoration:none;
+		.chat_aname {
+			text-decoration:none!important;
 		}
 		.modal-content {
 			
@@ -156,6 +156,7 @@
 	<script>
 		var sessionId = "${sessionId}";				// 접속자 ID
 
+		/* 채팅 상대 고를 때, 선택 된 유저 아이디를 문자열 형태로 화면에 보여준다 */
 		function addReceive(th) {
  			var id_value = th.value;
 			if(th.checked) {
@@ -166,9 +167,10 @@
 			}
 		}
 		
+		/* 채팅 상대 고를 때 현재 팔로우 하고있는 유저 리스트를 가져온다 */
 		function followingList() {
 			var ig_url = "/message/getFollowing_Userid";
-			$.ajax({
+ 			$.ajax({
 				type : 'POST',
 				url : ig_url,
 				headers : {
@@ -183,9 +185,10 @@
 				error : function(result){
 					alert("e : " + result);
 				}
-			});
+			}); 
 		}
 		
+		/* 팔로우 하고있는 유저 리스트를 화면에 뿌려준다 */
 		function showFollowingList(result) {
 			var html = "";
 			var identify_count = 0;
@@ -212,6 +215,8 @@
 			});
 			document.getElementById("followingList").innerHTML = html;
 		}
+		
+
 	</script>
 </head>
 <body>
@@ -227,15 +232,18 @@
 						<a id="user_search" class="w3-btn-floating w3-ripple w3-teal2" data-toggle="modal" data-target="#myModal" onclick="followingList()" style="text-decoration:none">+</a>
 					</div>
 				</div>
-				<c:forEach items="${roominfo}" var="ri">
-					<div class="well">
-						<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
-						<a href="#" id="chat_aname"><span class="chat_name">채팅방 : ${ri.chat_chat_num } </span></a>
-						<span>${ri.member_user_id}</span>
-						<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
-					</div>
-				</c:forEach>
 				
+				<!-- 채팅방 목록 -->
+				<div id="roomList">
+					<c:forEach items="${roominfo}" var="ri">
+						<div class="well">
+							<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
+							<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span class="chat_name">채팅방 : ${ri.chat_chat_num } </span></a>
+							<span>${ri.member_user_id}</span>
+							<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
+						</div>
+					</c:forEach>
+				</div>
 				
 <!-- 				<div class="well">
 					<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
