@@ -60,4 +60,16 @@ public class ChatServiceImpl implements ChatService {
 		return dao.getRoomUser(roomlist);
 	}
 
+	/*채팅방 삭제*/
+	@Override
+	public void delRoom(int chat_chat_num) {
+		dao.delRoom(chat_chat_num);
+	}
+
+	/*채팅방에 해당되는 유저들 목록을 가져옴*/
+	@Override
+	public List<Chat_userVO> userList(int chat_num) {
+		return dao.userList(chat_num);
+	}
+
 }

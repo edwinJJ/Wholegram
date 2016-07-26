@@ -95,7 +95,7 @@ public class MessageController {
 		return entity;
 	}
 	
-	/* 채팅방 목록 가져오기 */
+	/* 채팅방 목록 가져오기(새로운 채팅방 생성 후 다시 채팅방 목록을 가져올 때)  */
 	@RequestMapping(value = "/roomList", method = RequestMethod.POST)
 	public ResponseEntity<List<Chat_userVO>> getRoomList(HttpServletRequest request) {
 
@@ -116,18 +116,29 @@ public class MessageController {
 	public ResponseEntity<List<Msg_listVO>> getRoomData(@PathVariable("chat_chat_num") int chat_chat_num, HttpServletRequest request) {
 
 		List<Msg_listVO> ml = chatservice.msgGet(chat_chat_num);
-/*		Iterator<Msg_listVO> it = ml.iterator();
-		while(it.hasNext()) {
-			Msg_listVO vo = new Msg_listVO();
-			vo = it.next();
-			System.out.println(vo.getMsg());
-			System.out.println(vo.getWritten_user_id());
-		}
-*/		
-		
 		ResponseEntity<List<Msg_listVO>> entity = null;
 		try{
 			entity = new ResponseEntity<>(chatservice.msgGet(chat_chat_num), HttpStatus.OK);
+		} catch(Exception e) {
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	/*채팅방 삭제*/
+	@RequestMapping(value = "/delRoom/{chat_chat_num}", method = RequestMethod.POST)
+	public ResponseEntity<List<Chat_userVO>> delRoom(@PathVariable("chat_chat_num") int chat_chat_num, HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		
+		// 채팅방 삭제
+		chatservice.delRoom(chat_chat_num);
+		
+		// 새로 채팅방 다시 가져옴
+		ResponseEntity<List<Chat_userVO>> entity = null;
+		try{						  
+			entity = new ResponseEntity<>(chatservice.getRoomUsers(user_id), HttpStatus.OK);
 		} catch(Exception e) {
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

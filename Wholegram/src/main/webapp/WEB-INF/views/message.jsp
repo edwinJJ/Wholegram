@@ -162,12 +162,16 @@
 
 		/* 채팅 상대 고를 때, 선택 된 유저 아이디를 문자열 형태로 화면에 보여준다 */
 		function addReceive(th) {
- 			var id_value = th.value;
-			if(th.checked) {
-				receive_user.value += id_value + ",";
-			} else {
- 				var text = receive_user.value.replace(id_value +"," ,"");
-				receive_user.value = text;
+			if(th != undefined) {				// 메시지 보낼 유저를 선택했을 시
+	 			var id_value = th.value;
+				if(th.checked) {
+					receive_user.value += id_value + ",";
+				} else {
+	 				var text = receive_user.value.replace(id_value +"," ,"");
+					receive_user.value = text;
+				}
+			} else {							// 창을 닫았을 시
+				receive_user.value = "";
 			}
 		}
 		
@@ -220,12 +224,31 @@
 			document.getElementById("followingList").innerHTML = html;
 		}
 		
-
+		/* 채팅방 삭제 */
+		function delRoom(roomNumber) {
+			var rDel_url = "/message/delRoom/" + roomNumber;
+			$.ajax({
+				type : 'POST',
+				url : rDel_url,
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "POST"
+				},
+				dataType:'JSON',
+				data : '',
+				success : function(result) {
+					showRoomList(result);
+				}, 
+				error : function(result) {
+					alert("error : " + result);
+				}
+			});
+		}
 	</script>
 </head>
 <body>
 <%@include file="./header.html" %>
-<div style="background: #F8F8F8;">
+<div style="background: #F8F8F8; height: 90.5%">
 	<div class="container-fluid">
 		<div class="row content">
 			<div class="col-sm-9">
@@ -236,55 +259,30 @@
 						<a id="user_search" class="w3-btn-floating w3-ripple w3-teal2" data-toggle="modal" data-target="#myModal" onclick="followingList()" style="text-decoration:none">+</a>
 					</div>
 				</div>
-				
 				<!-- 채팅방 목록 -->
 				<div id="roomList">
 					<c:forEach items="${roominfo}" var="ri">
 						<div class="well">
+							<button type="button" class="close" onclick="delRoom(${ri.chat_chat_num})">&times;</button>
 							<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
 							<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span class="chat_name">채팅방 : ${ri.chat_chat_num } </span></a>
 							<span>${ri.member_user_id}</span>
-							<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
+							<!-- <span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span> -->
 						</div>
 					</c:forEach>
 				</div>
-				
-<!-- 				<div class="well">
-					<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
-					<a href="#" id="chat_aname"><span class="chat_name">채팅방 1번</span></a>
-					<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
-				</div>
-				<div class="well">
-					<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
-					<a href="#" id="chat_aname"><span class="chat_name">채팅방 2번</span></a>
-					<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
-				</div>
-				<div class="well">
-					<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
-					<a href="#" id="chat_aname"><span class="chat_name">채팅방 3번</span></a>
-					<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
-				</div>
-				<div class="well">
-					<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
-					<a href="#" id="chat_aname"><span class="chat_name">채팅방 4번</span></a>
-					<span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span>
-				</div>
-				<div class="well">
-					<h4>Dashboard</h4>
-					<p>Some text......</p>
-				</div>
- -->
 				<!-- 메시지보낼 친구 찾는 Modal -->
 				<div class="modal fade" id="myModal" role="dialog">
 					<div class="modal-dialog modal-lg">
 						<div class="modal-content">
 							<div class="modal-header2">
-								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<button type="button" class="close" data-dismiss="modal" onclick="addReceive()">&times;</button>
 								<h4 class="modal-title">Message 보내기</h4>
 							</div>
 							<div>
 								<input id="receive_user" class="w3-input3" type="text" placeholder="받는 사람"> 
 							</div>
+							<!-- 사용자가 팔로우하고있는 유저 목록 -->
 							<div id="followingList"></div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default" data-dismiss="modal" onclick="check_messageform()">메시지 보내기</button>

@@ -15,4 +15,6 @@ public interface ChatDAO {
 	public List<Msg_listVO> msgGet(int chat_num);
 	public List<Integer> getRoomNumber(String user_id);
 	public List<Chat_userVO> getRoomUser(List<Integer> roomlist);
+	public void delRoom(int chat_chat_num);
+	public List<Chat_userVO> userList(int chat_num);
 }

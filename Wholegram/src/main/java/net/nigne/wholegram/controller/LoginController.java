@@ -14,20 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import net.nigne.wholegram.common.Application;
+import net.nigne.wholegram.common.Status;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.LoginService;
 import net.nigne.wholegram.service.MemberService;
-import net.nigne.wholegram.common.Status;
 
 
 @Controller
 @RequestMapping("/*")
 public class LoginController {
 	
-	private static final int SUCCESS = 1;
-	private static final int FAIL = 0;
-
 	@Inject
 	private MemberService service;
 	
@@ -36,6 +34,9 @@ public class LoginController {
 	
 	@Inject
 	private LoginService loginService;
+	
+	@Inject
+	private Application application;
 	
 	/* Header의 user아이콘을 통해 user페이지로 넘어올 시 */  
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -60,6 +61,9 @@ public class LoginController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ModelAndView loginCheck(MemberVO vo_chk, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+		/*WebSocket활용을 위한 접속 Id저장*/
+		application.setUser_id(vo_chk.getUser_id());
+		
 		/* pw 암호화 및 로그인 가능상태 설정 */
 		vo_chk.setPasswd(encrypt.shaEncrypt(vo_chk.getPasswd()));
 		Status loginStatus = loginService.LoginStatus(service.compare(vo_chk));

@@ -99,4 +99,17 @@ public class ChatDAOImpl implements ChatDAO {
 		}
 		return each_rooms_info;
 	}
+
+	@Transactional
+	@Override
+	public void delRoom(int chat_chat_num) {
+		session.delete(namespace + ".delMsg_list", chat_chat_num);
+		session.delete(namespace + ".delChat_user", chat_chat_num);
+		session.delete(namespace + ".delChat", chat_chat_num);
+	}
+
+	@Override
+	public List<Chat_userVO> userList(int chat_num) {
+		return session.selectList(namespace + ".userList", chat_num);
+	}
 }

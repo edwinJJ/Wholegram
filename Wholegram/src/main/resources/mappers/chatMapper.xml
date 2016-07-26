@@ -28,4 +28,16 @@
  	<select id="getRoomData" resultType="net.nigne.wholegram.domain.Msg_listVO">
  		select msg, written_user_id from msg_list where chat_chat_num = #{roomNumber}
  	</select>
+ 	<delete id="delMsg_list">
+ 		delete from msg_list where chat_chat_num = #{chat_chat_num}
+ 	</delete>
+ 	<delete id="delChat_user">
+ 		delete from chat_user where chat_chat_num = #{chat_chat_num}
+ 	</delete>
+ 	<delete id="delChat">
+ 		delete from chat where chat_num = #{chat_chat_num}
+ 	</delete>
+ 	<select id="userList">
+ 		select member_user_id from chat_user where chat_chat_num = #{chat_chat_num}
+ 	</select>
  </mapper>

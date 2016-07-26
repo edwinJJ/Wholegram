@@ -33,9 +33,6 @@ function set_chatroom(token) {
 			chat_num = localStorage.getItem("chat_num");	// 채팅방 번호 localStroage에 저장
 			show_messageform(token, chat_num);				// 메시지 창 보여주기
 			add_chatroom();									// 채팅방 목록 가져오기
-			
-			
-			//startWebWorker();
 		},
 		error : function(result){
 			alert("e : " + result);
@@ -56,8 +53,8 @@ function add_chatroom() {
 		},
 		dataType:'JSON',
 		data: '',
-		success : function(roomList) {
-			showRoomList(roomList);
+		success : function(result) {
+			showRoomList(result);
 		},
 		error : function(BadRequest){
 			alert("error : " + BadRequest);
@@ -71,10 +68,11 @@ function showRoomList(roomList) {
 	$(roomList).each(function() {
 		html +=
 			"<div class='well'>"
+			+	"<button type='button' class='close' onclick='delRoom(" + this.chat_chat_num + ")'>&times;</button>"
 			+	"<span><img class='chat_img' src='/resources/Image/Penguins.jpg'></span>"
 			+	"<a href='#' class='chat_aname' onclick='getChatRoom(this.chat_chat_num)'><span class='chat_name'>채팅방 : " + this.chat_chat_num + " </span></a>"
-			+	"<span>" + this.member_user_id + "</span>"
-			+	"<span><img class='chat_content' src='/resources/Image/Penguins.jpg'></span>" +
+			+	"<span>" + this.member_user_id + "</span>" +
+			/*+	"<span><img class='chat_content' src='/resources/Image/Penguins.jpg'></span>" +*/
 			"</div>"
 	});
 	document.getElementById("roomList").innerHTML = html;
@@ -89,10 +87,9 @@ function show_messageform(token, chat_num) {
 				"<div id='message_container' class='panel2 panel-info msg_position' style='overflow:auto;'>"
 				+	"<span onclick='close_message()' class='w3-closebtn'>&times;</span>" 
 				+	"<div  class='panel-heading'>Message 보내기</div>"
-				+	"<div id='msg_content'>"
-				+	"</div>"
-				+	"<input id='send_msg' class='form-control2 msg_content' type='text' onkeypress='if(event.keyCode==13) {send_message(" + chat_num + "); return false;}'>" +
-				"</div>";		
+				+	"<div id='msg_content'></div>" +
+				"</div>"
+				+	"<input id='send_msg' class='form-control2 msg_content' type='text' onkeypress='if(event.keyCode==13) {send_message(" + chat_num + "); return false;}'>";
 				document.getElementById("chat_box").innerHTML = html;
 		} else {
 			document.getElementById("result").innerHTML = "Sorry, your browser does not support web storage...";
@@ -168,7 +165,7 @@ function showMessage(result) {
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost/chat";
+var wsUrl = "ws://localhost:8082/chat";
 var ws;
 
 function init() {
