@@ -92,8 +92,6 @@ public class WSHandler extends TextWebSocketHandler {
 	@Transactional
 	private void sendMessage(WebSocketSession session, String msg) {
 		
-		
-		
 		Interpretation interpre = new Interpretation();
 		interpre.interpre_Msg(msg);										// msg 해석
 		HashMap<String, Object> data = interpre.getinfo_Msg();			// (채팅방 번호 / 작성자ID / 메시지내용)
@@ -103,19 +101,21 @@ public class WSHandler extends TextWebSocketHandler {
 		chatservice.msgStorage(data);									// 본인이 해당된 채팅방에 메시지 저장
 		msglist = chatservice.msgGet(chat_num);							// 본인이 해당된 채팅방으로부터 메시지 꺼내옴
 		
-		List<Chat_userVO> userList = chatservice.userList(chat_num);	// 채팅방에 해당되는 유저 List를 가져옴
-		
+//		List<Chat_userVO> userList = chatservice.userList(chat_num);	// 채팅방에 해당되는 유저 List를 가져옴
 		MessageJSON mj = new MessageJSON();
 		String result = mj.GSON(msglist);								// json으로 변환
 
-		
+		/*<접속자ID, Session> 의 Map형태를 List로 담아둔 변수를 가지고있는 application class의 'userInfo' 변수와
+		접속자 전체를 담고있는 wsSession의 객체를 비교하여, 일치하면 메시지 뿌려줌 (즉 현재는, 채팅방과 상관없이 접속자면 무조건 뿌려줌)*/
 		List<Map<String, Object>> userInfo = application.getUserInfo();
 		Iterator<Map<String, Object>> extract = userInfo.iterator();
 		while(extract.hasNext()) {
 			Map<String, Object> mapData = new HashMap<String, Object>();
+			mapData = extract.next();
 			for(WebSocketSession s : wsSession) {
 				if(s.isOpen() && mapData.containsValue(s)) {
 					try {
+						System.out.println(result);
 						s.sendMessage(new TextMessage(result));	// 자신빼고 접속한 모두에게
 					} catch(IOException e) {
 						e.printStackTrace();

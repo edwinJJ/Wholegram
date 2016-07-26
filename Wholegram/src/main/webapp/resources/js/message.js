@@ -165,7 +165,7 @@ function showMessage(result) {
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost:8082/chat";
+var wsUrl = "ws://localhost/chat";
 var ws;
 
 function init() {
