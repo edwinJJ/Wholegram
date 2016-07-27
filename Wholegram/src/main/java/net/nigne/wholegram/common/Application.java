@@ -9,9 +9,9 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.socket.WebSocketSession;
 
+/*웹소켓 접속자들(로그인 되어있는 유저들) Id와 WebSocket session을 관리하고있는 곳ㅁ*/
 @Repository
 public class Application {
-//	private static List<String> user_list = new ArrayList<>();
 	
 	// 접속자 ID 임시 저장 변수
 	private String user_id = "";
@@ -38,6 +38,7 @@ public class Application {
 		this.userInfo.add(userInfo);
 	}
 	
+	// 웹소켓 접속이 끊겼을때, 관리 목록에서 제거해준다
 	public void delUserInfo(WebSocketSession session) {
 		int count = 0;
 		int result_count = 0;

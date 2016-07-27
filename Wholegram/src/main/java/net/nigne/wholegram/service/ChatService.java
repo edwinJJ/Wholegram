@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.nigne.wholegram.domain.Chat_userVO;
-import net.nigne.wholegram.domain.MessageVO;
 import net.nigne.wholegram.domain.Msg_listVO;
 
 public interface ChatService {

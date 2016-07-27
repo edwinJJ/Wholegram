@@ -16,8 +16,8 @@
  	<insert id="msgStorage">
  		insert into msg_list (chat_chat_num, msg, written_user_id) values(#{chat_num}, #{msg_content}, #{written_user_id})
  	</insert>
- 	<select id="msgGet" resultType="net.nigne.wholegram.domain.MessageVO">
- 		select msg, written_user_id from msg_list where chat_chat_num = #{chat_num}
+ 	<select id="msgGet" resultType="net.nigne.wholegram.domain.Msg_listVO">
+ 		select * from msg_list where chat_chat_num = #{chat_num}
  	</select>
  	<select id="getRoomNumber" resultType="int">
  		select chat_chat_num from chat_user where member_user_id = #{user_id}
@@ -37,7 +37,7 @@
  	<delete id="delChat">
  		delete from chat where chat_num = #{chat_chat_num}
  	</delete>
- 	<select id="userList">
+ 	<select id="userList" resultType="net.nigne.wholegram.domain.Chat_userVO">
  		select member_user_id from chat_user where chat_chat_num = #{chat_chat_num}
  	</select>
  </mapper>

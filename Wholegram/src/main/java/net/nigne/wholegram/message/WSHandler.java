@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 
 import net.nigne.wholegram.common.Application;
 import net.nigne.wholegram.common.Interpretation;
+import net.nigne.wholegram.common.Status;
 import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.Msg_listVO;
 import net.nigne.wholegram.service.ChatService;
@@ -44,8 +45,6 @@ public class WSHandler extends TextWebSocketHandler {
 	private ChatService chatservice;
 
 	public WSHandler() {
-//		List<String> user_list = Application.getUserList();
-		
 		logger.info("웹소켓 생성자입니다");
 	}
 	
@@ -54,13 +53,6 @@ public class WSHandler extends TextWebSocketHandler {
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		System.out.println("연결");
 		//afterPropertiesSet(session);
-		
-		// 접속자ID와, WebSocket session 저장
-		Map<String, Object> data = new HashMap<>();
-		data.put(application.getUser_id(), session);
-
-		// 'data'를 List에 담아둔다
-		application.setUserInfo(data);
 		
 		//사용자 정보를 담는다.
 		wsSession.add(session);
@@ -83,65 +75,96 @@ public class WSHandler extends TextWebSocketHandler {
 	/*메시지 전송됫을 때*/
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-
-		super.handleMessage(session, message);
-		sendMessage(session, message.getPayload().toString());
-		//logger.info("recevied message : " + message);
+		
+		/* 웹소켓 접속을 알리는 메시지인지, 유저들간의 메시지 통신을 위한 메시지인지 구별과정 */
+		String msgtoString = message.getPayload().toString();	// 메시지만을 담은 String으로 변환 
+		String Interpre = msgtoString.substring(0, 5);			// 0~5 index 단어 추출
+		
+		Status status = new Status();							// WebSocket접속을 위한 메시지 전송인지 구별함
+		status.setStatus(Interpre.equals("Login"));				// 0~5 index가 "login"이라는 단어일 경우, 단순한 웹소켓 접속만을 알리는 if문 안으로
+		
+		if(status.isSuccess()) {								// WebSocket 접속알림 메시지일 경우
+			application.setUser_id(msgtoString.substring(8));	// ID 추출 & application에 저장
+			
+			Map<String, Object> data = new HashMap<>();			// (접속자ID, WebSocket session) 저장
+			data.put(application.getUser_id(), session);
+			
+			application.setUserInfo(data);						// 'data'를 application에 List형식으로 담아둔다
+			
+		} else { 												// 접속 후, 유저들간이 메시지 전송용도일 경우
+			super.handleMessage(session, message);
+			sendMessage(session, message.getPayload().toString());
+		}
 	}
 
 	@Transactional
 	private void sendMessage(WebSocketSession session, String msg) {
 		
-		Interpretation interpre = new Interpretation();
-		interpre.interpre_Msg(msg);										// msg 해석
-		HashMap<String, Object> data = interpre.getinfo_Msg();			// (채팅방 번호 / 작성자ID / 메시지내용)
-		int chat_num = interpre.getmsg_Chatnum();						// (채팅방 번호)
+		Interpretation interpre = new Interpretation();					// msg 해석
+		interpre.interpre_Msg(msg);								
 		
-		List<Msg_listVO> msglist = new ArrayList<Msg_listVO>();
-		chatservice.msgStorage(data);									// 본인이 해당된 채팅방에 메시지 저장
-		msglist = chatservice.msgGet(chat_num);							// 본인이 해당된 채팅방으로부터 메시지 꺼내옴
+		HashMap<String, Object> data = interpre.getinfo_Msg();			// 본인이 해당된 채팅방에 메시지 저장
+		chatservice.msgStorage(data);									
 		
-//		List<Chat_userVO> userList = chatservice.userList(chat_num);	// 채팅방에 해당되는 유저 List를 가져옴
-		MessageJSON mj = new MessageJSON();
-		String result = mj.GSON(msglist);								// json으로 변환
+		int chat_num = interpre.getmsg_Chatnum();						// 채팅방 번호 가져옴
+		
+		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();		// 채팅방에 해당되는 유저 List를 가져옴
+		userList = chatservice.userList(chat_num);						
 
-		/*<접속자ID, Session> 의 Map형태를 List로 담아둔 변수를 가지고있는 application class의 'userInfo' 변수와
-		접속자 전체를 담고있는 wsSession의 객체를 비교하여, 일치하면 메시지 뿌려줌 (즉 현재는, 채팅방과 상관없이 접속자면 무조건 뿌려줌)*/
-		List<Map<String, Object>> userInfo = application.getUserInfo();
+		List<Msg_listVO> msglist = new ArrayList<Msg_listVO>();			// 본인이 해당된 채팅방으로부터 메시지 꺼내옴	
+		msglist = chatservice.msgGet(chat_num);
+		
+		MessageJSON mj = new MessageJSON();								// DB에서 꺼내온 메시지들을 json으로 변환
+		String result = mj.GSON(msglist);								
+		
+		
+		
+		List<Map<String, Object>> tidyUserInfo = new ArrayList<Map<String, Object>>();		// 메시지 받을 유저를 담을 변수
+		
+/*		application에 담겨있는 현재 접속되어있는 (유저ID, WebSocket session) -> userInfo 를 가져와서
+		메시지를 보낼 유저 ID만을 담고있는 userList와 비교하여, 일치하는 값을 새로운 List로 -> tidyUserInfo로 만들어 메시지 보낼때 이를 사용한다 */
+		List<Map<String, Object>> userInfo = application.getUserInfo();						
 		Iterator<Map<String, Object>> extract = userInfo.iterator();
-		while(extract.hasNext()) {
+		while(extract.hasNext()) {															// 1 : WebSocket 접속자들 정보 추출 (id, WebSocket session)
 			Map<String, Object> mapData = new HashMap<String, Object>();
 			mapData = extract.next();
+			
+			Iterator<Chat_userVO> extract2 = userList.iterator();
+			while(extract2.hasNext()) {														// 2 : 메시지 받을 유저들 정보 (id)
+				Chat_userVO voData= new Chat_userVO();
+				voData = extract2.next();
+
+				if(mapData.containsKey(voData.getMember_user_id())) {						// 1 과 2를 비교하여 일치할 경우 (현재 접속자들 중에 메시지 받을 유저가 있을경우)
+					String key = voData.getMember_user_id();
+					WebSocketSession tidySession = (WebSocketSession) mapData.get(key);
+					
+					Map<String, Object> tidyMapData = new HashMap<>();						// 3 : 메시지 받을 유저정보 생성 (id, WebSocket session)
+					tidyMapData.put(key, tidySession);
+					tidyUserInfo.add(tidyMapData);											
+				}
+				
+			}
+		}
+		
+		
+/*		ExtractMessageAndUser EMAU = new ExtractMessageAndUser();		// 메시지 해석 & 추출
+		String result = EMAU.InterPre(session, msg);
+		
+		List<Map<String, Object>> tidyUserInfo	= EMAU.ExtractUser();	// 접속자중에서 메시지 받을 사용자 추출
+*/
+		
+		/* 채팅방에 해당되는 유저들에게 메시지 보내기 */
+		Iterator<Map<String, Object>> extract3 = tidyUserInfo.iterator();		
+		while(extract3.hasNext()) {								
+			Map<String, Object> Data = new HashMap<String, Object>();
+			Data = extract3.next();
 			for(WebSocketSession s : wsSession) {
-				if(s.isOpen() && mapData.containsValue(s)) {
+				if(s.isOpen() && Data.containsValue(s)) {
 					try {
-						System.out.println(result);
-						s.sendMessage(new TextMessage(result));	// 자신빼고 접속한 모두에게
+						s.sendMessage(new TextMessage(result));
 					} catch(IOException e) {
 						e.printStackTrace();
 					}
-				}
-			}
-		}
-		
-		
-		
-	/*	for(WebSocketSession s : wsSession) {
-			if(s.isOpen() && !s.getId().equals(session.getId())) {
-				try {
-					s.sendMessage(new TextMessage("From Server" + msg));	// 자신빼고 접속한 모두에게
-				} catch(IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}*/
-		for(WebSocketSession s : wsSession) {
-			if(s.isOpen()) {
-				try {
-					session.sendMessage(new TextMessage(result));			// 자신에게만
-				} catch(IOException e) {
-					e.printStackTrace();
 				}
 			}
 		}
@@ -162,15 +185,8 @@ public class WSHandler extends TextWebSocketHandler {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
 	/*클라이언트에게 스레드로 계속 신호보내기*/
-	private void Test(String string, WebSocketSession session) {
+/*	private void Test(String string, WebSocketSession session) {
 		for(WebSocketSession s : wsSession) {
 			if(s.isOpen()) {
 				try {
@@ -198,20 +214,16 @@ public class WSHandler extends TextWebSocketHandler {
                   }
            };
            thread.start();
-     }
+     }*/
 
 	
 	 
-	 
-	 
-	
-	
+	/* JSON형태로 변환 */
 	class MessageJSON {
-		public String GSON(List<Msg_listVO> msglist) {
+		public String GSON(List<Msg_listVO> msglist) {	
 			Gson gson = new Gson();
 			String result = gson.toJson(msglist);	
 			return result;
 		}
 	}
-	
 }

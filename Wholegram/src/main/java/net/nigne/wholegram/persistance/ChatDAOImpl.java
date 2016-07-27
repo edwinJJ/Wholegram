@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.nigne.wholegram.domain.Chat_userVO;
-import net.nigne.wholegram.domain.MessageVO;
 import net.nigne.wholegram.domain.Msg_listVO;
 
 @Repository

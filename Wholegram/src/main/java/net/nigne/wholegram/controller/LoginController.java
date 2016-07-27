@@ -59,10 +59,10 @@ public class LoginController {
 
 	/* 최초 로그인을 통해 user페이지로 넘어갈 시 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView loginCheck(MemberVO vo_chk, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public ModelAndView loginCheck(MemberVO vo_chk, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		/*WebSocket활용을 위한 접속 Id저장*/
-		application.setUser_id(vo_chk.getUser_id());
+/*		application.setUser_id(vo_chk.getUser_id());*/
 		
 		/* pw 암호화 및 로그인 가능상태 설정 */
 		vo_chk.setPasswd(encrypt.shaEncrypt(vo_chk.getPasswd()));
@@ -79,6 +79,7 @@ public class LoginController {
 			// 이동할 페이지, 사용자 정보 설정
 			mav.setViewName("user");
 			mav.addObject("vo", vo);
+			model.addAttribute( "sessionId", vo_chk.getUser_id() );
 		} else { 
 			/* 로그인 실패 */
 			response.setCharacterEncoding("utf-8");

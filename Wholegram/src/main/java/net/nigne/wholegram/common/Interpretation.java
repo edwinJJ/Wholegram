@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.transaction.annotation.Transactional;
 
+/* 메시지내용을 분석해주는 곳 */
 public class Interpretation {
 
 	private int chat_num;

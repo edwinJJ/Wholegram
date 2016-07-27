@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.nigne.wholegram.domain.Chat_userVO;
-import net.nigne.wholegram.domain.MessageVO;
 import net.nigne.wholegram.domain.Msg_listVO;
 
 public interface ChatDAO {

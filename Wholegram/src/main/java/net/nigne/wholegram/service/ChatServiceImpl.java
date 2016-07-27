@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.nigne.wholegram.domain.Chat_userVO;
-import net.nigne.wholegram.domain.MessageVO;
 import net.nigne.wholegram.domain.Msg_listVO;
 import net.nigne.wholegram.persistance.ChatDAO;
 
