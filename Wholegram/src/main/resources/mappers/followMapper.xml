@@ -5,6 +5,6 @@
  
 <mapper namespace="net.nigne.wholegram.mappers.followMapper">
 	<select id="getFollowing_Userid" resultType="String">
-		select follower from follow where following = #{user_id}
+		select following from follow where follower = #{user_id}
 	</select>
 </mapper>
