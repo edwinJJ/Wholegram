@@ -85,6 +85,7 @@ function show_messageform(token, chat_num) {
 		if(typeof(localStorage) !== "undefined") {
 			var html = 
 				"<div id='message_container' class='panel2 panel-info msg_position' style='overflow:auto;'>"
+				+	"<input id='chat_num' type='hidden' value='" + chat_num + "'/>"
 				+	"<span onclick='close_message()' class='w3-closebtn'>&times;</span>" 
 				+	"<div  class='panel-heading'>Message 보내기</div>"
 				+	"<div id='msg_content'></div>" +
@@ -142,13 +143,19 @@ function send_message(chat_num) {
 /*화면에 message를 뿌려줌*/
 function showMessage(result) {
 	
-	if(token != fail) {
+	var object = JSON.parse(result);								// JSON으로 파싱
+	
+	var chat_room;
+	$(object).each(function() {
+		chat_room = this.chat_chat_num;								// 메시지가 속해있는 채팅방 번호 추출
+	});
+	var number = document.getElementById("chat_num").value;			// 현재 열려있는 메시지창 번호 확인
+	console.log(number);
+	console.log(chat_room);
+	if((token != fail) && (number == chat_room)) {					// 메시지창이 열려있고 && 메시지를 받을 때, 메시지에 해당되는 방 번호가 열려있을 경우에만 내용을 뿌려준다
 		document.getElementById("msg_content").innerHTML = "";
-		
-		var html = "";
-		var object = JSON.parse(result);							// JSON으로 파싱
+
 		$(object).each(function() {									// 대화목록을 화면에 뿌려줌
-		
 			var msgBox = document.createElement("div");
 			if(sessionId == this.written_user_id) {					// 사용자(본인)이 작성한 글이면 오른쪽으로 출력
 				msgBox.style.float = "right";
@@ -161,7 +168,7 @@ function showMessage(result) {
 			msgBox.style.clear = "both";
 		});
 		
-		var el = document.getElementById('message_container'); 	// 스크롤 항상 최신(아래)으로 유지
+		var el = document.getElementById('message_container'); 		// 스크롤 항상 최신(아래)으로 유지
 		if (el.scrollHeight > 0) {
 			el.scrollTop = el.scrollHeight;
 		}
@@ -170,7 +177,7 @@ function showMessage(result) {
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost:8082/chat";
+var wsUrl = "ws://localhost/chat";
 var ws;
 
 function init() {
@@ -199,8 +206,8 @@ function onOpen(evt) {
 }
 
 //서버로부터 대화목록 받음
-function onMessage(evt) {
-	showMessage(evt.data);	
+function onMessage(evt, ev) {
+	showMessage(evt.data);
 }
 
 function onError(evt) {
