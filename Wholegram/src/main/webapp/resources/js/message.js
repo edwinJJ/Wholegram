@@ -40,7 +40,7 @@ function set_chatroom(token) {
 	});
 }
 
-/* 채팅방 목록 가져오기 */
+/* 채팅방 전체 목록 가져오기 */
 function add_chatroom() {
 
 	var rl_url = "/message/roomList";
@@ -68,9 +68,10 @@ function showRoomList(roomList) {
 	$(roomList).each(function() {
 		html +=
 			"<div class='well'>"
+			+   "<span id='room_popup" + this.chat_chat_num + "' class='w3-badge w3-left w3-small w3-red' style='display:none;'>!</span>"
 			+	"<button type='button' class='close' onclick='delRoom(" + this.chat_chat_num + ")'>&times;</button>"
 			+	"<span><img class='chat_img' src='/resources/Image/Penguins.jpg'></span>"
-			+	"<a href='#' class='chat_aname' onclick='getChatRoom(this.chat_chat_num)'><span class='chat_name'>채팅방 : " + this.chat_chat_num + " </span></a>"
+			+	"<a href='#' class='chat_aname' onclick='getChatRoom(" + this.chat_chat_num + ")'><span class='chat_name'>채팅방 : " + this.chat_chat_num + " </span></a>"
 			+	"<span>" + this.member_user_id + "</span>" +
 			/*+	"<span><img class='chat_content' src='/resources/Image/Penguins.jpg'></span>" +*/
 			"</div>"
@@ -100,7 +101,9 @@ function show_messageform(token, chat_num) {
 
 
 
-/* (현재 채팅방이 닫혀있는 상태에서) 채팅방 목록중에서 선택한 채팅방의 데이터를 가져온다  or  (페이지이동or새로고침) 했을시에 기존에 열려있던 채팅방의 데이터를 가져온다*/
+/* (현재 채팅방이 닫혀있는 상태에서) 채팅방 목록중에서 선택한 채팅방의 데이터를 가져온다  
+  								or  
+ * (페이지이동or새로고침) 했을시에 기존에 열려있던 채팅방의 데이터를 가져온다*/
 function getChatRoom(chat_chat_num) {
 	var roomInfo_url = "/message/getRoomData/" + chat_chat_num;
 		$.ajax({
@@ -115,7 +118,9 @@ function getChatRoom(chat_chat_num) {
 		success : function(result){
 			localStorage.setItem("chat", "true");			// localStorage의 chat을 true로 설정 (메시지창을 보여주기 위함, 규칙)
 			localStorage.setItem("chat_num", chat_chat_num);// localStorage의 chat_num을 유저가 선택한 채팅방 번호로 설정 (새로고침 or 페이지 이동시에 열어두고있던 채팅방의 정보를 가져오기 위함)
-			show_messageform("true", chat_chat_num);		// 메시지창 보여주기
+			chat_num = localStorage.getItem("chat_num");
+			
+			show_messageform("true", chat_num);				// 메시지창 보여주기
 			token = start;
 			showMessage(result);							// 메시지 내용 보여주기
 		},
@@ -142,25 +147,23 @@ function send_message(chat_num) {
 
 /*화면에 message를 뿌려줌*/
 function showMessage(result) {
-	
-	var object = JSON.parse(result);								// JSON으로 파싱
-	
+
+	var object = JSON.parse(result);									// JSON으로 파싱
 	var chat_room;
 	$(object).each(function() {
-		chat_room = this.chat_chat_num;								// 메시지가 속해있는 채팅방 번호 추출
+		chat_room = this.chat_chat_num;									// 메시지가 속해있는 채팅방 번호 추출
 	});
-	var number = document.getElementById("chat_num").value;			// 현재 열려있는 메시지창 번호 확인
-	console.log(number);
-	console.log(chat_room);
-	if((token != fail) && (number == chat_room)) {					// 메시지창이 열려있고 && 메시지를 받을 때, 메시지에 해당되는 방 번호가 열려있을 경우에만 내용을 뿌려준다
-		document.getElementById("msg_content").innerHTML = "";
-
-		$(object).each(function() {									// 대화목록을 화면에 뿌려줌
+	
+	if((token != fail) && (chat_num == chat_room)) {					// 메시지창이 채팅방이 열려있을 경우 && 열려있는 메시지창의 방 번호가 메시지가 속해있는 방번호와 일치 할 경우만 내용을 뿌려준다
+		document.getElementById("msg_content").innerHTML = "";			// 메시지창 내용 비워주기(전체 내용을 다시쓰기위해)
+		document.getElementById("room_popup" + chat_room).style.display = "none";
+	
+		$(object).each(function() {										// 대화목록을 화면에 뿌려줌
 			var msgBox = document.createElement("div");
-			if(sessionId == this.written_user_id) {					// 사용자(본인)이 작성한 글이면 오른쪽으로 출력
+			if(sessionId == this.written_user_id) {						// 사용자(본인)이 작성한 글이면 오른쪽으로 출력
 				msgBox.style.float = "right";
 				var textnode = document.createTextNode(this.msg);
-			} else {												// 다른 사용자가 작성한 글이면 왼쪽으로 출력
+			} else {													// 다른 사용자가 작성한 글이면 왼쪽으로 출력
 				var textnode = document.createTextNode(this.written_user_id + " : " + this.msg);
 			}
 			msgBox.appendChild(textnode);
@@ -168,16 +171,25 @@ function showMessage(result) {
 			msgBox.style.clear = "both";
 		});
 		
-		var el = document.getElementById('message_container'); 		// 스크롤 항상 최신(아래)으로 유지
+		var el = document.getElementById('message_container'); 			// 스크롤 항상 최신(아래)으로 유지
 		if (el.scrollHeight > 0) {
 			el.scrollTop = el.scrollHeight;
 		}
+	} else if((token != fail) && (chat_num != chat_room)) {				// 다른 채팅방으로부터, 메시지왔다고 알려준다.
+		console.log("1 : " + document.getElementById("header_popup").style.display);
+		document.getElementById("header_popup").style.display = "block";
+		document.getElementById("room_popup" + chat_room).style.display = "block";
+	} else {															// 메시지창이 열려있지 않은 경우, 메시지왔다고 알려준다.
+		console.log("2 : " + document.getElementById("header_popup").style.display);
+		document.getElementById("header_popup").style.display = "block";
+		document.getElementById("room_popup" + chat_room).style.display = "block";
+		
 	}
 }
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost/chat";
+var wsUrl = "ws://localhost:8082/chat";
 var ws;
 
 function init() {
@@ -218,7 +230,11 @@ function onError(evt) {
 /* Message창 닫기 */
 function close_message() {
 	localStorage.setItem("chat", "false");							// localStorage chat설정 초기화
+	token = localStorage.getItem("chat");
+	
 	localStorage.setItem("chat_num", null);							// localStorage chat_num설정 초기화
+	chat_num = localStorage.getItem("chat_num");
+	
 	document.getElementById("chat_box").style.display = 'none';		// 메시지 창 닫아주기
 }
 

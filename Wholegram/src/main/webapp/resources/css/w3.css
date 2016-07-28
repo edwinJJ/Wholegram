@@ -74,6 +74,7 @@ ul.w3-ul li:last-child{border-bottom:none}
 .w3-navbar .w3-dropdown-hover:hover,.w3-navbar .w3-dropdown-hover:first-child,.w3-navbar .w3-dropdown-click:hover{background-color:#ccc;color:#000}
 .w3-navbar a,.w3-topnav a,.w3-sidenav a,.w3-dropdown-content a,.w3-accordion-content a,.w3-dropnav a{text-decoration:none!important}
 .w3-navbar .w3-opennav.w3-right{float:right!important}.w3-topnav{padding:8px 8px}
+
 .w3-topnav a{padding:0 8px;border-bottom:3px solid transparent;-webkit-transition:border-bottom .3s;transition:border-bottom .3s}
 .w3-topnav a:hover{border-bottom:3px solid #fff}.w3-topnav .w3-dropdown-hover a{border-bottom:0}
 .w3-opennav,.w3-closenav{color:inherit}.w3-opennav:hover,.w3-closenav:hover{cursor:pointer;opacity:0.8}

@@ -247,7 +247,7 @@
 	</script>
 </head>
 <body>
-<%@include file="./header.html" %>
+<%@include file="./header.jsp" %>
 <div style="background: #F8F8F8; height: 90.5%">
 	<div class="container-fluid">
 		<div class="row content">
@@ -263,6 +263,7 @@
 				<div id="roomList">
 					<c:forEach items="${roominfo}" var="ri">
 						<div class="well">
+							<span id="room_popup${ri.chat_chat_num}" class="w3-badge w3-left w3-small w3-red" style="display:none;">!</span>
 							<button type="button" class="close" onclick="delRoom(${ri.chat_chat_num})">&times;</button>
 							<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
 							<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span class="chat_name">채팅방 : ${ri.chat_chat_num } </span></a>
@@ -296,5 +297,7 @@
 </div>
 <div id="chat_box"></div>
 <script src="/resources/js/message.js"></script>
+<div id="popup"></div>
+<script src="/resources/js/notice_popup.js"></script>
 </body>
 </html>

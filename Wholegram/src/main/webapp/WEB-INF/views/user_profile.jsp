@@ -152,7 +152,7 @@
 	</script>
 <body>
 <!-- 상단의 head 부분 -->
-<%@include file="./header.html" %>
+<%@include file="./header.jsp" %>
 <div style="background: #F8F8F8;">　
 	<div class="scope">
 		<div class="w3-third menu">

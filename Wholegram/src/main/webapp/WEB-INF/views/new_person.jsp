@@ -37,7 +37,7 @@
 </head>
 <body>
 <!-- 상단의 head 부분 -->
-<%@include file="./header.html" %>
+<%@include file="./header.jsp" %>
 <div style="background: #F8F8F8;">　
 		<!-- Navbar -->
 	<ul class="w3-navbar w3-red2 w3-card-2-2 w3-left-align w3-large tab_menu">

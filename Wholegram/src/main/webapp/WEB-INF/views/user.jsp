@@ -212,7 +212,7 @@
 </head>
 <body>
 <!-- 상단의 head 부분 --><!-- test -->
-<%@include file="./header.html" %>
+<%@include file="./header.jsp" %>
 
 <!-- 게시물 사진 나오기 전까지의 프로필정보 / Browser창 size 768전후로 나뉘어짐-->
 <div id="profile_container">

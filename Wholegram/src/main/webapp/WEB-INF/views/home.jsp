@@ -45,7 +45,7 @@
 </head>
 <body>
 	<!-- 상단의 header라인 부분 -->
-	<%@include file="./header.html"%>
+	<%@include file="./header.jsp"%>
 
 	<!-- line -->
 	<div class="line"></div>

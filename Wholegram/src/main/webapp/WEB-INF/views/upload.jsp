@@ -111,7 +111,7 @@
 	
 </style>
 <body>
-<%@ include file="header.html" %>
+<%@ include file="header.jsp" %>
 
 	<div class = "container">
 		<div id="textline"><h2>±Û¾²±â</h2></div>
