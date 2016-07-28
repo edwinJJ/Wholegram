@@ -16,7 +16,7 @@ function check_messageform() {
 
 /* 채팅방 생성 */
 function set_chatroom(token) {
-	var ids = document.getElementById("receive_user").value;
+	var ids = document.getElementById("receive_user").value;// 채팅방에 참여되는 유저들 목록
 	var cr_url = "/message/chatroom/" + ids;
 
 	$.ajax({
@@ -29,10 +29,13 @@ function set_chatroom(token) {
 		dataType:'JSON',
 		data: '',
 		success : function(result) {						//result : 채팅방 번호
-			localStorage.setItem("chat_num", result);
-			chat_num = localStorage.getItem("chat_num");	// 채팅방 번호 localStroage에 저장
+			localStorage.setItem("chat_num", result);		// 채팅방 번호 localStroage에 저장
+			chat_num = localStorage.getItem("chat_num");	
+			
 			show_messageform(token, chat_num);				// 메시지 창 보여주기
-			add_chatroom();									// 채팅방 목록 가져오기
+			getRoomList(null);								// 채팅방 목록 가져오기
+			
+			//ws.send("Notice : " + ids);					// WebSocket서버를 통해 채팅방에 참여되는 유저들의 채팅방리스트를 갱신한다
 		},
 		error : function(result){
 			alert("e : " + result);
@@ -41,8 +44,8 @@ function set_chatroom(token) {
 }
 
 /* 채팅방 전체 목록 가져오기 */
-function add_chatroom() {
-
+function getRoomList(Item) {
+	
 	var rl_url = "/message/roomList";
 	$.ajax({
 		type: 'POST',
@@ -54,7 +57,11 @@ function add_chatroom() {
 		dataType:'JSON',
 		data: '',
 		success : function(result) {
-			showRoomList(result);
+			if(Item == null) {
+				showRoomList(result);				// 채팅방 목록만 뿌려줄 경우
+			} else {
+				checkReadRoomList(result);			// 메시지 읽은방 리스트 확인 용도
+			}
 		},
 		error : function(BadRequest){
 			alert("error : " + BadRequest);
@@ -77,6 +84,20 @@ function showRoomList(roomList) {
 			"</div>"
 	});
 	document.getElementById("roomList").innerHTML = html;
+}
+
+/* 유저가 속한 채팅방 상태 확인(알림 메시지 변환용도) */
+function checkReadRoomList(result) {
+	var count = 0;
+	$(result).each(function() {																// 유저가 속한 채팅방의 메시지를 다 읽었는지 확인해준다
+		var roomNumber = this.chat_chat_num;
+		if(document.getElementById("room_popup" + roomNumber).style.display != "none") {
+			count++;
+		}
+	});
+	if(count == 0) {																		// 다 읽었으면 헤더의 알림표시 제거
+		document.getElementById("header_popup").style.display = "none";
+	}
 }
 
 /* Message창 보여주기 */
@@ -116,18 +137,19 @@ function getChatRoom(chat_chat_num) {
 		dataType:'text',
 		data: '',
 		success : function(result){
-			localStorage.setItem("chat", "true");			// localStorage의 chat을 true로 설정 (메시지창을 보여주기 위함, 규칙)
-			localStorage.setItem("chat_num", chat_chat_num);// localStorage의 chat_num을 유저가 선택한 채팅방 번호로 설정 (새로고침 or 페이지 이동시에 열어두고있던 채팅방의 정보를 가져오기 위함)
+			localStorage.setItem("chat", "true");				// localStorage의 chat을 true로 설정 (메시지창을 보여주기 위함, 규칙)
+			localStorage.setItem("chat_num", chat_chat_num);	// localStorage의 chat_num을 유저가 선택한 채팅방 번호로 설정 (새로고침 or 페이지 이동시에 열어두고있던 채팅방의 정보를 가져오기 위함)
 			chat_num = localStorage.getItem("chat_num");
 			
-			show_messageform("true", chat_num);				// 메시지창 보여주기
+			show_messageform("true", chat_num);					// 메시지창 보여주기
 			token = start;
-			showMessage(result);							// 메시지 내용 보여주기
+			showMessage(result);								// 메시지 내용 보여주기
 		},
 		error : function(result){
 			alert("error : " + result);
 		}
 	}); 
+	getRoomList(sessionId);										// 유저가 속한 채팅방 전체 목록 가져와서 메시지 읽은방 리스트 확인 용도
 }
 
 
@@ -148,22 +170,22 @@ function send_message(chat_num) {
 /*화면에 message를 뿌려줌*/
 function showMessage(result) {
 
-	var object = JSON.parse(result);									// JSON으로 파싱
+	var object = JSON.parse(result);												// JSON으로 파싱
 	var chat_room;
 	$(object).each(function() {
-		chat_room = this.chat_chat_num;									// 메시지가 속해있는 채팅방 번호 추출
+		chat_room = this.chat_chat_num;												// 메시지가 속해있는 채팅방 번호 추출
 	});
 	
-	if((token != fail) && (chat_num == chat_room)) {					// 메시지창이 채팅방이 열려있을 경우 && 열려있는 메시지창의 방 번호가 메시지가 속해있는 방번호와 일치 할 경우만 내용을 뿌려준다
-		document.getElementById("msg_content").innerHTML = "";			// 메시지창 내용 비워주기(전체 내용을 다시쓰기위해)
-		document.getElementById("room_popup" + chat_room).style.display = "none";
+	if((token != fail) && (chat_num == chat_room)) {								// 메시지창이 채팅방이 열려있을 경우 && 열려있는 메시지창의 방 번호가 메시지가 속해있는 방번호와 일치 할 경우만 내용을 뿌려준다
+		document.getElementById("msg_content").innerHTML = "";						// 메시지창 내용 비워주기(전체 내용을 다시쓰기위해)
+		document.getElementById("room_popup" + chat_room).style.display = "none";	//메시지를 읽었으면 알림 표시를 지워준다
 	
-		$(object).each(function() {										// 대화목록을 화면에 뿌려줌
-			var msgBox = document.createElement("div");
-			if(sessionId == this.written_user_id) {						// 사용자(본인)이 작성한 글이면 오른쪽으로 출력
+		$(object).each(function() {													// 대화목록을 화면에 뿌려줌
+			var msgBox = document.createElement("div");		
+			if(sessionId == this.written_user_id) {									// 사용자(본인)이 작성한 글이면 오른쪽으로 출력
 				msgBox.style.float = "right";
 				var textnode = document.createTextNode(this.msg);
-			} else {													// 다른 사용자가 작성한 글이면 왼쪽으로 출력
+			} else {																// 다른 사용자가 작성한 글이면 왼쪽으로 출력
 				var textnode = document.createTextNode(this.written_user_id + " : " + this.msg);
 			}
 			msgBox.appendChild(textnode);
@@ -171,15 +193,15 @@ function showMessage(result) {
 			msgBox.style.clear = "both";
 		});
 		
-		var el = document.getElementById('message_container'); 			// 스크롤 항상 최신(아래)으로 유지
+		var el = document.getElementById('message_container'); 						// 스크롤 항상 최신(아래)으로 유지
 		if (el.scrollHeight > 0) {
 			el.scrollTop = el.scrollHeight;
 		}
-	} else if((token != fail) && (chat_num != chat_room)) {				// 다른 채팅방으로부터, 메시지왔다고 알려준다.
+	} else if((token != fail) && (chat_num != chat_room)) {							// 다른 채팅방으로부터, 메시지왔다고 알려준다.
 		console.log("1 : " + document.getElementById("header_popup").style.display);
 		document.getElementById("header_popup").style.display = "block";
 		document.getElementById("room_popup" + chat_room).style.display = "block";
-	} else {															// 메시지창이 열려있지 않은 경우, 메시지왔다고 알려준다.
+	} else {																		// 메시지창이 열려있지 않은 경우, 메시지왔다고 알려준다.
 		console.log("2 : " + document.getElementById("header_popup").style.display);
 		document.getElementById("header_popup").style.display = "block";
 		document.getElementById("room_popup" + chat_room).style.display = "block";
@@ -189,7 +211,7 @@ function showMessage(result) {
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost:8082/chat";
+var wsUrl = "ws://localhost/chat";
 var ws;
 
 function init() {
