@@ -111,4 +111,26 @@ public class ChatDAOImpl implements ChatDAO {
 	public List<Chat_userVO> userList(int chat_num) {
 		return session.selectList(namespace + ".userList", chat_num);
 	}
+
+	@Transactional
+	@Override
+	public void setRead_user_ids(Msg_listVO mlv) {
+		List<Msg_listVO> mlvReadUser = session.selectList(namespace + ".getRead_user_ids", mlv);	// 메시지 읽은 사람들 List
+		int count = 0;
+		
+		Iterator<Msg_listVO> extract = mlvReadUser.iterator();
+		while(extract.hasNext()) {
+			Msg_listVO mv = new Msg_listVO();
+			mv = extract.next();
+			System.out.println("읽은 user_id : " + mv.getRead_user_ids());
+			System.out.println("현재 접속자 id : " + mlv.getRead_user_ids());
+			if(mv.getRead_user_ids().equals(mlv.getRead_user_ids())){
+				count++;
+			}
+			System.out.println("count : " + count);
+		}
+		if(count == 0) {
+			session.insert(namespace + ".setRead_user_ids", mlv);
+		}
+	}
 }

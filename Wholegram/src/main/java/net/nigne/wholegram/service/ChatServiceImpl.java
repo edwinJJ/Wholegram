@@ -71,4 +71,9 @@ public class ChatServiceImpl implements ChatService {
 		return dao.userList(chat_num);
 	}
 
+	@Override
+	public void setRead_user_ids(Msg_listVO mlv) {
+		dao.setRead_user_ids(mlv);
+	}
+
 }

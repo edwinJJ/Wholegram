@@ -12,6 +12,7 @@ public interface ChatService {
 	public void user_room(int chat_num, String id_list);
 	public void msgStorage(HashMap<String, Object> data);
 	public List<Msg_listVO> msgGet(int chat_num); 
+	public void setRead_user_ids(Msg_listVO mlv);
 	public List<Chat_userVO> getRoomUsers(String user_id);
 	public void delRoom(int chat_chat_num);
 	public List<Chat_userVO> userList(int chat_num);

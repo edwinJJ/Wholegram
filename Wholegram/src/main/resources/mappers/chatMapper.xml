@@ -40,4 +40,10 @@
  	<select id="userList" resultType="net.nigne.wholegram.domain.Chat_userVO">
  		select member_user_id from chat_user where chat_chat_num = #{chat_chat_num}
  	</select>
+ 	<select id="getRead_user_ids" resultType="net.nigne.wholegram.domain.Msg_listVO">
+ 		select read_user_ids from msg_list where chat_chat_num = #{chat_chat_num} and msg = #{msg} and written_user_id = #{written_user_id}
+ 	</select>
+ 	<update id="setRead_user_ids">
+ 		insert into msg_list(chat_chat_num, msg, written_user_id, read_user_ids) values(#{chat_chat_num}, #{msg}, #{written_user_id}, #{read_user_ids})
+ 	</update>
  </mapper>

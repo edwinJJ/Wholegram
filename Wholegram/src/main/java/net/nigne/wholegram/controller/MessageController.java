@@ -125,6 +125,30 @@ public class MessageController {
 		return entity;
 	}
 	
+	@RequestMapping(value = "/readCheck/{chat_chat_num}/{msg}/{written_user_id}", method = RequestMethod.POST)
+	public ResponseEntity<String> readCheck(@PathVariable("chat_chat_num") int chat_chat_num, 
+			@PathVariable("msg") String msg, @PathVariable("written_user_id") String written_user_id, HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		
+		ResponseEntity<String> entity = null;
+		try{
+			Msg_listVO mlv = new Msg_listVO();
+			mlv.setChat_chat_num(chat_chat_num);
+			mlv.setMsg(msg);
+			mlv.setWritten_user_id(written_user_id);
+			mlv.setRead_user_ids(user_id);
+			System.out.println("start");
+			chatservice.setRead_user_ids(mlv);						// 메시지 읽은 유저 갱신
+			System.out.println("end");
+			entity = new ResponseEntity<>("SUCESS", HttpStatus.OK);
+		} catch(Exception e) {
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
 	/*채팅방 삭제*/
 	@RequestMapping(value = "/delRoom/{chat_chat_num}", method = RequestMethod.POST)
 	public ResponseEntity<List<Chat_userVO>> delRoom(@PathVariable("chat_chat_num") int chat_chat_num, HttpServletRequest request) {
