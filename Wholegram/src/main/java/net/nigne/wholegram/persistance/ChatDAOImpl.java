@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.inject.Inject;
@@ -12,14 +13,19 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.nigne.wholegram.common.Status;
 import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.Msg_listVO;
+import net.nigne.wholegram.service.ReadMessageService;
 
 @Repository
 public class ChatDAOImpl implements ChatDAO {
 
 	@Inject
 	SqlSession session;
+	
+	@Inject
+	ReadMessageService readService;
 	
 	private static final String namespace="net.nigne.wholegram.mappers.chatMapper";
 
@@ -46,9 +52,17 @@ public class ChatDAOImpl implements ChatDAO {
 		}
 	}
 
+	@Transactional
 	@Override
 	public void msgStorage(HashMap<String, Object> data) {
-		session.insert(namespace + ".msgStorage", data);
+		session.insert(namespace + ".msgStorage", data);							// msg_list(DB)에 메시지 내용 저장
+		int msg_list_num = session.selectOne(namespace + ".msgCurrentNum", data);	// msg_list의 최신글 글 번호가져옴 (채팅방 번호가 아닌 글번호(table primary key))
+		
+		String read_user_ids = (String) data.get("written_user_id");				// msg_check에 최신글 번호 저장과 본인을 메시지 읽은 유저로 추가
+		Map<String, Object> newData = new HashMap<String, Object>();
+		newData.put("msg_list_num", msg_list_num);
+		newData.put("read_user_ids", read_user_ids);
+		session.insert(namespace + ".setMsgCheckUser", newData);				
 	}
 
 	@Override
@@ -114,23 +128,24 @@ public class ChatDAOImpl implements ChatDAO {
 
 	@Transactional
 	@Override
-	public void setRead_user_ids(Msg_listVO mlv) {
-		List<Msg_listVO> mlvReadUser = session.selectList(namespace + ".getRead_user_ids", mlv);	// 메시지 읽은 사람들 List
-		int count = 0;
+	public void setRead_user_ids(Map<String, Object> data) {
+		int msg_list_num = session.selectOne(namespace + ".msgCurrentNum", data);	// msg_list의 최신글 글 번호가져옴 (채팅방 번호가 아닌 글번호(table primary key))
+		String read_user_ids = (String) data.get("written_user_id");				// msg_check에 최신글 번호 저장과 본인을 메시지 읽은 유저로 추가
+
+		Map<String, Object> data2 = new HashMap<String, Object>();					// 메시지를 읽은 유저로 추가할지 여부 결정 (메시지 읽은 유저 중복방지를 위함)
+		data2.put("msg_list_num", msg_list_num);
+		data2.put("read_user_ids", read_user_ids);
+		int count =  session.selectOne(namespace + ".getMsgCheckUser", data2);				
+		Status ReadMessageStatus = readService.ReadMessageStatus(count);
 		
-		Iterator<Msg_listVO> extract = mlvReadUser.iterator();
-		while(extract.hasNext()) {
-			Msg_listVO mv = new Msg_listVO();
-			mv = extract.next();
-			System.out.println("읽은 user_id : " + mv.getRead_user_ids());
-			System.out.println("현재 접속자 id : " + mlv.getRead_user_ids());
-			if(mv.getRead_user_ids().equals(mlv.getRead_user_ids())){
-				count++;
-			}
-			System.out.println("count : " + count);
+		if(ReadMessageStatus.isSuccess()) {
+			session.insert(namespace + ".setMsgCheckUser", data2);
 		}
-		if(count == 0) {
-			session.insert(namespace + ".setRead_user_ids", mlv);
-		}
+/*		String written_user_id = (String) data.get("written_user_id");				// msg_check에 최신글 번호 저장과 본인을 메시지 읽은 유저로 추가
+		Map<String, Object> newData = new HashMap<String, Object>();
+		newData.put("msg_list_num", msg_list_num);
+		newData.put("written_user_id", written_user_id);
+		session.insert(namespace + ".setMsgCheckUser", newData);*/		
+
 	}
 }

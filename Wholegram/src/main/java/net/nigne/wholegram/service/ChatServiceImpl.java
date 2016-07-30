@@ -2,6 +2,7 @@ package net.nigne.wholegram.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -36,7 +37,7 @@ public class ChatServiceImpl implements ChatService {
 		dao.user_room(chat_num, id_list);
 	}
 
-	/* msg_list에 메시지 내용 저장 */
+	/* msg_list에 메시지 내용 저장 + 메시지 읽은 유저에 본인 추가 */
 	@Override
 	public void msgStorage(HashMap<String, Object> data) {
 		dao.msgStorage(data);
@@ -52,7 +53,7 @@ public class ChatServiceImpl implements ChatService {
 	@Transactional
 	@Override
 	public List<Chat_userVO> getRoomUsers(String user_id) {
-		/*유저가 포함되어있는 채팅방 목록 가져옴*/
+		/*유저가 포함되어있는 채팅방 목록(번호 리스트) 가져옴*/
 		List<Integer> roomlist = dao.getRoomNumber(user_id);
 		
 		/*각 채팅방에 참여하고있는 유저 리스트를 가져옴*/
@@ -71,9 +72,10 @@ public class ChatServiceImpl implements ChatService {
 		return dao.userList(chat_num);
 	}
 
+	/* 메시지 읽은 유저목록에 본인 추가 */
 	@Override
-	public void setRead_user_ids(Msg_listVO mlv) {
-		dao.setRead_user_ids(mlv);
+	public void setRead_user_ids(Map<String, Object> data) {
+		dao.setRead_user_ids(data);
 	}
 
 }

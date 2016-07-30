@@ -16,6 +16,15 @@
  	<insert id="msgStorage">
  		insert into msg_list (chat_chat_num, msg, written_user_id) values(#{chat_num}, #{msg_content}, #{written_user_id})
  	</insert>
+ 	<select id="msgCurrentNum" resultType="int">
+ 		select msg_list_num from msg_list where chat_chat_num = #{chat_num} order by date desc limit 1
+ 	</select>
+ 	<select id="getMsgCheckUser" resultType="int">
+ 		select count(*) from msg_check where msg_list_num = #{msg_list_num} and read_user_ids = #{read_user_ids}
+ 	</select>
+ 	<insert id="setMsgCheckUser">
+ 		insert into msg_check(msg_list_num, read_user_ids) values(#{msg_list_num}, #{read_user_ids})
+ 	</insert>
  	<select id="msgGet" resultType="net.nigne.wholegram.domain.Msg_listVO">
  		select * from msg_list where chat_chat_num = #{chat_num}
  	</select>
@@ -43,7 +52,7 @@
  	<select id="getRead_user_ids" resultType="net.nigne.wholegram.domain.Msg_listVO">
  		select read_user_ids from msg_list where chat_chat_num = #{chat_chat_num} and msg = #{msg} and written_user_id = #{written_user_id}
  	</select>
- 	<update id="setRead_user_ids">
- 		insert into msg_list(chat_chat_num, msg, written_user_id, read_user_ids) values(#{chat_chat_num}, #{msg}, #{written_user_id}, #{read_user_ids})
- 	</update>
+ 	<select id="getMsgListNum" resultType="int">
+ 		select msg_list_num from msg_list where chat_chat_num = #{chat_chat_num} ㅐㄱ
+ 	</select>
  </mapper>

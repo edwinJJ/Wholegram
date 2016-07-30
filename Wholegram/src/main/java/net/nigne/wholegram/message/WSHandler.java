@@ -80,7 +80,7 @@ public class WSHandler extends TextWebSocketHandler {
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 		
-		/* 웹소켓 접속을 알리는 메시지인지, 유저들간의 메시지 통신을 위한 메시지인지 구별과정 */
+		/* 웹소켓 접속을 알리는 메시지인지, 새로운 채팅방생성을 알리는 용도인지, 유저들간의 메시지 통신을 위한 메시지인지 구별과정 */
 		String msgtoString = message.getPayload().toString();				// 메시지만을 담은 String으로 변환 
 		DistinguishHandleMessage DHM = new DistinguishHandleMessage();
 		DHM.interprePreviousMessage(msgtoString);
@@ -165,7 +165,7 @@ public class WSHandler extends TextWebSocketHandler {
 		Interpretation interpre = new Interpretation();					// msg 해석
 		interpre.interpre_Msg(msg);								
 		
-		HashMap<String, Object> data = interpre.getinfo_Msg();			// 본인이 해당된 채팅방에 메시지 저장
+		HashMap<String, Object> data = interpre.getinfo_Msg();			// 본인이 해당된 채팅방에 메시지 저장 + 메시지 읽은 유저에 본인 추가
 		chatservice.msgStorage(data);									
 		
 		int chat_num = interpre.getmsg_Chatnum();						// 채팅방 번호 가져옴

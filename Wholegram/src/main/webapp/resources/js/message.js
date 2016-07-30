@@ -186,10 +186,8 @@ function showMessage(result) {
 		document.getElementById("msg_content").innerHTML = "";							// 메시지창 내용 비워주기(전체 내용을 다시쓰기위해)
 		document.getElementById("room_popup" + chat_room).style.display = "none";		// 메시지를 읽었으면 알림 표시를 지워준다
 		
-		/*메시지 확인 체크하기위한 변수들*/
+		/* 메시지 확인 체크하기위한 변수 */
 		var chat_chat_num;
-		var msg;
-		var written_user_id
 		
 		$(object).each(function() {														// 대화목록을 화면에 뿌려줌
 			var msgBox = document.createElement("div");		
@@ -204,8 +202,6 @@ function showMessage(result) {
 			msgBox.style.clear = "both";
 
 			chat_chat_num = this.chat_chat_num;
-			msg = this.msg;
-			written_user_id = this.written_user_id;
 		});
 		
 		var el = document.getElementById('message_container'); 							// 스크롤 항상 최신(아래)으로 유지
@@ -213,9 +209,7 @@ function showMessage(result) {
 			el.scrollTop = el.scrollHeight;
 		}
 		console.log(chat_chat_num);
-		console.log(msg);
-		console.log(written_user_id);
-		var rc_url= "message/readCheck/" + chat_chat_num + "/" + msg + "/" + written_user_id; 
+		var rc_url= "message/readCheck/" + chat_chat_num; 
 		$.ajax({
 			type : 'POST',
 			url : rc_url,
@@ -255,7 +249,7 @@ function showMessage(result) {
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost:8082/chat";
+var wsUrl = "ws://localhost/chat";
 var ws;
 
 function init() {

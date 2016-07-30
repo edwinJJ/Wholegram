@@ -1,8 +1,9 @@
 package net.nigne.wholegram.controller;
 
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -45,12 +46,19 @@ public class MessageController {
 		String user_id = (String)session.getAttribute("user_id");
 		ModelAndView mav = new ModelAndView();
 		
-		if( user_id != null) {
+		if(user_id != null) {
 			model.addAttribute( "sessionId", user_id );
 			mav.setViewName("message");
 			
-			/*유저가 포함되어있는 각 채팅방에 참여하고 있는 유저 리스트를 가져옴*/
+			/* 유저가 포함되어있는 각 채팅방의 참여하고 있는 모든 유저 리스트를 가져옴 */
 			List<Chat_userVO> roominfo = chatservice.getRoomUsers(user_id);
+			
+			/* 유저가 속한 각 채팅방마다 최신 메시지 내용을 읽었는지 확인 */
+			/*
+			 * 각 채팅방마다 최신 글번호를 가져와서 글번호에 읽은 유저 컬럼에 본인이 있는지 확인후 없으면
+			 * List<방번호> 형태로 가져와서, 위의 ,view단에서 roominfo의 방번호와 List<방번호>의 번호가 일치할경우 메시지 안읽은표시로 해주기!
+			 * */
+		
 			mav.addObject("roominfo", roominfo);
 		} else {
 			mav.setViewName("login");
@@ -125,22 +133,20 @@ public class MessageController {
 		return entity;
 	}
 	
-	@RequestMapping(value = "/readCheck/{chat_chat_num}/{msg}/{written_user_id}", method = RequestMethod.POST)
-	public ResponseEntity<String> readCheck(@PathVariable("chat_chat_num") int chat_chat_num, 
-			@PathVariable("msg") String msg, @PathVariable("written_user_id") String written_user_id, HttpServletRequest request) {
+	@RequestMapping(value = "/readCheck/{chat_chat_num}", method = RequestMethod.POST)
+	public ResponseEntity<String> readCheck(@PathVariable("chat_chat_num") int chat_chat_num, HttpServletRequest request) {
 
 		HttpSession session = request.getSession();
 		String user_id = (String)session.getAttribute("user_id");
 		
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("chat_num", chat_chat_num);
+		data.put("written_user_id", user_id);
+		
 		ResponseEntity<String> entity = null;
 		try{
-			Msg_listVO mlv = new Msg_listVO();
-			mlv.setChat_chat_num(chat_chat_num);
-			mlv.setMsg(msg);
-			mlv.setWritten_user_id(written_user_id);
-			mlv.setRead_user_ids(user_id);
 			System.out.println("start");
-			chatservice.setRead_user_ids(mlv);						// 메시지 읽은 유저 갱신
+			chatservice.setRead_user_ids(data);						// 메시지 읽은 유저 갱신
 			System.out.println("end");
 			entity = new ResponseEntity<>("SUCESS", HttpStatus.OK);
 		} catch(Exception e) {
