@@ -261,9 +261,16 @@
 				</div>
 				<!-- 채팅방 목록 -->
 				<div id="roomList">
-					<c:forEach items="${roominfo}" var="ri">
+					<c:forEach items="${roomInfomation}" var="ri">
 						<div class="well">
-							<span id="room_popup${ri.chat_chat_num}" class="w3-badge w3-left w3-small w3-red" style="display:none;">!</span>
+							<c:choose>
+								<c:when test="${ri.msgNotice }">
+									<span id="room_popup${ri.chat_chat_num}" class="w3-badge w3-left w3-small w3-red" style="display:block">!</span>
+								</c:when>
+								<c:otherwise>
+									<span id="room_popup${ri.chat_chat_num}" class="w3-badge w3-left w3-small w3-red" style="display:none">!</span>
+								</c:otherwise>
+							</c:choose>
 							<button type="button" class="close" onclick="delRoom(${ri.chat_chat_num})">&times;</button>
 							<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
 							<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span class="chat_name">채팅방 : ${ri.chat_chat_num } </span></a>

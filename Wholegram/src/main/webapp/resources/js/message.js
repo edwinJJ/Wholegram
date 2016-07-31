@@ -183,6 +183,7 @@ function showMessage(result) {
 	}
 	
 	if((token != fail) && (chat_num == chat_room)) {									// 메시지창이 채팅방이 열려있을 경우 && 열려있는 메시지창의 방 번호가 메시지가 속해있는 방번호와 일치 할 경우만 내용을 뿌려준다
+		
 		document.getElementById("msg_content").innerHTML = "";							// 메시지창 내용 비워주기(전체 내용을 다시쓰기위해)
 		document.getElementById("room_popup" + chat_room).style.display = "none";		// 메시지를 읽었으면 알림 표시를 지워준다
 		
@@ -209,7 +210,8 @@ function showMessage(result) {
 			el.scrollTop = el.scrollHeight;
 		}
 		console.log(chat_chat_num);
-		var rc_url= "message/readCheck/" + chat_chat_num; 
+		
+		var rc_url= "message/readCheck/" + chat_chat_num; 								// 메시지 읽은 유저 등록하기
 		$.ajax({
 			type : 'POST',
 			url : rc_url,
@@ -219,8 +221,8 @@ function showMessage(result) {
 			},
 			dataType:'text',
 			data: '',
-			success : function(result){								
-				alert(result);
+			success : function(result){		
+				//
 			},
 			error : function(result){
 				alert("error : " + result);
@@ -228,21 +230,21 @@ function showMessage(result) {
 		}); 
 		
 	} else if((token != fail) && (chat_num != chat_room)) {								// 메시지창이 열려있지만 다른 채팅방의 메시지창일 경우 메시지왔다고 알려준다
-		document.getElementById("header_popup").style.display = "block";
+/*		document.getElementById("header_popup").style.display = "block";
 		
 		if(document.getElementById("room_popup" + chat_room) != null) {					// 기존에 이미 만들어져 있던 채팅방으로부터 메시지가 왔을경우
 			document.getElementById("room_popup" + chat_room).style.display = "block";
 		} else {																		// 새롭게 만들어진 채팅방을 알림
 			document.getElementById("room_popup" + chat_num).style.display = "block";
-		}
+		}*/
 	} else {																			// 메시지창이 열려있지 않은 경우, 메시지왔다고 알려준다.
-		document.getElementById("header_popup").style.display = "block";
+/*		document.getElementById("header_popup").style.display = "block";
 			
 		if(document.getElementById("room_popup" + chat_room) != null) {					//	기존에 이미 만들어져 있던 채팅방으로부터 메시지가 왔을경우
 			document.getElementById("room_popup" + chat_room).style.display = "block";
 		} else {																		// 새롭게 만들어진 채팅방을 알림
 			document.getElementById("room_popup" + chat_num).style.display = "block";
-		}
+		}*/
 		
 	}
 }

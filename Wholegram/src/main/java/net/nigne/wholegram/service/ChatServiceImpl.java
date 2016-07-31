@@ -1,6 +1,8 @@
 package net.nigne.wholegram.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +61,44 @@ public class ChatServiceImpl implements ChatService {
 		/*각 채팅방에 참여하고있는 유저 리스트를 가져옴*/
 		return dao.getRoomUser(roomlist);
 	}
+	
+	/* 유저가 포함되어있는 채팅방 번호만 추출 */
+	@Override
+	public List<Integer> extractRoomNumber(List<Chat_userVO> roomInfo) {
+		Iterator<Chat_userVO> extract = roomInfo.listIterator();
+		List<Integer> roomNumber = new ArrayList<Integer>();
+		while(extract.hasNext()) {
+			Chat_userVO cv = extract.next();
+			int chatnum = cv.getChat_chat_num();
+			roomNumber.add(chatnum);
+		}
+		return roomNumber;
+	}
+	
+	/* 메시지 읽지 않은 채팅방 확인 */
+	@Override
+	public List<Integer> checkReadRoom(List<Integer> roomNumber, String user_id) {
+		return dao.checkReadRoom(roomNumber, user_id);
+	}
+
+	/* 유저가 속한 각 채팅방마다 최신 메시지 내용을 읽었는지 확인 후 알림표시 여부 설정 */
+	@Override
+	public List<Chat_userVO> setCheckReadRoom(List<Integer> roomList, List<Chat_userVO> roomInfo) {
+		List<Chat_userVO> roomInfomation = new ArrayList<Chat_userVO>();
+		Iterator<Chat_userVO> extract = roomInfo.listIterator();			// roomInfo : 유저가 포함되어있는 각 채팅방의 참여하고 있는 모든 유저 리스트
+		while(extract.hasNext()) {
+			Chat_userVO cv = extract.next();
+			Iterator<Integer> extract2 = roomList.listIterator();			// roomList : 최신 메시지를 읽지 않은 채팅방 리스트
+			while(extract2.hasNext()) {
+				int number = extract2.next();
+				if(cv.getChat_chat_num() == number) {
+					cv.setMsgNotice(true);									// 메시지 알림 설정
+				} 
+			}
+			roomInfomation.add(cv);
+		}
+		return roomInfomation;
+	}
 
 	/*채팅방 삭제*/
 	@Override
@@ -77,5 +117,15 @@ public class ChatServiceImpl implements ChatService {
 	public void setRead_user_ids(Map<String, Object> data) {
 		dao.setRead_user_ids(data);
 	}
+
+	/* 유저가 해당되는 채팅방 번호 리스트 추출 */
+	@Override
+	public List<Integer> getRoomList(String user_id) {
+		return dao.getRoomList(user_id);
+	}
+
+
+
+
 
 }

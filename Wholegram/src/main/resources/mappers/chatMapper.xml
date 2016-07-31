@@ -53,6 +53,9 @@
  		select read_user_ids from msg_list where chat_chat_num = #{chat_chat_num} and msg = #{msg} and written_user_id = #{written_user_id}
  	</select>
  	<select id="getMsgListNum" resultType="int">
- 		select msg_list_num from msg_list where chat_chat_num = #{chat_chat_num} ㅐㄱ
+ 		select msg_list_num from msg_list where chat_chat_num = #{chat_chat_num}
+ 	</select>
+ 	<select id="getRoomList" resultType="int">
+ 		select chat_chat_num from chat_user where member_user_id = #{user_id}
  	</select>
  </mapper>

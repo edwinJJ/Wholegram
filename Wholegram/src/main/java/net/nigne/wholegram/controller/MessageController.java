@@ -1,6 +1,8 @@
 package net.nigne.wholegram.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -51,15 +53,16 @@ public class MessageController {
 			mav.setViewName("message");
 			
 			/* 유저가 포함되어있는 각 채팅방의 참여하고 있는 모든 유저 리스트를 가져옴 */
-			List<Chat_userVO> roominfo = chatservice.getRoomUsers(user_id);
+			List<Chat_userVO> roomInfo = chatservice.getRoomUsers(user_id);
+
+			/* 유저가 포함되어있는 채팅방 번호만 추출 */
+			List<Integer> roomNumber = chatservice.extractRoomNumber(roomInfo);
 			
-			/* 유저가 속한 각 채팅방마다 최신 메시지 내용을 읽었는지 확인 */
-			/*
-			 * 각 채팅방마다 최신 글번호를 가져와서 글번호에 읽은 유저 컬럼에 본인이 있는지 확인후 없으면
-			 * List<방번호> 형태로 가져와서, 위의 ,view단에서 roominfo의 방번호와 List<방번호>의 번호가 일치할경우 메시지 안읽은표시로 해주기!
-			 * */
-		
-			mav.addObject("roominfo", roominfo);
+			/* 유저가 속한 각 채팅방마다 최신 메시지 내용을 읽었는지 확인 후 알림표시 여부 설정 */
+			List<Integer> roomList = chatservice.checkReadRoom(roomNumber, user_id);				// 최신 메시지를 읽지 않은 채팅방 리스트 추출
+			List<Chat_userVO> roomInfomation = chatservice.setCheckReadRoom(roomList, roomInfo);	// 채팅방에 '메시지 읽지 않음' 알림을 보여줄 여부 설정
+	
+			mav.addObject("roomInfomation", roomInfomation);										// 유저가 속한 채팅방 번호, 참여 유저들ID, 최신메시지를 읽었는지 알림 여부 의 데이터가 들어있음 
 		} else {
 			mav.setViewName("login");
 		}
@@ -133,6 +136,7 @@ public class MessageController {
 		return entity;
 	}
 	
+	/* 채팅방의 메시지를 읽음으로 등록 */
 	@RequestMapping(value = "/readCheck/{chat_chat_num}", method = RequestMethod.POST)
 	public ResponseEntity<String> readCheck(@PathVariable("chat_chat_num") int chat_chat_num, HttpServletRequest request) {
 
@@ -140,15 +144,13 @@ public class MessageController {
 		String user_id = (String)session.getAttribute("user_id");
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("chat_num", chat_chat_num);
-		data.put("written_user_id", user_id);
+		data.put("chat_num", chat_chat_num);						// 채팅방 번호
+		data.put("written_user_id", user_id);						// 본인 Id
 		
 		ResponseEntity<String> entity = null;
 		try{
-			System.out.println("start");
 			chatservice.setRead_user_ids(data);						// 메시지 읽은 유저 갱신
-			System.out.println("end");
-			entity = new ResponseEntity<>("SUCESS", HttpStatus.OK);
+			entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 		} catch(Exception e) {
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

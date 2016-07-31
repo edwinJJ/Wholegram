@@ -80,36 +80,39 @@ public class WSHandler extends TextWebSocketHandler {
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 		
-		/* 웹소켓 접속을 알리는 메시지인지, 새로운 채팅방생성을 알리는 용도인지, 유저들간의 메시지 통신을 위한 메시지인지 구별과정 */
+		/* 1. 웹소켓 접속을 알리는 메시지인지, 
+		 * 2. 새로운 채팅방생성을 알리는 용도인지, 
+		 * 3. 유저들간의 메시지 통신을 위한 메시지인지 구별과정 */
 		String msgtoString = message.getPayload().toString();				// 메시지만을 담은 String으로 변환 
-		DistinguishHandleMessage DHM = new DistinguishHandleMessage();
+		
+		DistinguishHandleMessage DHM = new DistinguishHandleMessage();		// 메시지 분석과정
 		DHM.interprePreviousMessage(msgtoString);
 		String result = DHM.getInterPreMessage();
-//		String Interpre = msgtoString.substring(0, 5);			// 0~5 index 단어 추출
 		
-//		Status status = new Status();							// WebSocket접속을 위한 메시지 전송인지 구별함
-//		status.setStatus(Interpre.equals("Login"));				// 0~5 index가 "login"이라는 단어일 경우, 단순한 웹소켓 접속만을 알리는 if문 안으로
-		
-		if(result.equals(Login)) {								// WebSocket 접속알림 메시지일 경우
-			application.setUser_id(msgtoString.substring(8));	// ID 추출 & application에 저장
+		if(result.equals(Login)) {											// WebSocket 접속알림 메시지일 경우
 			
-			Map<String, Object> data = new HashMap<>();			// (접속자ID, WebSocket session) 저장
+			String user_id = msgtoString.substring(8);						// ID 추출 & application에 저장
+			application.setUser_id(user_id);	
+			
+			Map<String, Object> data = new HashMap<>();						// (접속자ID, WebSocket session) 형태의 Map으로 저장
 			data.put(application.getUser_id(), session);
 			
-			application.setUserInfo(data);						// 'data'를 application에 List형식으로 담아둔다
+			application.setUserInfo(data);									// 'data'를 application에 List형식으로 담아둔다
 			
-		} else if(result.equals(Notic)){						// 새로운 채팅방생성됨을 알리는 용도
+			List<Integer> roomList = chatservice.getRoomList(user_id);		// 유저가 해당되는 채팅방 번호 리스트 추출
+			
+		} else if(result.equals(Notic)){									// 새로운 채팅방생성됨을 알리는 용도
 			sendNewRoom(msgtoString);
-		} else { 												// 접속 후, 유저들간이 메시지 전송용도일 경우
+		} else { 															// 접속 후, 유저들간이 메시지 전송용도일 경우
 			super.handleMessage(session, message);
 			sendMessage(session, message.getPayload().toString());
 		}
 	}
 
 	private void sendNewRoom(String msgtoString) {
-		int chat_num = Integer.parseInt(msgtoString.substring(8));		// 새로만들어진 채팅방 번호 추출
+		int chat_num = Integer.parseInt(msgtoString.substring(8));			// 새로만들어진 채팅방 번호 추출
 		
-		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();		// 채팅방에 해당되는 유저 List를 가져옴
+		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();			// 채팅방에 해당되는 유저 List를 가져옴
 		userList = chatservice.userList(chat_num);
 		
 		List<Map<String, Object>> tidyUserInfo = new ArrayList<Map<String, Object>>();		// 메시지 받을 유저를 담을 변수
