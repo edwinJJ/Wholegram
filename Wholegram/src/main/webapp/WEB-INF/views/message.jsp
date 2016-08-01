@@ -159,6 +159,7 @@
 	</style>
 	<script>
 		var sessionId = "${sessionId}";				// 접속자 ID
+		var thisPage = true;						// 메시지 페이지라는 의미
 
 		/* 채팅 상대 고를 때, 선택 된 유저 아이디를 문자열 형태로 화면에 보여준다 */
 		function addReceive(th) {
@@ -304,7 +305,5 @@
 </div>
 <div id="chat_box"></div>
 <script src="/resources/js/message.js"></script>
-<div id="popup"></div>
-<script src="/resources/js/notice_popup.js"></script>
 </body>
 </html>

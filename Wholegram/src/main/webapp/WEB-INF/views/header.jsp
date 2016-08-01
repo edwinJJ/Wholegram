@@ -14,7 +14,6 @@
 	<a id="header-new_person" href="/person"><i class="fa fa-users fa-2x" style="color:black;"></i></a>
 	<a id="header-news" href="#"><i class="fa fa-heart-o fa-2x" style="color:black;"></i></a>
 	<a id="header-user" href="/login"><i class="fa fa-user fa-2x" style="color:black;"></i></a>
-	<a href="/test">테스트</a>
 </div>
 
 <!-- line -->

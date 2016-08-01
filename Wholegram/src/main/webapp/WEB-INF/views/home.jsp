@@ -19,6 +19,10 @@
 	<script type="text/javascript" src="/resources/js/jquery.easing.1.3.min.js"></script>
 
 	<script language="javascript">
+	
+		var sessionId = "${sessionId}";				// 접속자 ID
+		var thisPage = null;
+	
 		//레이어 팝업
 		function popup() {
 			$("#openPopup").on("click", function() {

@@ -155,7 +155,7 @@ public class ChatDAOImpl implements ChatDAO {
 			try{
 				lastMsgNum = session.selectOne(namespace + ".msgCurrentNum", chat_num);			// msg_list의 해당 채팅방의 최신글 글 번호가져옴 (채팅방 번호가 아닌 글번호 (msg_list table primary key))
 			} catch(Exception e) {
-				lastMsgNum = 0;
+				lastMsgNum = 0;																	// 방만 만들어졌고, 아직 메시지가 없을 때
 			}
 			if(lastMsgNum != 0) {
 				Map<String, Object> data = new HashMap<String, Object>();						// 각 채팅방마다 최신 메시지를 읽었는지 확인하기 위한 변수 설정
@@ -168,7 +168,7 @@ public class ChatDAOImpl implements ChatDAO {
 				if(ReadMessageStatus.isSuccess()) {  											// 최신 메시지를 읽지 않은 상태이므로, 해당 채팅방번호를 List에 담아준다
 					roomList.add(chat_num);
 				} else {}																		// 최신 메시지를 읽은 상태 이므로 아무것도 해주지 않는다
-			}
+			} 
 		}
 		return roomList;
 	}

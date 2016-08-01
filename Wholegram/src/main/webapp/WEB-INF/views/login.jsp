@@ -12,33 +12,35 @@
    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
    <script src ="resources/js/signup.js"></script>
    <script type="text/javascript">
-   function slider(){
-      $('.slide').bxSlider({
-         mode: 'fade',
-         auto: true,
-         pager: false,
-         controls: false,
-         speed:1800
-      });
-   };
-   
-   function doLogin() {
-	   if( login_form.user_id.value == "" ) {
-		   alert( "아이디를 입력해주세요." );
-		   return;
-	   }
+	   localStorage.setItem("chat", "false");
 	   
-	   if( login_form.passwd.value == "" ) {
-		   alert( "패스워드를 입력해주세요." );
-		   return;
-	   }
+	   function slider(){
+	      $('.slide').bxSlider({
+	         mode: 'fade',
+	         auto: true,
+	         pager: false,
+	         controls: false,
+	         speed:1800
+	      });
+	   };
 	   
-	   login_form.submit();
-   }
-
-   $(document).ready(function(){
-      slider();
-   });
+	   function doLogin() {
+		   if( login_form.user_id.value == "" ) {
+			   alert( "아이디를 입력해주세요." );
+			   return;
+		   }
+		   
+		   if( login_form.passwd.value == "" ) {
+			   alert( "패스워드를 입력해주세요." );
+			   return;
+		   }
+		   
+		   login_form.submit();
+	   }
+	
+	   $(document).ready(function(){
+	      slider();
+	   });
    </script>
    
    <style>

@@ -55,21 +55,23 @@ public class WSHandler extends TextWebSocketHandler {
 	/*연결 됫을 때*/
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		System.out.println("연결");
-		//afterPropertiesSet(session);
 		
 		//사용자 정보를 담는다.
 		wsSession.add(session);
+		
+		System.out.println("연결");
+		
 		super.afterConnectionEstablished(session);
 	}
 	
 	/*연결이 끊어 졌을 때*/
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		System.out.println("끊김");
 		
 		// 접속자ID와, WebSocket session 제거
 		application.delUserInfo(session);
+		
+		System.out.println("끊김");
 		
 		//사용자 정보 삭제
 		wsSession.remove(session);
@@ -83,42 +85,59 @@ public class WSHandler extends TextWebSocketHandler {
 		/* 1. 웹소켓 접속을 알리는 메시지인지, 
 		 * 2. 새로운 채팅방생성을 알리는 용도인지, 
 		 * 3. 유저들간의 메시지 통신을 위한 메시지인지 구별과정 */
-		String msgtoString = message.getPayload().toString();				// 메시지만을 담은 String으로 변환 
+		String msgtoString = message.getPayload().toString();						// 메시지만을 담은 String으로 변환 
 		
-		DistinguishHandleMessage DHM = new DistinguishHandleMessage();		// 메시지 분석과정
+		DistinguishHandleMessage DHM = new DistinguishHandleMessage();				// 메시지 분석과정
 		DHM.interprePreviousMessage(msgtoString);
 		String result = DHM.getInterPreMessage();
 		
-		if(result.equals(Login)) {											// WebSocket 접속알림 메시지일 경우
+		if(result.equals(Login)) {													// WebSocket 접속알림 메시지일 경우
 			
-			String user_id = msgtoString.substring(8);						// ID 추출 & application에 저장
+			String user_id = msgtoString.substring(8);								// ID 추출 & application에 저장
 			application.setUser_id(user_id);	
 			
-			Map<String, Object> data = new HashMap<>();						// (접속자ID, WebSocket session) 형태의 Map으로 저장
+			Map<String, Object> data = new HashMap<>();								// (접속자ID, WebSocket session) 형태의 Map으로 저장
 			data.put(application.getUser_id(), session);
 			
-			application.setUserInfo(data);									// 'data'를 application에 List형식으로 담아둔다
+			application.setUserInfo(data);											// 'data'를 application에 List형식으로 담아둔다
 			
-			List<Integer> roomList = chatservice.getRoomList(user_id);		// 유저가 해당되는 채팅방 번호 리스트 추출
+			/* 안 읽은 메시지가 있으면 헤더에 알림표시를 띄어준다 */
+			List<Integer> roomNumber = chatservice.getRoomList(user_id);			// 유저가 포함되어있는 채팅방 번호만 추출
+			List<Integer> roomList = chatservice.checkReadRoom(roomNumber, user_id);// 최신 메시지를 읽지 않은 채팅방 리스트 추출
+			if(roomList.size() > 0) {												// 안 읽은 메시지가 1개라도 있으면 헤더에 메시지 알림을 띄우기위해 메시지를 보내준다
+				sendMessageNotice(session);											
+			}
 			
-		} else if(result.equals(Notic)){									// 새로운 채팅방생성됨을 알리는 용도
+		} else if(result.equals(Notic)){											// 새로운 채팅방생성됨을 알리는 용도
 			sendNewRoom(msgtoString);
-		} else { 															// 접속 후, 유저들간이 메시지 전송용도일 경우
+		} else { 																	// 접속 후, 유저들간이 메시지 전송용도일 경우
 			super.handleMessage(session, message);
 			sendMessage(session, message.getPayload().toString());
 		}
 	}
 
+	private void sendMessageNotice(WebSocketSession session) {
+		try {
+			session.sendMessage(new TextMessage("Message Notice"));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void sendNewRoom(String msgtoString) {
-		int chat_num = Integer.parseInt(msgtoString.substring(8));			// 새로만들어진 채팅방 번호 추출
 		
-		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();			// 채팅방에 해당되는 유저 List를 가져옴
+		String msgtoString2 = msgtoString.substring(8);
+		int index = msgtoString2.indexOf(":");
+		String madeOfUser = msgtoString2.substring(0, index-1);								// 채팅방을 만든 유저 Id 추출
+		int chat_num = Integer.parseInt(msgtoString2.substring(index+2));					// 새로만들어진 채팅방 번호 추출
+		
+		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();							// 채팅방에 해당되는 유저 List를 가져옴
 		userList = chatservice.userList(chat_num);
 		
 		List<Map<String, Object>> tidyUserInfo = new ArrayList<Map<String, Object>>();		// 메시지 받을 유저를 담을 변수
 		
-/*		application에 담겨있는 현재 접속되어있는 (유저ID, WebSocket session) -> userInfo 를 가져와서
-		메시지를 보낼 유저 ID만을 담고있는 userList와 비교하여, 일치하는 값을 새로운 List로 -> tidyUserInfo로 만들어 메시지 보낼때 이를 사용한다 */
+/*		application에 담겨있는 현재 접속되어있는 (전체 유저ID, WebSocket session) -> userInfo 를 가져와서
+		메시지를 보낼 유저 ID만을 담고있는 userList와 비교하여, 일치하는 값을 새로운 List로 (메시지 보낼 유저ID, WebSocket session) -> tidyUserInfo로 만들어 메시지 보낼때 이를 사용한다 */
 		List<Map<String, Object>> userInfo = application.getUserInfo();						
 		Iterator<Map<String, Object>> extract = userInfo.iterator();
 		while(extract.hasNext()) {															// 1 : WebSocket 접속자들 정보 추출 (id, WebSocket session)
@@ -151,7 +170,7 @@ public class WSHandler extends TextWebSocketHandler {
 			for(WebSocketSession s : wsSession) {
 				if(s.isOpen() && Data.containsValue(s)) {
 					try {
-						s.sendMessage(new TextMessage("NewRoom : " + chat_num));
+						s.sendMessage(new TextMessage("NewRoom : " + madeOfUser + " : " + chat_num));
 					} catch(IOException e) {
 						e.printStackTrace();
 					}
@@ -186,8 +205,8 @@ public class WSHandler extends TextWebSocketHandler {
 		
 		List<Map<String, Object>> tidyUserInfo = new ArrayList<Map<String, Object>>();		// 메시지 받을 유저를 담을 변수
 		
-/*		application에 담겨있는 현재 접속되어있는 (유저ID, WebSocket session) -> userInfo 를 가져와서
-		메시지를 보낼 유저 ID만을 담고있는 userList와 비교하여, 일치하는 값을 새로운 List로 -> tidyUserInfo로 만들어 메시지 보낼때 이를 사용한다 */
+		/*		application에 담겨있는 현재 접속되어있는 (전체 유저ID, WebSocket session) -> userInfo 를 가져와서
+		메시지를 보낼 유저 ID만을 담고있는 userList와 비교하여, 일치하는 값을 새로운 List로 (메시지 보낼 유저ID, WebSocket session) -> tidyUserInfo로 만들어 메시지 보낼때 이를 사용한다 */
 		List<Map<String, Object>> userInfo = application.getUserInfo();						
 		Iterator<Map<String, Object>> extract = userInfo.iterator();
 		while(extract.hasNext()) {															// 1 : WebSocket 접속자들 정보 추출 (id, WebSocket session)

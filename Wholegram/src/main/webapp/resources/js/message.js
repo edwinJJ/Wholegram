@@ -11,12 +11,11 @@ function check_messageform() {
 		token = localStorage.getItem("chat");
 	}
 	set_chatroom(token);
-	
 }
 
 /* 채팅방 생성 */
 function set_chatroom(token) {
-	var ids = document.getElementById("receive_user").value;// 채팅방에 참여되는 유저들 목록
+	var ids = document.getElementById("receive_user").value;			// 채팅방에 참여되는 유저들 목록
 	var cr_url = "/message/chatroom/" + ids;
 
 	$.ajax({
@@ -28,14 +27,13 @@ function set_chatroom(token) {
 		},
 		dataType:'JSON',
 		data: '',
-		success : function(result) {						//result : 채팅방 번호
-			localStorage.setItem("chat_num", result);		// 채팅방 번호 localStroage에 저장
-			chat_num = localStorage.getItem("chat_num");	
+		success : function(result) {									// result : 채팅방 번호
+			localStorage.setItem("chat_num", result);					// 채팅방 번호 localStroage에 저장
 			
-			show_messageform(token, chat_num);				// 메시지 창 보여주기
-			getRoomList(null);								// 채팅방 목록 가져오기
+			show_messageform(token, localStorage.getItem("chat_num"));	// 메시지 창 보여주기
+			getRoomList(null);											// 전체 채팅방 목록 다시 가져오기 (방금 유저가 새로 만든 방이 있으니깐)
 			
-			ws.send("Notic : " + result);					// WebSocket서버를 통해 채팅방에 참여되는 유저들의 채팅방리스트를 갱신한다
+			ws.send("Notic : " + sessionId + " : " + result);			// WebSocket서버를 통해 채팅방에 참여되는 유저들의 채팅방리스트를 갱신한다
 		},
 		error : function(result){
 			alert("e : " + result);
@@ -57,7 +55,7 @@ function getRoomList(Item) {
 		},
 		dataType:'JSON',
 		data: '',
-		success : function(result) {
+		success : function(result) {				// result : 채팅방 전체 번호 목록 + 참여 유저 Id
 			if(Item == null) {
 				showRoomList(result);				// 채팅방 목록만 뿌려줄 경우
 			} else {
@@ -81,23 +79,24 @@ function showRoomList(roomList) {
 			+	"<span><img class='chat_img' src='/resources/Image/Penguins.jpg'></span>"
 			+	"<a href='#' class='chat_aname' onclick='getChatRoom(" + this.chat_chat_num + ")'><span class='chat_name'>채팅방 : " + this.chat_chat_num + " </span></a>"
 			+	"<span>" + this.member_user_id + "</span>" +
-			/*+	"<span><img class='chat_content' src='/resources/Image/Penguins.jpg'></span>" +*/
 			"</div>"
 	});
 	document.getElementById("roomList").innerHTML = html;
-	showMessage("NewRoom");
+	//showMessage("NewRoom");
 }
 
-/* 유저가 속한 채팅방 상태 확인(알림 메시지 변환용도) */
+/* 유저가 속한 채팅방 상태 확인(헤더의 알림 메시지 띄우는 용도) */
 function checkReadRoomList(result) {
 	var count = 0;
-	$(result).each(function() {																// 유저가 속한 채팅방의 메시지를 다 읽었는지 확인해준다
-		var roomNumber = this.chat_chat_num;
-		if(document.getElementById("room_popup" + roomNumber).style.display != "none") {
-			count++;
-		}
-	});
-	if(count == 0) {																		// 다 읽었으면 헤더의 알림표시 제거
+	if(thisPage != null) {
+		$(result).each(function() {																// 유저가 속한 채팅방의 메시지를 다 읽었는지 확인해준다
+			var roomNumber = this.chat_chat_num;
+			if(document.getElementById("room_popup" + roomNumber).style.display != "none") {
+				count++;
+			}
+		});
+	}
+	if(count == 0) {																			// 다 읽었으면 헤더의 알림표시 제거
 		document.getElementById("header_popup").style.display = "none";
 	}
 }
@@ -141,17 +140,18 @@ function getChatRoom(chat_chat_num) {
 		success : function(result){								// result : 해당 채팅방의 메시지 내용 
 			localStorage.setItem("chat", "true");				// localStorage의 chat을 true로 설정 (메시지창을 보여주기 위함, 규칙)
 			localStorage.setItem("chat_num", chat_chat_num);	// localStorage의 chat_num을 유저가 선택한 채팅방 번호로 설정 (새로고침 or 페이지 이동시에 열어두고있던 채팅방의 정보를 가져오기 위함)
+			
+			token = localStorage.getItem("chat", "true");
 			chat_num = localStorage.getItem("chat_num");
 			
-			show_messageform("true", chat_num);					// 메시지창 보여주기
-			token = start;
+			show_messageform(token, chat_num);					// 메시지창 보여주기
 			showMessage(result);								// 메시지 내용 보여주기
+			getRoomList(sessionId);								// 유저가 속한 채팅방 전체 목록 가져와서 메시지 읽은방 리스트 확인 용도
 		},
 		error : function(result){
 			alert("error : " + result);
 		}
 	}); 
-	getRoomList(sessionId);										// 유저가 속한 채팅방 전체 목록 가져와서 메시지 읽은방 리스트 확인 용도
 }
 
 
@@ -159,6 +159,7 @@ function getChatRoom(chat_chat_num) {
 
 /* 메시지 보내기 */ 
 function send_message(chat_num) {
+	console.log("메시지보내기 chat_num : " + chat_num);
 	var msg1 = "{num : " + chat_num + "}";						// 방 번호 추가
 	var msg2 = "[write : " + sessionId + "]";					// 작성자 ID
 	if(chat_num != 0) {
@@ -173,19 +174,23 @@ function send_message(chat_num) {
 function showMessage(result) {
 	var impl = result.substring(0,7);													// 새로운 채팅방 생성을 알리는 용도 
 	
-	var chat_room;
-	if(impl != "NewRoom") {
-		var object = JSON.parse(result);												// JSON으로 파싱
+	var chat_room;																		// 메시지가 속한 채팅 방 번호
+	var object = JSON.parse(result);													// JSON으로 파싱
+	
+	$(object).each(function() {
+		chat_room = this.chat_chat_num;													// 메시지가 속해있는 채팅방 번호 추출
+	});
 		
-		$(object).each(function() {
-			chat_room = this.chat_chat_num;												// 메시지가 속해있는 채팅방 번호 추출
-		});
+	if(document.getElementById("chat_num") != null) {									// 메시지창이 열려있지 않은경우네는 id가 chat_num인 태그가 없으므로
+		var nowShowingMsgForm = document.getElementById("chat_num").value;				
 	}
 	
-	if((token != fail) && (chat_num == chat_room)) {									// 메시지창이 채팅방이 열려있을 경우 && 열려있는 메시지창의 방 번호가 메시지가 속해있는 방번호와 일치 할 경우만 내용을 뿌려준다
+	if((token != fail) && (nowShowingMsgForm == chat_room)) {							// 메시지창이 채팅방이 열려있을 경우 && 열려있는 메시지창의 방 번호가 메시지가 속해있는 방번호와 일치 할 경우만 내용을 뿌려준다
 		
 		document.getElementById("msg_content").innerHTML = "";							// 메시지창 내용 비워주기(전체 내용을 다시쓰기위해)
-		document.getElementById("room_popup" + chat_room).style.display = "none";		// 메시지를 읽었으면 알림 표시를 지워준다
+		if(thisPage != null) {															// 메시지 페이지일 경우
+			document.getElementById("room_popup" + chat_room).style.display = "none";	// 메시지를 읽었으면 알림 표시를 지워준다
+		}
 		
 		/* 메시지 확인 체크하기위한 변수 */
 		var chat_chat_num;
@@ -209,7 +214,6 @@ function showMessage(result) {
 		if (el.scrollHeight > 0) {
 			el.scrollTop = el.scrollHeight;
 		}
-		console.log(chat_chat_num);
 		
 		var rc_url= "message/readCheck/" + chat_chat_num; 								// 메시지 읽은 유저 등록하기
 		$.ajax({
@@ -221,37 +225,29 @@ function showMessage(result) {
 			},
 			dataType:'text',
 			data: '',
-			success : function(result){		
-				//
-			},
+			success : function(result){},
 			error : function(result){
 				alert("error : " + result);
 			}
 		}); 
 		
-	} else if((token != fail) && (chat_num != chat_room)) {								// 메시지창이 열려있지만 다른 채팅방의 메시지창일 경우 메시지왔다고 알려준다
-/*		document.getElementById("header_popup").style.display = "block";
-		
+	} else if((token != fail) && (nowShowingMsgForm != chat_room)) {					// 메시지창이 열려있지만 다른 채팅방의 메시지창일 경우 메시지왔다고 알려준다
+		document.getElementById("header_popup").style.display = "block";
 		if(document.getElementById("room_popup" + chat_room) != null) {					// 기존에 이미 만들어져 있던 채팅방으로부터 메시지가 왔을경우
 			document.getElementById("room_popup" + chat_room).style.display = "block";
-		} else {																		// 새롭게 만들어진 채팅방을 알림
-			document.getElementById("room_popup" + chat_num).style.display = "block";
-		}*/
+		} 
 	} else {																			// 메시지창이 열려있지 않은 경우, 메시지왔다고 알려준다.
-/*		document.getElementById("header_popup").style.display = "block";
-			
+		document.getElementById("header_popup").style.display = "block";
 		if(document.getElementById("room_popup" + chat_room) != null) {					//	기존에 이미 만들어져 있던 채팅방으로부터 메시지가 왔을경우
 			document.getElementById("room_popup" + chat_room).style.display = "block";
-		} else {																		// 새롭게 만들어진 채팅방을 알림
-			document.getElementById("room_popup" + chat_num).style.display = "block";
-		}*/
+		} 
 		
 	}
 }
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost/chat";
+var wsUrl = "ws://localhost:8082/chat";
 var ws;
 
 function init() {
@@ -272,6 +268,7 @@ function init() {
 	}
 	ws.onclose = function(evt) {
 		console.log("close");
+		init();													// 세션 타임아웃으로 인한 웹소켓 서버와 연결이 끊겼을 경우 재접속 해준다
 	}
 }
 
@@ -282,11 +279,16 @@ function onOpen(evt) {
 //서버로부터 메시지 받음
 function onMessage(evt) {
 	var impl = evt.data.substring(0,7);
-
-	if(impl == "NewRoom") {
-		chat_num = evt.data.substring(10);
+	if(impl == "NewRoom") {															// 새로 방 만들어졌다는걸 알릴 때
+		var stringArray = evt.data.split(":");
+		//chat_num = stringArray[2].trim();											// 새로 만들어진 채팅방 번호
+		//var madeOfUser = stringArray[1].trim();									// 채팅방을 만든 유저
+		//console.log("sessionId : " + sessionId);
+		//console.log("madeOfUser : " + madeOfUser);
 		getRoomList(null);
-	} else {
+	} else if(impl == "Message") {													// 방금 접속하거나 다른 페이지에 있는데, 그동안 새로운 메시지가 와서 헤더에 메시지 알림 띄울 때
+		document.getElementById("header_popup").style.display = "block";
+	} else {																		// 메시지 채팅 주고받을 때
 		showMessage(evt.data);
 	}
 }
