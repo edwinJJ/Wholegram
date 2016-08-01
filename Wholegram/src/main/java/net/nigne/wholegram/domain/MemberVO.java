@@ -1,5 +1,7 @@
 package net.nigne.wholegram.domain;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class MemberVO {
 	private int mem_no; 
 	private String user_id;
@@ -10,7 +12,7 @@ public class MemberVO {
 	private String phone;
 	private String gender;
 	private int recommend;
-	private String user_profile;
+	private MultipartFile user_profile;
 	private int follow;
 	
 	public int getMem_no() {
@@ -76,10 +78,10 @@ public class MemberVO {
 		this.recommend = recommend;
 	}
 	
-	public String getUser_profile() {
+	public MultipartFile getUser_profile() {
 		return user_profile;
 	}
-	public void setUser_profile(String user_profile) {
+	public void setUser_profile(MultipartFile user_profile) {
 		this.user_profile = user_profile;
 	}
 	
