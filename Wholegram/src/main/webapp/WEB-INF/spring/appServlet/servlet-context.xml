@@ -32,9 +32,29 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
+	
+	
+	
+<!-- 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/view/" p:suffix=".jsp" p:order="2" />
+	<bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order">
+			<value>1</value>
+		</property>
+	</bean>
+	<bean name="JSON" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" /> -->
+	
 	<context:component-scan base-package="net.nigne.wholegram" />
 	
 	<!-- 트랜젝션 -->
 	<tx:annotation-driven/>
 	
+<!-- 	
+	  upload
+     <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+           최대 업로드 수치(bytes) : 50mb 제한
+           <beans:property name="maxUploadSize" value="52428800" />  
+           업로드 파일 인코딩
+           <beans:property name="defaultEncoding" value="UTF-8" />
+     </beans:bean>
+	 -->
 </beans:beans>

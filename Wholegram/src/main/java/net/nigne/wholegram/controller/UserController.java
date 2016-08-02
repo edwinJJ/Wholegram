@@ -1,10 +1,13 @@
 package net.nigne.wholegram.controller;
 
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Locale;
+
 import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.nigne.wholegram.domain.MemberVO;
@@ -151,4 +157,42 @@ public class UserController {
 		}
 		return entity;
 	}
+	
+	/* 프로필 이미지 변경 */
+/*	@RequestMapping(value = "/change_profile/{formData}", method = RequestMethod.POST)
+	public ResponseEntity<String> change_profile(@PathVariable("formData") Object formData) {
+		
+		System.out.println("test중");
+		
+		ResponseEntity<String> entity = null;
+		try{
+			entity = new ResponseEntity<>("SUCCESS!!", HttpStatus.OK);
+		}catch(Exception e) {
+			entity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}*/
+	
+   @RequestMapping(value = "/change_profile", method = RequestMethod.POST)
+   @ResponseBody
+    public Object uploadFile(MultipartHttpServletRequest request) {
+	   System.out.println("test주우웅");
+        Iterator<String> itr =  request.getFileNames();
+        if(itr.hasNext()) {
+            MultipartFile mpf = request.getFile(itr.next());
+            System.out.println(mpf.getOriginalFilename() +" uploaded!");
+            try {
+                //just temporary save file info into ufile
+                System.out.println("file length : " + mpf.getBytes().length);
+                System.out.println("file name : " + mpf.getOriginalFilename());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+	
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="net.nigne.wholegram.mappers.chatMapper">
+ 	<insert id="chat_room">
+ 		insert into chat values()
+ 	</insert>
+ 	<select id="getchat_room" resultType="int">
+ 		select last_insert_id()
+ 	</select>
+ 	<insert id="user_room">
+ 		insert into chat_user (chat_chat_num, member_user_id) values(#{chat_num}, #{user_id})
+ 	</insert>
+ 	<insert id="msgStorage">
+ 		insert into msg_list (chat_chat_num, msg, written_user_id) values(#{chat_num}, #{msg_content}, #{written_user_id})
+ 	</insert>
+ 	<select id="msgCurrentNum" resultType="int">
+ 		select msg_list_num from msg_list where chat_chat_num = #{chat_num} order by date desc limit 1
+ 	</select>
+ 	<select id="getMsgCheckUser" resultType="int">
+ 		select count(*) from msg_check where msg_list_num = #{msg_list_num} and read_user_ids = #{read_user_ids}
+ 	</select>
+ 	<insert id="setMsgCheckUser">
+ 		insert into msg_check(msg_list_num, read_user_ids) values(#{msg_list_num}, #{read_user_ids})
+ 	</insert>
+ 	<select id="msgGet" resultType="net.nigne.wholegram.domain.Msg_listVO">
+ 		select * from msg_list where chat_chat_num = #{chat_num}
+ 	</select>
+ 	<select id="getRoomNumber" resultType="int">
+ 		select chat_chat_num from chat_user where member_user_id = #{user_id}
+ 	</select>
+ 	<select id="getRoomUser" resultType="net.nigne.wholegram.domain.Chat_userVO">
+ 		select * from chat_user where chat_chat_num = #{room_number}
+ 	</select>
+ 	<select id="getRoomData" resultType="net.nigne.wholegram.domain.Msg_listVO">
+ 		select msg, written_user_id from msg_list where chat_chat_num = #{roomNumber}
+ 	</select>
+ 	<delete id="delMsg_list">
+ 		delete from msg_list where chat_chat_num = #{chat_chat_num}
+ 	</delete>
+ 	<delete id="delChat_user">
+ 		delete from chat_user where chat_chat_num = #{chat_chat_num}
+ 	</delete>
+ 	<delete id="delChat">
+ 		delete from chat where chat_num = #{chat_chat_num}
+ 	</delete>
+ 	<select id="userList" resultType="net.nigne.wholegram.domain.Chat_userVO">
+ 		select member_user_id from chat_user where chat_chat_num = #{chat_chat_num}
+ 	</select>
+ 	<select id="getRead_user_ids" resultType="net.nigne.wholegram.domain.Msg_listVO">
+ 		select read_user_ids from msg_list where chat_chat_num = #{chat_chat_num} and msg = #{msg} and written_user_id = #{written_user_id}
+ 	</select>
+ 	<select id="getMsgListNum" resultType="int">
+ 		select msg_list_num from msg_list where chat_chat_num = #{chat_chat_num}
+ 	</select>
+ 	<select id="getRoomList" resultType="int">
+ 		select chat_chat_num from chat_user where member_user_id = #{user_id}
+ 	</select>
+ </mapper>

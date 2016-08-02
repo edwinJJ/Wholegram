@@ -202,12 +202,64 @@
 			});
 		});
 		
+		function fileUpload() {
+			console.log("Abc");
+/*             function uploadFile(){
+                var form = $('FILE_FORM')[0];
+                var formData = new FormData(form);
+                formData.append("fileObj", $("#FILE_TAG")[0].files[0]);
+                formData.append("fileObj2", $("#FILE_TAG2")[0].files[0]);
+ 
+                $.ajax({
+                    url: '',
+                            processData: false,
+                            contentType: false,
+                            data: formData,
+                            type: 'POST',
+                            success: function(result){
+                                alert("업로드 성공!!");
+                            }
+                    });
+            } */
+		}
+		
+		$(document).ready(function(){
+			$("#file1").change(function() {
+				if(file1.value == "") {
+					alert("변경안됨");
+				}else {
+					alert(file1.value);
+					
+		            var form = $('FILE_FORM')[0];
+		            var formData = new FormData(form);
+		            formData.append("fileObj", $("#file1")[0].files[0]);
+					alert("test");
+		            var upu_url = "/user/change_profile/";
+		            $.ajax({
+		                url: upu_url,
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        type: 'POST',
+                        success: function(result){
+                            alert("업로드 성공!!");
+                        }
+		                });
+		            alert("test3");
+				}
+			});
+			
+
+		});
+	
 		/* 브라우저창 끝을 알림 */
 		$(window).scroll(function() {
 		    if($(window).scrollTop() == $(document).height() - $(window).height()) {
 		        alert('End of Window');
 		    }
 		}); 
+		
+		
 	</script>
 </head>
 <body>
@@ -218,7 +270,14 @@
 <div id="profile_container">
 	<div id="profile"><br/><br/>
 		<div id="profile_layout">
-			<input id="profile_img" type="image" src="/resources/Image/Penguins.jpg"/>
+<!-- 			<input type='file' name='file1' style='display: none;'> 
+			<input type='text' name='file2' id='file2'> 
+			<input id="profile_img" type="image" src="/resources/Image/Penguins.jpg" onclick='document.all.file1.click();'/> -->
+			<form id="FILE_FORM" method="post" enctype="multipart/form-data" action="">
+				<input type="file" id="file1" name="file1" style="display:none;"> 
+				<img id="profile_img" src='/resources/Image/Penguins.jpg' border='0' onclick='document.all.file1.click();'>
+			</form>
+
 		</div>
 		<div id="profile_all">
 			<span id="user_id">${vo.user_id }</span>
