@@ -1,15 +1,19 @@
 package net.nigne.wholegram.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +25,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.mysql.jdbc.Blob;
+
+import net.nigne.wholegram.common.DebugStream;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.MemberService;
+import net.nigne.wholegram.service.ProfileImageService;
 
 
 @RestController
@@ -35,6 +43,9 @@ public class UserController {
 
 	@Inject
 	private EncryptService encrypt;
+	
+	@Inject
+	private ProfileImageService profileImageService;
 	
 	/*로그아웃*/
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -158,41 +169,50 @@ public class UserController {
 		return entity;
 	}
 	
-	/* 프로필 이미지 변경 */
-/*	@RequestMapping(value = "/change_profile/{formData}", method = RequestMethod.POST)
-	public ResponseEntity<String> change_profile(@PathVariable("formData") Object formData) {
+	/* 프로필 이미지 출력 */
+	@RequestMapping(value="/getByteImage")
+	public ResponseEntity<byte[]> getByteImage(MultipartHttpServletRequest request) {
 		
-		System.out.println("test중");
+		System.out.println("test");
 		
-		ResponseEntity<String> entity = null;
-		try{
-			entity = new ResponseEntity<>("SUCCESS!!", HttpStatus.OK);
-		}catch(Exception e) {
-			entity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-		return entity;
-	}*/
+	       HttpSession session = request.getSession();
+	       String user_id = (String) session.getAttribute("user_id");
+	       byte[] Image = profileImageService.getProfileImage(user_id);
+	       
+	       final HttpHeaders headers = new HttpHeaders();
+	       headers.setContentType(MediaType.IMAGE_PNG);
+	       return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);
+	}
 	
-   @RequestMapping(value = "/change_profile", method = RequestMethod.POST)
-   @ResponseBody
-    public Object uploadFile(MultipartHttpServletRequest request) {
-	   System.out.println("test주우웅");
+	/* 프로필 이미지 등록 */
+	@RequestMapping(value = "/change_profile", method = RequestMethod.POST)
+	public byte[] uploadFile(MultipartHttpServletRequest request) {
+	   
+		DebugStream.activate();
+		
+		HttpSession session = request.getSession();
+		String user_id = (String) session.getAttribute("user_id");
+	   
         Iterator<String> itr =  request.getFileNames();
         if(itr.hasNext()) {
-            MultipartFile mpf = request.getFile(itr.next());
+        	MultipartFile mpf = request.getFile(itr.next());
             System.out.println(mpf.getOriginalFilename() +" uploaded!");
             try {
                 //just temporary save file info into ufile
                 System.out.println("file length : " + mpf.getBytes().length);
                 System.out.println("file name : " + mpf.getOriginalFilename());
+                
+                HashMap<String, Object> profileImage = new HashMap<String, Object>();
+                profileImage.put("user_id", user_id);
+                profileImage.put("ImageFile", mpf.getBytes());
+                profileImageService.setProfileImage(profileImage);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
-            return true;
-        } else {
-            return false;
-        }
+        } else {}
+  
+        byte[] Image = profileImageService.getProfileImage(user_id);
+        return Image;
     }
-	
 }

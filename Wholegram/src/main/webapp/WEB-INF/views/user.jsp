@@ -233,8 +233,7 @@
 		            var form = $('FILE_FORM')[0];
 		            var formData = new FormData(form);
 		            formData.append("fileObj", $("#file1")[0].files[0]);
-					alert("test");
-		            var upu_url = "/user/change_profile/";
+		            var upu_url = "/user/change_profile";
 		            $.ajax({
 		                url: upu_url,
                         processData: false,
@@ -243,9 +242,13 @@
                         type: 'POST',
                         success: function(result){
                             alert("업로드 성공!!");
+                            document.getElementById("profile_img").src = result;
+                           // console.log(result);
+                        },
+                        error : function(result) {
+                        	alert("error : " + result);
                         }
-		                });
-		            alert("test3");
+		            });
 				}
 			});
 			
@@ -276,6 +279,7 @@
 			<form id="FILE_FORM" method="post" enctype="multipart/form-data" action="">
 				<input type="file" id="file1" name="file1" style="display:none;"> 
 				<img id="profile_img" src='/resources/Image/Penguins.jpg' border='0' onclick='document.all.file1.click();'>
+				<img alt="" src="/user/getByteImage" />
 			</form>
 
 		</div>

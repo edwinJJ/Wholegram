@@ -177,8 +177,6 @@
 			<version>2.5.4</version>
 		</dependency>    
 		
-		
-		
 		<!-- Web Socket -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -186,21 +184,18 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 		
-		
-<!-- 		
-		MultipartHttpServletRequest를 Ajax으로 받기 위함		
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-	 -->	
+		<!-- Commons FileUpload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+         
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
 		 
 		 
 		 
