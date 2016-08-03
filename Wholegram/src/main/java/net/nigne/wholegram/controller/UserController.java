@@ -171,17 +171,22 @@ public class UserController {
 	
 	/* 프로필 이미지 출력 */
 	@RequestMapping(value="/getByteImage")
-	public ResponseEntity<byte[]> getByteImage(MultipartHttpServletRequest request) {
+	public ResponseEntity<byte[]> getByteImage(HttpServletRequest request) {
 		
-		System.out.println("test");
+/*		System.out.println("test");
+		String str = " 1asf23";
+		byte[] bt = str.getBytes();
+		ResponseEntity<byte[]> entity = new ResponseEntity<byte[]>(bt, HttpStatus.BAD_REQUEST);
 		
-	       HttpSession session = request.getSession();
-	       String user_id = (String) session.getAttribute("user_id");
-	       byte[] Image = profileImageService.getProfileImage(user_id);
-	       
-	       final HttpHeaders headers = new HttpHeaders();
-	       headers.setContentType(MediaType.IMAGE_PNG);
-	       return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);
+		return entity;*/
+		
+	   HttpSession session = request.getSession();
+	   String user_id = (String) session.getAttribute("user_id");
+	   byte[] Image = profileImageService.getProfileImage(user_id);
+	   
+	   final HttpHeaders headers = new HttpHeaders();
+	   headers.setContentType(MediaType.IMAGE_PNG);
+	   return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);
 	}
 	
 	/* 프로필 이미지 등록 */

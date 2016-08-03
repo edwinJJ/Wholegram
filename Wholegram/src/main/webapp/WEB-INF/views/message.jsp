@@ -303,7 +303,7 @@
 		</div>
 	</div>
 </div>
-<div id="chat_box"></div>
-<script src="/resources/js/message.js"></script>
+<!-- <div id="chat_box"></div>
+<script src="/resources/js/message.js"></script> -->
 </body>
 </html>
