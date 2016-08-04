@@ -1,22 +1,16 @@
 package net.nigne.wholegram.controller;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,13 +24,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.mysql.jdbc.Blob;
 
 import net.nigne.wholegram.common.DebugStream;
 import net.nigne.wholegram.domain.MemberVO;
@@ -57,6 +48,9 @@ public class UserController {
 	
 	@Inject
 	private ProfileImageService profileImageService;
+	
+	private final static int IMG_WIDTH = 300;
+	private final static int IMG_HEIGHT = 300;
 	
 	/*로그아웃*/
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -188,6 +182,7 @@ public class UserController {
 	   String user_id = (String) session.getAttribute("user_id");
 	   
 	   byte[] Image = profileImageService.getProfileImage(user_id);				 // 프로필 이미지 추출		
+	   System.out.println(Image.length);
 	   HttpHeaders headers = new HttpHeaders();
 	   headers.setContentType(MediaType.IMAGE_PNG);
 	   return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);
@@ -210,7 +205,72 @@ public class UserController {
 			
 			
 			
-			try {
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	        File convFile = new File( mpf.getOriginalFilename());
+	        try {
+				mpf.transferTo(convFile);
+			} catch (IllegalStateException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			
+
+			
+		
+				
+			try{
+					
+				BufferedImage originalImage = ImageIO.read(convFile);
+				int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+					
+				BufferedImage resizeImageJpg = resizeImage(originalImage, type);
+				ImageIO.write(resizeImageJpg, "jpg", convFile); 
+					
+				BufferedImage resizeImagePng = resizeImage(originalImage, type);
+				ImageIO.write(resizeImagePng, "png", convFile); 
+					
+				BufferedImage resizeImageHintJpg = resizeImageWithHint(originalImage, type);
+				ImageIO.write(resizeImageHintJpg, "jpg", convFile); 
+					
+				BufferedImage resizeImageHintPng = resizeImageWithHint(originalImage, type);
+				ImageIO.write(resizeImageHintPng, "png", convFile); 
+				
+
+				System.out.println(resizeImagePng);
+				System.out.println(resizeImageJpg.getHeight());
+				System.out.println(resizeImageJpg.getWidth());
+				System.out.println(resizeImageJpg.getType());
+				System.out.println(resizeImageJpg.getSampleModel());
+				System.out.println(resizeImageJpg.getGraphics());
+				System.out.println(resizeImageJpg.hashCode());
+				System.out.println(resizeImageJpg.toString());
+				System.out.println(resizeImageJpg.getGraphics());
+				System.out.println(resizeImageJpg.getSource());
+			}catch(IOException e){
+				System.out.println(e.getMessage());
+			}
+				
+			
+			
+
+		    
+		    
+			
+/*			try {
 				System.out.println("test1");
 //				File imageFile = new File(mpf.getOriginalFilename());
 //				imageFile.createNewFile(); 
@@ -266,7 +326,7 @@ public class UserController {
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
+			}*/
 
 			
 
@@ -296,4 +356,45 @@ public class UserController {
 		headers.setContentType(MediaType.IMAGE_PNG);
 		return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);		*/		
 	}
+	
+	
+	
+	
+	
+	
+	
+    private static BufferedImage resizeImage(BufferedImage originalImage, int type){
+		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
+		g.dispose();
+			
+		return resizedImage;
+    }
+	
+    private static BufferedImage resizeImageWithHint(BufferedImage originalImage, int type){
+		
+		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
+		g.dispose();	
+		g.setComposite(AlphaComposite.Src);
+
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+		RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING,
+		RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		return resizedImage;
+    }	
+	
+	
+	
+	
+	
+	
+	
+	
 }
