@@ -1,11 +1,22 @@
 package net.nigne.wholegram.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -173,51 +184,116 @@ public class UserController {
 	@RequestMapping(value="/getByteImage")
 	public ResponseEntity<byte[]> getByteImage(HttpServletRequest request) {
 		
-/*		System.out.println("test");
-		String str = " 1asf23";
-		byte[] bt = str.getBytes();
-		ResponseEntity<byte[]> entity = new ResponseEntity<byte[]>(bt, HttpStatus.BAD_REQUEST);
-		
-		return entity;*/
-		
 	   HttpSession session = request.getSession();
 	   String user_id = (String) session.getAttribute("user_id");
-	   byte[] Image = profileImageService.getProfileImage(user_id);
 	   
-	   final HttpHeaders headers = new HttpHeaders();
+	   byte[] Image = profileImageService.getProfileImage(user_id);				 // 프로필 이미지 추출		
+	   HttpHeaders headers = new HttpHeaders();
 	   headers.setContentType(MediaType.IMAGE_PNG);
 	   return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);
 	}
 	
-	/* 프로필 이미지 등록 */
+	/* 프로필 이미지 등록 & 출력 */
 	@RequestMapping(value = "/change_profile", method = RequestMethod.POST)
-	public byte[] uploadFile(MultipartHttpServletRequest request) {
-	   
-		DebugStream.activate();
-		
+	public void uploadFile(MultipartHttpServletRequest request) {
+
+		DebugStream.activate(); // 디버그.. 에러난곳 위치 찾아줌
+
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
-	   
-        Iterator<String> itr =  request.getFileNames();
-        if(itr.hasNext()) {
-        	MultipartFile mpf = request.getFile(itr.next());
-            System.out.println(mpf.getOriginalFilename() +" uploaded!");
-            try {
-                //just temporary save file info into ufile
-                System.out.println("file length : " + mpf.getBytes().length);
-                System.out.println("file name : " + mpf.getOriginalFilename());
-                
-                HashMap<String, Object> profileImage = new HashMap<String, Object>();
-                profileImage.put("user_id", user_id);
-                profileImage.put("ImageFile", mpf.getBytes());
-                profileImageService.setProfileImage(profileImage);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        } else {}
-  
-        byte[] Image = profileImageService.getProfileImage(user_id);
-        return Image;
-    }
+		
+		Iterator<String> itr = request.getFileNames();									
+		if (itr.hasNext()) {
+			
+			MultipartFile mpf = request.getFile(itr.next());							// 파일 추출
+			
+			
+			
+			
+			try {
+				System.out.println("test1");
+//				File imageFile = new File(mpf.getOriginalFilename());
+//				imageFile.createNewFile(); 
+				
+				
+//				File compressedImageFile = new File(mpf.getOriginalFilename());
+				System.out.println("test2");
+				
+//				OutputStream test = new FileOutputStream(imageFile);
+				
+				   File convFile = new File(mpf.getOriginalFilename());
+				    convFile.createNewFile(); 
+				    FileOutputStream fos = new FileOutputStream(convFile); 
+				    fos.write(mpf.getBytes());
+				    fos.close(); 
+				
+				InputStream is = new FileInputStream(convFile.getName());
+				OutputStream os = new FileOutputStream(convFile.getName() + "test");
+				float quality = 0.5f; 
+	
+				// create a BufferedImage as the result of decoding the supplied InputStream
+				BufferedImage image = ImageIO.read(is);
+				
+				// get all image writers for JPG format
+	
+				Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+	
+				if (!writers.hasNext())
+	
+				throw new IllegalStateException("No writers found");
+				ImageWriter writer = (ImageWriter) writers.next();
+				ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+				writer.setOutput(ios);
+				ImageWriteParam param = writer.getDefaultWriteParam();
+	
+				// compress to a given quality
+	
+				param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+				param.setCompressionQuality(quality);
+	
+				// appends a complete image stream containing a single image and
+				//associated stream and image metadata and thumbnails to the output
+				writer.write(null, new IIOImage(image, null, null), param);
+				
+				// close all streams
+				is.close();
+				os.close();
+				ios.close();
+				writer.dispose();
+				
+				Object ob = writer.getOutput();
+				System.out.println(ob);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			
+
+
+
+			
+			
+			
+			
+			
+			
+			
+			try {
+				// just temporary save file info into ufile
+				HashMap<String, Object> profileImage = new HashMap<String, Object>();	// 파일 정보 Map에 담아둠
+				profileImage.put("user_id", user_id);
+				profileImage.put("ImageFile", mpf.getBytes());
+				profileImageService.setProfileImage(profileImage);						// 파일을 유저의 프로필로 저장
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+		} else {}
+/*
+		byte[] Image = profileImageService.getProfileImage(user_id);					// 프로필 이미지 추출
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.IMAGE_PNG);
+		return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);		*/		
+	}
 }

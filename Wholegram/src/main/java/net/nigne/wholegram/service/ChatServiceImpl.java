@@ -21,22 +21,23 @@ public class ChatServiceImpl implements ChatService {
 	@Inject
 	private ChatDAO dao;
 	
-	/* 채팅방 생성 */
+	/* 채팅방 생성 & 참여 유저 추가*/
 	@Transactional
 	@Override
-	public int chat_room() {
+	public int chat_room(String id_list) {
 		//채팅방 생성
 		dao.chat_room();
 		
 		//채팅방 고유번호 가져옴
 		int chat_num = dao.getchat_room();
-		return chat_num;
-	}
-
-	/* 채팅방 참여 유저 추가 */
-	@Override
-	public void user_room(int chat_num, String id_list) {
+		
+		//이미 있는 채팅방인지 확인
+//		dao.checkAldyRoom(id_list);
+		
+		//참여 유저 등록
 		dao.user_room(chat_num, id_list);
+		
+		return chat_num;
 	}
 
 	/* msg_list에 메시지 내용 저장 + 메시지 읽은 유저에 본인 추가 */

@@ -1,12 +1,19 @@
 package net.nigne.wholegram.domain;
 
 public class Msg_listVO {
+	private int msg_list_num;
 	private int chat_chat_num;
 	private String msg;
 	private String written_user_id;
 	private String read_user_ids;
 	private String date;
 	
+	public int getMsg_list_num() {
+		return msg_list_num;
+	}
+	public void setMsg_list_num(int msg_list_num) {
+		this.msg_list_num = msg_list_num;
+	}
 	public int getChat_chat_num() {
 		return chat_chat_num;
 	}

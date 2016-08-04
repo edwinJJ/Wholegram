@@ -77,10 +77,8 @@ public class MessageController {
 		id_list += user_id;
 		ResponseEntity<Integer> entity = null;
 		try{
-			int chat_num = chatservice.chat_room();		//chat table에 채팅방 번호 생성
-			chatservice.user_room(chat_num, id_list);	//chat_user table에 채팅방 번호에 맞는 유저아이디 입력
-			
-			entity = new ResponseEntity<>(chat_num, HttpStatus.OK);
+			int chat_num = chatservice.chat_room(id_list);					//chat table에 채팅방 번호 생성
+			entity = new ResponseEntity<>(chat_num, HttpStatus.OK);	
 		} catch(Exception e) {
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -164,11 +162,8 @@ public class MessageController {
 		HttpSession session = request.getSession();
 		String user_id = (String)session.getAttribute("user_id");
 		
-		// 채팅방 삭제
-		chatservice.delRoom(chat_chat_num);
-		
-		// 새로 채팅방 다시 가져옴
-		ResponseEntity<List<Chat_userVO>> entity = null;
+		chatservice.delRoom(chat_chat_num);							// 채팅방 삭제
+		ResponseEntity<List<Chat_userVO>> entity = null;			// 갱신된 전체 채팅방 새로 다시 가져옴
 		try{						  
 			entity = new ResponseEntity<>(chatservice.getRoomUsers(user_id), HttpStatus.OK);
 		} catch(Exception e) {

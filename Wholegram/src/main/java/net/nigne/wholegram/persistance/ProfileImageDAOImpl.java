@@ -25,11 +25,11 @@ public class ProfileImageDAOImpl implements ProfileImageDAO {
 	@Override
 	public byte[] getProfileImage(String user_id) {
 		
-		byte[] test = session.selectOne(namespace + ".getProfileImage", user_id);
+/*		byte[] test = session.selectOne(namespace + ".getProfileImage", user_id);
 
 		System.out.println(test);
 		System.out.println(test.length);
-		
+*/		
 		return session.selectOne(namespace + ".getProfileImage", user_id);
 	}
 

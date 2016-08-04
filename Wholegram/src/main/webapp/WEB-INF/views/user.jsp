@@ -40,6 +40,7 @@
 		}
 		#profile_img {
 			float: left;
+			cursor: pointer;
 		}
 		#profile_all {
 			margin-left: 30%;
@@ -223,13 +224,11 @@
             } */
 		}
 		
+		/* 프로필 이미지 변경  */
 		$(document).ready(function(){
 			$("#file1").change(function() {
-				if(file1.value == "") {
-					alert("변경안됨");
-				}else {
-					alert(file1.value);
-					
+				if(file1.value == "") {}
+				else {
 		            var form = $('FILE_FORM')[0];
 		            var formData = new FormData(form);
 		            formData.append("fileObj", $("#file1")[0].files[0]);
@@ -241,9 +240,7 @@
                         data: formData,
                         type: 'POST',
                         success: function(result){
-                            alert("업로드 성공!!");
-                            document.getElementById("profile_img").src = result;
-                           // console.log(result);
+                            document.getElementById("profile_img").src = "/user/getByteImage?timestamp=" + new Date().getTime();	// user 페이지 처음 로딩될때 profile_img 태그의 src가 "/user/getByteImage"를 호출하는데, 여기서 이미지 등록 후, 다시 "/user/getByteImage" 를 호출해주면, 기존에 남아있던 캐시를 사용하게됨(값이 안바뀜). 그래서 뒤에 시간에 해당되는 값을 추가(새로운 호출로 인식됨) 
                         },
                         error : function(result) {
                         	alert("error : " + result);
@@ -251,8 +248,6 @@
 		            });
 				}
 			});
-			
-
 		});
 	
 		/* 브라우저창 끝을 알림 */
@@ -273,15 +268,10 @@
 <div id="profile_container">
 	<div id="profile"><br/><br/>
 		<div id="profile_layout">
-<!-- 			<input type='file' name='file1' style='display: none;'> 
-			<input type='text' name='file2' id='file2'> 
-			<input id="profile_img" type="image" src="/resources/Image/Penguins.jpg" onclick='document.all.file1.click();'/> -->
 			<form id="FILE_FORM" method="post" enctype="multipart/form-data" action="">
 				<input type="file" id="file1" name="file1" style="display:none;"> 
-				<img id="profile_img" src='/resources/Image/Penguins.jpg' border='0' onclick='document.all.file1.click();'>
-				<img alt="" src="/user/getByteImage" />
+				<img id="profile_img" src="/user/getByteImage" onclick="document.all.file1.click();"/>
 			</form>
-
 		</div>
 		<div id="profile_all">
 			<span id="user_id">${vo.user_id }</span>
