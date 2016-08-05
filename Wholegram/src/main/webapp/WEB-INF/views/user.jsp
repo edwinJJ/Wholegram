@@ -240,7 +240,12 @@
                         data: formData,
                         type: 'POST',
                         success: function(result){
-                            document.getElementById("profile_img").src = "/user/getByteImage?timestamp=" + new Date().getTime();	// user 페이지 처음 로딩될때 profile_img 태그의 src가 "/user/getByteImage"를 호출하는데, 여기서 이미지 등록 후, 다시 "/user/getByteImage" 를 호출해주면, 기존에 남아있던 캐시를 사용하게됨(값이 안바뀜). 그래서 뒤에 시간에 해당되는 값을 추가(새로운 호출로 인식됨) 
+                        	alert(result);
+                        	if(result == null || result == ""){
+                        		alert("파일 용량이 너무 큽니다(5MB이하).")
+                        	} else {
+                            	document.getElementById("profile_img").src = "/user/getByteImage?timestamp=" + new Date().getTime();	// user 페이지 처음 로딩될때 profile_img 태그의 src가 "/user/getByteImage"를 호출하는데, 여기서 이미지 등록 후, 다시 "/user/getByteImage" 를 호출해주면, 기존에 남아있던 캐시를 사용하게됨(값이 안바뀜). 그래서 뒤에 시간에 해당되는 값을 추가(새로운 호출로 인식됨) 
+                        	}
                         },
                         error : function(result) {
                         	alert("error : " + result);
