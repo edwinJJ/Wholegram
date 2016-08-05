@@ -51,8 +51,7 @@ public class UserController {
 	@Inject
 	private ProfileImageService profileImageService;
 	
-	private static int IMG_WIDTH;
-	private static int IMG_HEIGHT;
+
 	
 	/*로그아웃*/
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -185,7 +184,7 @@ public class UserController {
 	   
 	   byte[] Image = profileImageService.getProfileImage(user_id);				 // 프로필 이미지 추출		
 	   if(Image != null) {
-		   System.out.println("출력되는 이미지 크기 : " + Image.length);
+		   System.out.println("Image size : " + Image.length);
 	   }
 	   HttpHeaders headers = new HttpHeaders();
 	   headers.setContentType(MediaType.IMAGE_PNG);
@@ -207,53 +206,12 @@ public class UserController {
 		Iterator<String> itr = request.getFileNames();									
 		if (itr.hasNext()) {
 			
-			MultipartFile mpf = request.getFile(itr.next());							// 파일 추출
-			System.out.println("파일 사이즈 : " + mpf.getSize());
-			if(mpf.getSize() > 5000000) {
-				System.out.println("???");
+			MultipartFile mpf = request.getFile(itr.next());	// 파일 추출
+			if(mpf.getSize() > 10000000) {						// 10M 이상일 경우 업로드 거부
 				return null;
 			}
-
-			/* 1. How to convert MultipartFile to File */
-			File convFile = convert(mpf);
+			resizeFile = service.reSizeProfileImg(mpf);
 			
-			/* 2. How to convert MultipartFile to File */
-			//File convFile = multipartToFile(mpf);
-			
-			try{
-				BufferedImage originalImage = ImageIO.read(convFile);
-				int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
-					
-				IMG_WIDTH = originalImage.getWidth();
-				IMG_HEIGHT = originalImage.getHeight();
-				
-				if(convFile.length() > 300000) {	// 용량이 300KB이상일 경우 resize 해준다.
-
-					System.out.println("원본 높이 : " + originalImage.getHeight());
-					System.out.println("원본 가로 : " + originalImage.getWidth());
-					
-					BufferedImage resizeImageJpg = resizeImage(originalImage, type);
-					ImageIO.write(resizeImageJpg, "jpg", convFile); 
-						
-					BufferedImage resizeImagePng = resizeImage(originalImage, type);
-					ImageIO.write(resizeImagePng, "png", convFile); 
-						
-					BufferedImage resizeImageHintJpg = resizeImageWithHint(originalImage, type);
-					ImageIO.write(resizeImageHintJpg, "jpg", convFile); 
-						
-					BufferedImage resizeImageHintPng = resizeImageWithHint(originalImage, type);
-					ImageIO.write(resizeImageHintPng, "png", convFile); 
-					
-					System.out.println("수정 높이 : " + resizeImageJpg.getHeight());
-					System.out.println("수정 가로 : " + resizeImageJpg.getWidth());
-					resizeFile = convertToArray(resizeImageJpg, mpf.getContentType());
-				} else {
-					resizeFile = mpf.getBytes();	// 용량이 300KB 이하일 경우 원본을 그대로 저장
-				}
-			}catch(IOException e){
-				System.out.println("exception : " + e.getMessage());
-			}
-				
 			HashMap<String, Object> profileImage = new HashMap<String, Object>();	// 파일 정보 Map에 담아둠
 			profileImage.put("user_id", user_id);
 			profileImage.put("ImageFile", resizeFile);								// 파일 용량 resize 후 저장
@@ -263,144 +221,4 @@ public class UserController {
 		entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
 		return entity;
 	}
-	
-	
-	/*MultipartFile을 File로 변환*/
-	public File convert(MultipartFile file)
-	{    
-	    File convFile = new File(file.getOriginalFilename());
-	    try {
-			convFile.createNewFile();
-		    FileOutputStream fos = new FileOutputStream(convFile); 
-		    fos.write(file.getBytes());
-		    fos.close(); 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-	    return convFile;
-	}
-	
-	/*MultipartFile을 File로 변환*/
-	public File multipartToFile(MultipartFile multipart)
-	{
-	        File convFile = new File( multipart.getOriginalFilename());
-	        try {
-				multipart.transferTo(convFile);
-			} catch (IllegalStateException | IOException e) {
-				e.printStackTrace();
-			}
-	        return convFile;
-	}
-	
-	
-	
-	/* 파일 용량(크기) 조절 */
-    private static BufferedImage resizeImage(BufferedImage originalImage, int type){
-		if(IMG_WIDTH > IMG_HEIGHT) {						// 가로가 더 클 때
-			double result = (double)IMG_WIDTH / (double)IMG_HEIGHT;
-			if(result >= 2) {								// 가로 세로 비율 2 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1000;
-			} else if(result >= 1.8 && result < 2) {		// 1.8 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1100;
-			} else if(result >= 1.6 && result < 1.8){		// 1.6 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1200;
-			} else if(result >= 1.5 && result < 1.6) {		// 1.5 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1300;
-			} else if(result >= 1.4 && result < 1.5) {		// 1.4 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1400;
-			} else if(result >= 1.3 && result < 1.4) {		// 1.3 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1500;
-			} else if(result >= 1.25 && result < 1.3) {		// 1.25 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1550;
-			} else if(result > 1.15 && result < 1.25) {		// 1.17 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1650;
-			} else if(result > 1 && result < 1.15) {		// 1.1 : 1
-				IMG_WIDTH = 2000;
-				IMG_HEIGHT = 1800;
-			} 
-		} else if(IMG_WIDTH < IMG_HEIGHT) {					// 세로가 더 클 때
-			double result = (double)IMG_HEIGHT / (double)IMG_WIDTH;
-			if(result >= 2) {								// 세로 가로 비율 2 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1000;
-			} else if(result >= 1.8 && result < 2) {		// 1.8 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1100;
-			} else if(result >= 1.6 && result < 1.8){		// 1.6 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1200;
-			} else if(result >= 1.5 && result < 1.6) {		// 1.5 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1300;
-			} else if(result >= 1.4 && result < 1.5) {		// 1.4 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1400;
-			} else if(result >= 1.3 && result < 1.4) {		// 1.3 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1500;
-			} else if(result >= 1.25 && result < 1.3) {		// 1.25 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1550;
-			} else if(result > 1.15 && result < 1.25) {		// 1.17 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1650;
-			} else if(result > 1 && result < 1.15) {		// 1.1 : 1
-				IMG_HEIGHT = 2000;
-				IMG_WIDTH = 1800;
-			}
-		} else {											// 1:1
-			IMG_WIDTH = 2000;
-			IMG_HEIGHT = 2000;
-		}
-    	
-		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
-		Graphics2D g = resizedImage.createGraphics();
-		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
-		g.dispose();
-		return resizedImage;
-    }
-	
-    private static BufferedImage resizeImageWithHint(BufferedImage originalImage, int type){
-		
-		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
-		Graphics2D g = resizedImage.createGraphics();
-		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
-		g.dispose();	
-		g.setComposite(AlphaComposite.Src);
-
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-		RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING,
-		RenderingHints.VALUE_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-		RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		return resizedImage;
-    }	
-	
-	/*BufferedImage를 byte[]로 변환*/
-    private static byte[] convertToArray(BufferedImage image, String contentType) throws IOException { 
-        byte[] imageInByte; 
- 
-        String typeName = "jpg"; 
-        if (contentType.equals(MediaType.IMAGE_PNG)) 
-            typeName = "png"; 
- 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-        ImageIO.write(image, typeName, baos); 
-        baos.flush(); 
-        imageInByte = baos.toByteArray(); 
-        baos.close(); 
- 
-        return imageInByte; 
-    } 
 }

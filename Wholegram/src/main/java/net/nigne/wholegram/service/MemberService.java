@@ -2,6 +2,8 @@ package net.nigne.wholegram.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import net.nigne.wholegram.domain.MemberVO;
 
 public interface MemberService {
@@ -14,4 +16,5 @@ public interface MemberService {
 	public int comparePasswd(String passwd_real, String passwd);
 	public void updatePasswd(MemberVO vo);
 	public List<MemberVO> getFollowinguser_Profile(List<String> user_ids);
+	public byte[] reSizeProfileImg(MultipartFile mpf);
 }
