@@ -225,10 +225,12 @@ input[type=checkbox].w3-check:disabled+.w3-validate{color:#f44336},input[type=ra
 	border-bottom: 1px solid #ccc;
 }
 .w3-border2{
-	width: 600px;
-	height: 750px;
-	margin-top: 1%;
-	margin-left: 28%;
+	position: absolute;
+	width: 380px;
+	height: 400px;
+	z-index: 1;
+	float: right;
+	margin-left: 63%;
 	border-left: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
 	border-right: 1px solid #ccc;
@@ -398,3 +400,39 @@ input[type=checkbox].w3-check:disabled+.w3-validate{color:#f44336},input[type=ra
 .w3-border-pale-yellow,.w3-hover-border-pale-yellow:hover{border-color:#ffffd7!important}.w3-border-pale-blue,.w3-hover-border-pale-blue:hover{border-color:#e7ffff!important}
 .w3-opacity,.w3-hover-opacity:hover{opacity:0.60;filter:alpha(opacity=60)}
 .w3-text-shadow{text-shadow:1px 1px 0 #444}.w3-text-shadow-white{text-shadow:1px 1px 0 #ddd}
+
+
+
+
+
+.newsef {
+	height:50px;
+	width:100%;
+	border-bottom: 1px solid #ccc;
+}
+
+#news_box {
+/* 	position: fixed;
+	z-index: 1; */
+}
+
+.w3-third{
+/* 	position: absolute;
+	z-index: 1;
+	float: right;
+	margin-left: 63%;
+ */	
+/* 	width: 0;
+	height: 0;
+	border-left: 50px solid transparent;
+	border-right: 50px solid transparent;
+	border-bottom: 50px solid #F6F6F6; */
+}
+
+.scope {
+
+/* 	width: 1500px;
+	height: auto;
+	float:right;
+	background: #F8F8F8; */
+}

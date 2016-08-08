@@ -183,12 +183,11 @@
 		var sessionId = "${sessionId}";				// 접속자 ID
 	
 		function profile_edit() {
-			location.href="/user/update_form";
+			location.href="/user/update_form";		// 프로필 수정 페이지 이동
 		}
 		
-		$(document).ready(function(e) {
-			//confirm
-			$('a#confirm').click(function() {
+		$(document).ready(function(e) {				
+			$('a#confirm').click(function() {		// 
 				modal({
 					type: 'confirm',
 					title: 'Logout',
@@ -241,12 +240,26 @@
 		    }
 		}); 
 		
-		
+		setInterval(function(){
+		    $.ajax({ 
+		    	url: "/user/test",
+		    	datatype: "json",
+		    	type:'POST',
+		    	success: function(result){
+		    		console.log("abc");
+		    	},
+		    	error: function(result) {
+		    		
+		    	}
+		    });
+		}, 3000);
 	</script>
 </head>
 <body>
 <!-- 상단의 head 부분 --><!-- test -->
 <%@include file="./header.jsp" %>
+
+<div id="news_box"></div>
 
 <!-- 게시물 사진 나오기 전까지의 프로필정보 / Browser창 size 768전후로 나뉘어짐-->
 <div id="profile_container">

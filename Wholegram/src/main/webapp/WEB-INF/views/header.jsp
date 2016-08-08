@@ -1,6 +1,8 @@
 
 <link rel="stylesheet" href="/resources/css/header.css">  
 <script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
+<script src="/resources/js/news.js"></script>
+<link rel="stylesheet" href="/resources/css/w3.css">
  
 <div id="header" style="background: #FFFFFF; width: 100%">
 	<a href="/board"><span id="header-logo"><input type="image" src="/resources/Image/insta-logo.jpg" name="logo"/></span></a>
@@ -12,7 +14,7 @@
 		</i>
 	</a>
 	<a id="header-new_person" href="/person"><i class="fa fa-users fa-2x" style="color:black;"></i></a>
-	<a id="header-news" href="#"><i class="fa fa-heart-o fa-2x" style="color:black;"></i></a>
+	<a id="header-news" href="#" onclick="showNewsForm()"><i class="fa fa-heart-o fa-2x" style="color:black;"></i></a>
 	<a id="header-user" href="/login"><i class="fa fa-user fa-2x" style="color:black;"></i></a>
 </div>
 

@@ -184,6 +184,7 @@ public class WSHandler extends TextWebSocketHandler {
 	@Transactional
 	private void sendMessage(WebSocketSession session, String msg) {
 		
+		
 		Interpretation interpre = new Interpretation();					// msg 해석
 		interpre.interpre_Msg(msg);								
 		

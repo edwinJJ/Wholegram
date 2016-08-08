@@ -191,7 +191,7 @@ public class UserController {
 	   return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);
 	}
 	
-	/* 프로필 이미지 등록 & 출력 */
+	/* 프로필 이미지 등록 */
 	@RequestMapping(value = "/change_profile", method = RequestMethod.POST)
 	public ResponseEntity<Object> uploadFile(MultipartHttpServletRequest request) {
 
@@ -206,8 +206,8 @@ public class UserController {
 		Iterator<String> itr = request.getFileNames();									
 		if (itr.hasNext()) {
 			
-			MultipartFile mpf = request.getFile(itr.next());	// 파일 추출
-			if(mpf.getSize() > 10000000) {						// 10M 이상일 경우 업로드 거부
+			MultipartFile mpf = request.getFile(itr.next());						// 파일 추출
+			if(mpf.getSize() > 10000000) {											// 10M 이상일 경우 업로드 거부
 				return null;
 			}
 			resizeFile = service.reSizeProfileImg(mpf);
@@ -219,6 +219,15 @@ public class UserController {
 		} else {}
 		
 		entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		return entity;
+	}
+
+	/* 프로필 이미지 등록 */
+	@RequestMapping(value = "/test", method = RequestMethod.POST)
+	public ResponseEntity<Object> test(HttpServletRequest request) {
+
+		ResponseEntity<Object> entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		
 		return entity;
 	}
 }
