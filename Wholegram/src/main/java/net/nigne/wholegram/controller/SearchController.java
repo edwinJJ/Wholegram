@@ -36,7 +36,6 @@ public class SearchController {
 	public ResponseEntity<List<MemberVO>> searchText(@PathVariable("idx")String idx,Locale locale, Model model) {
 		ResponseEntity<List<MemberVO>> entity = null;
 		DebugStream.activate();
-		System.out.println(idx);
 		List<MemberVO> list = sService.getSearch(idx);
 		try{
 		entity = new ResponseEntity<>(list,HttpStatus.OK);

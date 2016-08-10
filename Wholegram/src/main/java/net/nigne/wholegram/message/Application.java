@@ -36,27 +36,27 @@ public class Application {
 	}
 
 	public void setUserInfo(Map<String, Object> userInfo) {
-		this.userInfo.add(userInfo);
-		
-/*		System.out.println("test1");
-		
+/*		Iterator<Map<String, Object>> extract = this.userInfo.iterator();
+		while(extract.hasNext()) {
+			Map<String, Object> extract2 = new HashMap<String, Object>();
+			extract2 = extract.next();
+			extract2.get(key)
+		}
+*/		this.userInfo.add(userInfo);
+
+		int count = 0;
 		List<Map<String, Object>> test = this.userInfo;
-		System.out.println("test2");
 		Iterator<Map<String,Object>> it = test.iterator();
 		while(it.hasNext()) {
-			System.out.println("test3");
 			Map<String,Object> mp = new HashMap<String, Object>();
-			System.out.println("test4");
 			mp = it.next();
-			System.out.println("test5");
 			Iterator itt = mp.entrySet().iterator();
 			while(itt.hasNext()) {
-				System.out.println("test6");
 				Entry entry = (Entry) itt.next();
-				System.out.println("test7");
-				System.out.println("(접속)웹소켓 접속자 현황 - ID : " + entry.getKey() + " , session : " + entry.getValue());
+				System.out.println(count + "(접속)웹소켓 접속자 현황 - ID : " + entry.getKey() + " , session : " + entry.getValue());
+				count++;
 			}
-		}*/
+		}
 	}
 	
 	// 웹소켓 접속이 끊겼을때, 관리 목록에서 제거해준다
@@ -76,13 +76,18 @@ public class Application {
 			userInfo.remove(result_count);
 		}
 		
-/*		Iterator<Map<String,Object>> it = userInfo.iterator();
+/*		int c = 0;
+		List<Map<String, Object>> test = userInfo;
+		Iterator<Map<String,Object>> it = test.iterator();
 		while(it.hasNext()) {
 			Map<String,Object> mp = new HashMap<String, Object>();
 			mp = it.next();
-			Entry entry = (Entry) mp.entrySet().iterator();
-			System.out.println("(삭제)웹소켓 접속자 현황 - ID : " + entry.getKey() + " , session : " + entry.getValue());
+			Iterator itt = mp.entrySet().iterator();
+			while(itt.hasNext()) {
+				Entry entry = (Entry) itt.next();
+				System.out.println(c + "(삭제후)웹소켓 접속자 현황 - ID : " + entry.getKey() + " , session : " + entry.getValue());
+				c++;
+			}
 		}*/
-		
 	}
 }

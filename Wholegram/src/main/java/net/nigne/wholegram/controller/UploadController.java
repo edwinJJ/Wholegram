@@ -50,8 +50,11 @@ public class UploadController {
 	private BoardService bs;
 	
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
-	public ModelAndView signUp(Locale locale, Model model) {
-	
+	public ModelAndView signUp(Locale locale, Model model, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		model.addAttribute( "sessionId", user_id );
+		
 		return new ModelAndView("upload");
 	}
 	
@@ -59,7 +62,6 @@ public class UploadController {
 	@ResponseBody
 	@RequestMapping(value = "/uploadw", method = RequestMethod.POST)
 	public ModelAndView uploadAjax2(Locale locale, Model model) {
-		System.out.println("test");
 		return new ModelAndView("upload");
 	}
 	

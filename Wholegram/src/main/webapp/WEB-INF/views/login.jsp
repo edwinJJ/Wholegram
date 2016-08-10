@@ -13,7 +13,7 @@
    <script src ="resources/js/signup.js"></script>
    <script type="text/javascript">
 
-   localStorage.setItem("chat", "true");
+   localStorage.setItem("chat", "false");
    
    function slider(){
       $('.slide').bxSlider({

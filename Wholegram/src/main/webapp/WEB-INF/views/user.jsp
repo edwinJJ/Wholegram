@@ -203,7 +203,7 @@
 		/* 프로필 이미지 변경  */
 		$(document).ready(function(){
 			$("#file1").change(function() {
-				if(file1.value == "") {}
+				if(this.value == "") {}
 				else {
 		            var form = $('FILE_FORM')[0];
 		            var formData = new FormData(form);
