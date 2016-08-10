@@ -43,7 +43,6 @@ public class SignController{
 	
 	@RequestMapping(value = "/checkId/{user_id}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> CheckId(@PathVariable("user_id") String id) {
-		System.out.println(id);
 		ResponseEntity<Boolean> entity = null;
 		try{
 			entity = new ResponseEntity<>(checkValue.status(sign.checkId(id)),HttpStatus.OK);
@@ -52,7 +51,6 @@ public class SignController{
 		}
 		return entity;
 	}
-	
 
 	@RequestMapping(value = "/checkEmail/{email}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> CheckEmail(@PathVariable("email") String email) {

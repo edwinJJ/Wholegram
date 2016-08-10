@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import net.nigne.wholegram.domain.BoardVO;
+import net.nigne.wholegram.common.RepCriteria;
 import net.nigne.wholegram.domain.ReplyVO;
 import net.nigne.wholegram.persistance.ReplyDAO;
 
@@ -28,5 +28,11 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	public void delete(int reply_num) {
 		dao.delete(reply_num);	
+	}
+	
+	@Override
+	public List<ReplyVO> getListLimit(RepCriteria rc) {
+		// TODO Auto-generated method stub
+		return dao.getListLimit(rc);
 	}
 }

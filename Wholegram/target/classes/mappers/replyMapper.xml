@@ -12,8 +12,10 @@
 		insert into reply( reply_num, user_id, content, reg_date, board_num )
 		values( #{reply_num}, #{user_id}, #{content}, #{reg_date}, #{board_num} )
 	</insert>
-	
 	<delete id="delete">
 		delete from reply where reply_num = #{reply_num}
 	</delete>
+	<select id="getListLimit" resultType="net.nigne.wholegram.domain.ReplyVO">
+		select * from reply where board_num = #{board_num} order by reg_date desc limit #{start},#{end}
+	</select>
 </mapper>

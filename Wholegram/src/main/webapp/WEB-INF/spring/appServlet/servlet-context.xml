@@ -15,7 +15,7 @@
 	
 	<!-- 웹소켓 관련 설정 -->
 	<websocket:handlers>
-	 	<websocket:mapping handler="wsHandler" path="/chat"/>
+	 	<websocket:mapping handler="wsHandler" path="/chat/init"/>
 	</websocket:handlers>
 	<beans:bean id="wsHandler" class="net.nigne.wholegram.message.WSHandler"></beans:bean>
 	

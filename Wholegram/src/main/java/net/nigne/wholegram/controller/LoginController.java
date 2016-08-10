@@ -2,6 +2,7 @@ package net.nigne.wholegram.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import net.nigne.wholegram.common.Application;
 import net.nigne.wholegram.common.Status;
+import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
+import net.nigne.wholegram.message.Application;
+import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.LoginService;
 import net.nigne.wholegram.service.MemberService;
@@ -36,7 +39,7 @@ public class LoginController {
 	private LoginService loginService;
 	
 	@Inject
-	private Application application;
+	private BoardService bdservice;
 	
 	/* Header의 user아이콘을 통해 user페이지로 넘어올 시 */  
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -46,11 +49,14 @@ public class LoginController {
 		String user_id = (String)session.getAttribute("user_id");
 		ModelAndView mav = new ModelAndView();
 		
+		model.addAttribute( "sessionId", user_id );
 		/* user페이지 이동 */
 		if(user_id != null) {
 			MemberVO vo = service.MemInfo(user_id);
+			List<BoardVO> list = bdservice.getUserLimitList(vo);
 			mav.setViewName("user");
 			mav.addObject("vo", vo);
+			mav.addObject("list", list);
 		} else {
 			mav.setViewName("login");
 		}
@@ -61,9 +67,6 @@ public class LoginController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ModelAndView loginCheck(MemberVO vo_chk, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		/*WebSocket활용을 위한 접속 Id저장*/
-/*		application.setUser_id(vo_chk.getUser_id());*/
-		
 		/* pw 암호화 및 로그인 가능상태 설정 */
 		vo_chk.setPasswd(encrypt.shaEncrypt(vo_chk.getPasswd()));
 		Status loginStatus = loginService.LoginStatus(service.compare(vo_chk));
@@ -75,10 +78,12 @@ public class LoginController {
 			HttpSession session = request.getSession();
 			session.setAttribute("user_id", vo_chk.getUser_id());
 			MemberVO vo = service.MemInfo((String)session.getAttribute("user_id"));
+			List<BoardVO> list = bdservice.getUserLimitList(vo);
 			
 			// 이동할 페이지, 사용자 정보 설정
 			mav.setViewName("user");
 			mav.addObject("vo", vo);
+			mav.addObject("list", list);
 			model.addAttribute( "sessionId", vo_chk.getUser_id() );
 		} else { 
 			/* 로그인 실패 */

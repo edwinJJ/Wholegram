@@ -1,4 +1,4 @@
-package net.nigne.wholegram.common;
+package net.nigne.wholegram.message;
 
 public class DistinguishHandleMessage {
 

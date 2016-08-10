@@ -6,41 +6,42 @@
 <head>
    <meta charset="utf-8" />
    <title>Login</title>
-   <script type="text/javascript" src="resources/js/jquery-1.8.3.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
    <script type="text/javascript" src="resources/js/jquery.easing.1.3.min.js"></script>
    <script type="text/javascript" src="resources/js/jquery.bxslider.js"></script>
    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
    <script src ="resources/js/signup.js"></script>
    <script type="text/javascript">
-	   localStorage.setItem("chat", "false");
-	   
-	   function slider(){
-	      $('.slide').bxSlider({
-	         mode: 'fade',
-	         auto: true,
-	         pager: false,
-	         controls: false,
-	         speed:1800
-	      });
-	   };
-	   
-	   function doLogin() {
-		   if( login_form.user_id.value == "" ) {
-			   alert( "아이디를 입력해주세요." );
-			   return;
-		   }
-		   
-		   if( login_form.passwd.value == "" ) {
-			   alert( "패스워드를 입력해주세요." );
-			   return;
-		   }
-		   
-		   login_form.submit();
+
+   localStorage.setItem("chat", "true");
+   
+   function slider(){
+      $('.slide').bxSlider({
+         mode: 'fade',
+         auto: true,
+         pager: false,
+         controls: false,
+         speed:1800
+      });
+   };
+   
+   function doLogin() {
+	   if( login_form.user_id.value == "" ) {
+		   alert( "아이디를 입력해주세요." );
+		   return;
 	   }
-	
-	   $(document).ready(function(){
-	      slider();
-	   });
+	   
+	   if( login_form.passwd.value == "" ) {
+		   alert( "패스워드를 입력해주세요." );
+		   return;
+	   }
+	   
+	   login_form.submit();
+   }
+
+   $(document).ready(function(){
+      slider();
+   });
    </script>
    
    <style>

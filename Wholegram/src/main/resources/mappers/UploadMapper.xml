@@ -4,6 +4,6 @@
 <mapper namespace="net.nigne.wholegram.mapper.UploadMapper">
 	
 	<insert id="Boardup" >
-		insert into Board(user_id,content,media,place,media_type,tag) values(#{user_id},#{content},#{media},#{place},#{media_type},#{tag})
+		insert into board(user_id,content,media,place,media_type,tag,media_thumnail) values(#{user_id},#{content},#{media},#{place},#{media_type},#{tag},#{media_thumnail})
 	</insert>
 </mapper>

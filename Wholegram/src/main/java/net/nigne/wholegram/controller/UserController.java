@@ -1,18 +1,10 @@
 package net.nigne.wholegram.controller;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,10 +24,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.nigne.wholegram.common.DebugStream;
+import net.nigne.wholegram.common.RepCriteria;
+import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
+import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.MemberService;
 import net.nigne.wholegram.service.ProfileImageService;
+import net.nigne.wholegram.service.ReplyService;
 
 
 @RestController
@@ -45,6 +41,12 @@ public class UserController {
 	@Inject
 	private MemberService service;
 
+	@Inject
+	private BoardService bd;
+	
+	@Inject
+	private ReplyService rService;
+	
 	@Inject
 	private EncryptService encrypt;
 	
@@ -68,6 +70,9 @@ public class UserController {
 	public ModelAndView update_form(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
+
+		model.addAttribute( "sessionId", user_id );
+		
 		MemberVO vo = service.MemInfo(user_id);
 		ModelAndView mav = new ModelAndView();		
 		mav.setViewName("user_profile");
@@ -99,15 +104,13 @@ public class UserController {
 	/*Email 변경시 중복 체크*/ 
 	@RequestMapping(value = "/email_chk/{em}", method = RequestMethod.POST)
 	public ResponseEntity<Integer> email_chk(@PathVariable("em") String em, HttpServletRequest request) {
-		System.out.println("일로 오니?");
+		
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
 		em = em + ".com";
 		MemberVO vo = service.MemInfo(user_id);
 		
 		ResponseEntity<Integer> entity = null;
-		System.out.println("email : " + vo.getEmail());
-		System.out.println("em : " + em);
 		if(!(vo.getEmail().equals(em))){
 			try{
 				entity = new ResponseEntity<>(service.compareEmail(em), HttpStatus.OK);
@@ -128,12 +131,32 @@ public class UserController {
 		session.setAttribute("user_id", vo.getUser_id());
 		return new ModelAndView("redirect:/user/update_form");
 	}
-
+	/*유저 페이지에서 게시물당 댓글 스크롤링 처리*/
+	@RequestMapping(value = "/getNum/{no}/{rep_idx}", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> getNum(@PathVariable("no") int board_num,@PathVariable("rep_idx") int rep_idx) {
+		ResponseEntity<Map<String, Object>> entity = null;
+		BoardVO vo = new BoardVO();
+		vo.setBoard_num(board_num);
+		RepCriteria rc = new RepCriteria(board_num,rep_idx);
+		Map<String, Object> map = new HashMap<>();
+		map.put("bd", bd.getOne(vo));
+		map.put("rp",rService.getListLimit(rc));
+		try{
+			entity = new ResponseEntity<>(map,HttpStatus.OK);
+		}catch(Exception e){
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
 	/*비밀번호 변경 페이지*/
 	@RequestMapping(value = "/passwd_form", method = RequestMethod.GET)
 	public ModelAndView passwd_form(Locale locale, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
+
+		model.addAttribute( "sessionId", user_id );
+		
 		MemberVO vo = service.MemInfo(user_id);
 		ModelAndView mav = new ModelAndView();		
 		mav.setViewName("user_passwd");
@@ -183,9 +206,6 @@ public class UserController {
 	   String user_id = (String) session.getAttribute("user_id");
 	   
 	   byte[] Image = profileImageService.getProfileImage(user_id);				 // 프로필 이미지 추출		
-	   if(Image != null) {
-		   System.out.println("Image size : " + Image.length);
-	   }
 	   HttpHeaders headers = new HttpHeaders();
 	   headers.setContentType(MediaType.IMAGE_PNG);
 	   return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);

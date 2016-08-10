@@ -9,8 +9,11 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.nigne.wholegram.common.Criteria;
+import net.nigne.wholegram.common.HashTagScrollCriteria;
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.HeartVO;
+import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.persistance.BoardDAO;
 
 @Service
@@ -22,8 +25,8 @@ public class BoardServiceImpl implements BoardService {
 	같은 게시물 번호를 있다면 그 게시물에 setAldy_heart를 true를 적용시켜, view단에서 이를 활용하여, 좋아요 누른 게시물, 누르지 않은 게시물을 나타내준다.*/
 	@Transactional
 	@Override
-	public List<BoardVO> getList(List<HeartVO> hList) {
-		List<BoardVO> bList = dao.getList();
+	public List<BoardVO> getList(List<HeartVO> hList, String user_id, int startNum, int pagePerBlock ) {
+		List<BoardVO> bList = dao.getList( user_id, startNum, pagePerBlock );
 		Iterator<BoardVO> it_bList = bList.iterator();
 		ArrayList<BoardVO> bhList = new ArrayList<BoardVO>();
 		
@@ -42,11 +45,6 @@ public class BoardServiceImpl implements BoardService {
 			bhList.add(bv);
 		}
 		return bhList;
-	}
-
-	@Override
-	public BoardVO get( BoardVO vo ) {
-		return dao.get( vo );
 	}
 
 	/* 게시물 좋아요 (+1/-1) */
@@ -81,10 +79,82 @@ public class BoardServiceImpl implements BoardService {
 		return heartList;
 	}
 
+	//전체 게시물의 개수 가져오기
+	@Override
+	public int getTotalCount() {
+		return dao.getTotalCount();
+	}
+
+	
+	@Override
+	public long getTime(int board_num) {
+		return dao.getTime(board_num);
+	}
+
+	
+	@Override
+	public List<BoardVO> get(List<MemberVO> mList) {
+		return dao.get(mList);
+	}
+
+	
+	@Override
+	public List<List<BoardVO>> getbdList(List<MemberVO> mbList) {
+		return dao.getbdList(mbList);
+	}
+
+	// 게시물 업로드
 	@Override
 	public void BoardUP(BoardVO vo) {
-		dao.BoardUP(vo);
-		
+		dao.BoardUP(vo);	
+	}
+
+	// user 화면 로딩 되었을경우 첫번째로 게시물을 가져옴
+	@Override
+	public List<BoardVO> getUserLimitList(MemberVO vo) {
+		// TODO Auto-generated method stub
+		return dao.getUserLimitList(vo);
+	}
+
+	
+	// user 화면에서 스크롤 끝가지 갔을 경우 게시물을 추가로 가져옴
+	@Override
+	public List<BoardVO> getScrollList(Criteria cr) {
+		// TODO Auto-generated method stub
+		return dao.getScrollList(cr);
+	}
+
+	// 해당유저의 모든 게시물의 갯수 가져옴
+	@Override
+	public int getUserCount(Criteria cr) {
+		return dao.getUserCount(cr);
+	}
+
+	// 해시태그 키워드들을 검색
+	@Override
+	public List<BoardVO> searchIterate(List<String> list) {
+		return dao.searchIterate(list);
+	}
+
+	// 해시태그 키워드를 사용한 게시물 개수
+	@Override
+	public int searchCount(List<String> list) {
+		// TODO Auto-generated method stub
+		return dao.searchCount(list);
+	}
+
+	// 해시태그 검색결과에서 스크롤 처리
+	@Override
+	public List<BoardVO> SearchScrollIterate(HashTagScrollCriteria list) {
+		// TODO Auto-generated method stub
+		return dao.SearchScrollIterate(list);
+	}
+
+	//user화면에서 유저의 정보 가져옴
+	@Override
+	public BoardVO getOne(BoardVO vo) {
+		// TODO Auto-generated method stub
+		return	dao.getOne( vo );
 	}
 
 }

@@ -13,4 +13,6 @@ public interface MemberDAO {
 	public String checkPasswd(int mem_no);
 	public void updatePasswd(MemberVO vo);
 	public List<MemberVO> getFollowinguser_Profile(List<String> user_ids);
+	public List<MemberVO> getNewPerson( String user_id );
+	public List<MemberVO> getKnowablePerson( String user_id );
 }

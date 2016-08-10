@@ -23,6 +23,19 @@ li {
 	list-style: none;
 }
 
+input {
+	outline-style: none; /* �룷而ㅼ뒪�떆 諛쒖깮�븯�뒗 �슚怨� �젣嫄� */
+	-webkit-appearance: none; /* 釉뚮씪�슦��蹂� 湲곕낯 �뒪���씪留� �젣嫄� */
+	-moz-appearance: none;
+	appearance: none;
+	border-style: none;
+}
+
+input[type="button"] {
+	background: #fff;
+	color:  #b3b3b3;
+}
+
 .fr {
 	float: right;
 }
@@ -43,6 +56,15 @@ li {
 	display: block;
 }
 
+.fwb {
+	font-weight: bold;
+}
+
+#heart, #heart i {
+	width: 28px !important;
+	height: 28px !important; 
+}
+
 #section {
 	max-width: 600px;
 	height: 100%;
@@ -54,14 +76,14 @@ li {
 }
 
 #cnt_board {
-	height: auto;
-	background: #fff;
-	border: 1px solid #efefef;
+	height: 100%;
 }
 
 #cnt_header {
-	height: 36px;
-	padding: 14px 20px;
+	height: 50px;
+	padding: 5px 20px;
+	border: 1px solid #efefef;
+	background: #fff;
 }
 
 #cnt_user_img img {
@@ -74,12 +96,23 @@ li {
 #cnt_header_user {
 	margin-left: 5px;
 	padding-left: 5px;
-	height: 36px;
+	height: auto;
 }
+
 
 #cnt_header_user a {
 	display: block;
-	height: 18px;
+	padding: 0;
+	margin: 0;
+}
+
+
+
+#cnt_board_img {
+	border-left: 1px solid #efefef;
+	border-right: 1px solid #efefef;
+	padding: 0;
+	margin: 0;
 }
 
 #cnt_board_img img {
@@ -88,37 +121,35 @@ li {
 	height: auto;
 }
 
-#cnt_header_date {
-	margin-top: 6px;
+.reg_date {
+	margin-top: 10px;
 }
 
 #cnt_board_content {
-	padding: 0 24px;
-	height: auto;
+	background: #fff;
+	padding: 15px 24px;
+
+	margin-bottom: 50px;
+	border: 1px solid #efefef;
 }
 
-#cnt_board_heart {
-	padding-top: 15px;
+.title {
+	font-size: 15px;
+	font-weight: 200;
+	margin-top: 10px;
 }
 
 #cnt_reply {
+	background: #fff;
 	width: 100%;
-	height: 67px;
-	margin-top: 15px;
+	height: 60px;
+	padding-bottom: 10px;
 	border-top: 1px solid #efefef;
 	display: table;
 }
 
-#cnt_reply .bk_h {
-	display: none;
-}
-
 .test {
-	display: none;	
-}
-
-.test2 {
-	display: none;	
+	color: #efefef;
 }
 
 #reply {
@@ -138,7 +169,11 @@ li {
 	padding-top: 15%;
 }
 
-/* option 메뉴 팝업  */
+#cnt_reply input[type="text"] {
+	padding-left: 15px;
+}
+
+/* option �뙘�뾽 */
 #popup_wrapper {
 	width: 100%;
 }
@@ -167,11 +202,11 @@ li {
 }
 
 #popupContents  li {
+	border: 1px solid #efefef;
 	background: #fff;
 	width: 478px;
 	height: 50px;
 	padding: 0px 16px;
-	border: 1px solid #dadada;
 	text-align: center;
 	line-height: 50px;
 }
@@ -185,14 +220,4 @@ li {
 #popupContents li:nth-child(1), #popupContents li:nth-child(2),
 	#popupContents li:nth-child(3) {
 	border-bottom: none;
-}
-
-@media ( max-width : 640px) {
-	body, h1 {
-		font-size: 15px;
-		font-weight: 200;
-	}
-	.user_id {
-		font-weight: bold;
-	}
 }

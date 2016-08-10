@@ -1,12 +1,15 @@
 package net.nigne.wholegram.message;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -23,15 +26,10 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.google.gson.Gson;
 
-import net.nigne.wholegram.common.Application;
-import net.nigne.wholegram.common.DistinguishHandleMessage;
-import net.nigne.wholegram.common.Interpretation;
-import net.nigne.wholegram.common.Status;
 import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.Msg_listVO;
 import net.nigne.wholegram.service.ChatService;
 
-@RequestMapping("/chat")
 public class WSHandler extends TextWebSocketHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(WSHandler.class);
@@ -55,7 +53,6 @@ public class WSHandler extends TextWebSocketHandler {
 	/*연결 됫을 때*/
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		
 		//사용자 정보를 담는다.
 		wsSession.add(session);
 		
@@ -86,28 +83,22 @@ public class WSHandler extends TextWebSocketHandler {
 		 * 2. 새로운 채팅방생성을 알리는 용도인지, 
 		 * 3. 유저들간의 메시지 통신을 위한 메시지인지 구별과정 */
 		String msgtoString = message.getPayload().toString();						// 메시지만을 담은 String으로 변환 
-		
 		DistinguishHandleMessage DHM = new DistinguishHandleMessage();				// 메시지 분석과정
 		DHM.interprePreviousMessage(msgtoString);
 		String result = DHM.getInterPreMessage();
 		
 		if(result.equals(Login)) {													// WebSocket 접속알림 메시지일 경우
-			
 			String user_id = msgtoString.substring(8);								// ID 추출 & application에 저장
 			application.setUser_id(user_id);	
-			
 			Map<String, Object> data = new HashMap<>();								// (접속자ID, WebSocket session) 형태의 Map으로 저장
 			data.put(application.getUser_id(), session);
-			
 			application.setUserInfo(data);											// 'data'를 application에 List형식으로 담아둔다
-			
 			/* 안 읽은 메시지가 있으면 헤더에 알림표시를 띄어준다 */
 			List<Integer> roomNumber = chatservice.getRoomList(user_id);			// 유저가 포함되어있는 채팅방 번호만 추출
 			List<Integer> roomList = chatservice.checkReadRoom(roomNumber, user_id);// 최신 메시지를 읽지 않은 채팅방 리스트 추출
 			if(roomList.size() > 0) {												// 안 읽은 메시지가 1개라도 있으면 헤더에 메시지 알림을 띄우기위해 메시지를 보내준다
 				sendMessageNotice(session);											
 			}
-			
 		} else if(result.equals(Notic)){											// 새로운 채팅방생성됨을 알리는 용도
 			sendNewRoom(msgtoString);
 		} else { 																	// 접속 후, 유저들간이 메시지 전송용도일 경우
@@ -192,16 +183,28 @@ public class WSHandler extends TextWebSocketHandler {
 		chatservice.msgStorage(data);									
 		
 		int chat_num = interpre.getmsg_Chatnum();						// 채팅방 번호 가져옴
-		
+		System.out.println("채팅방 번호 : " + chat_num);
 		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();		// 채팅방에 해당되는 유저 List를 가져옴
-		userList = chatservice.userList(chat_num);						
+		userList = chatservice.userList(chat_num);			
+		
+		System.out.println("유저리스트 담은 객체 : " + userList);
+		Iterator<Chat_userVO> abc = userList.iterator();
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		while(abc.hasNext()) {
+			Chat_userVO cv = new Chat_userVO();
+			cv = abc.next();
+			System.out.println("유저 List : " + cv.getMember_user_id());
+		}
+		
 
+		
+		
 		List<Msg_listVO> msglist = new ArrayList<Msg_listVO>();			// 본인이 해당된 채팅방으로부터 메시지 꺼내옴	
 		msglist = chatservice.msgGet(chat_num);
 		
 		MessageJSON mj = new MessageJSON();								// DB에서 꺼내온 메시지들을 json으로 변환
 		String result = mj.GSON(msglist);								
-		
+		System.out.println("json : " + result);
 		
 		
 		List<Map<String, Object>> tidyUserInfo = new ArrayList<Map<String, Object>>();		// 메시지 받을 유저를 담을 변수
@@ -231,6 +234,18 @@ public class WSHandler extends TextWebSocketHandler {
 			}
 		}
 		
+		Iterator<Map<String, Object>> wow = tidyUserInfo.iterator();
+		while(wow.hasNext()) {
+			Map<String, Object> roll = new HashMap<String, Object>();
+			roll = wow.next();
+			Iterator it = roll.entrySet().iterator();
+			while(it.hasNext()) {
+				Entry entry = (Entry) it.next();
+				System.out.println("ID : " + entry.getKey() + ", " + "session : " + entry.getValue());
+			}
+		}
+		
+		
 		
 /*		ExtractMessageAndUser EMAU = new ExtractMessageAndUser();		// 메시지 해석 & 추출
 		String result = EMAU.InterPre(session, msg);
@@ -240,12 +255,19 @@ public class WSHandler extends TextWebSocketHandler {
 		
 		/* 채팅방에 해당되는 유저들에게 메시지 보내기 */
 		Iterator<Map<String, Object>> extract3 = tidyUserInfo.iterator();		
-		while(extract3.hasNext()) {								
+		int count = 0;
+		while(extract3.hasNext()) {							
 			Map<String, Object> Data = new HashMap<String, Object>();
 			Data = extract3.next();
 			for(WebSocketSession s : wsSession) {
 				if(s.isOpen() && Data.containsValue(s)) {
 					try {
+						Iterator it = Data.entrySet().iterator();
+						while(it.hasNext()) {
+							Entry entry = (Entry) it.next();
+							System.out.println("count : " + count + ", ID : " + entry.getKey() + ", " + "session : " + entry.getValue());
+							count++;
+						}
 						s.sendMessage(new TextMessage(result));
 					} catch(IOException e) {
 						e.printStackTrace();

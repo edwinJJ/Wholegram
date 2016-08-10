@@ -180,8 +180,6 @@
 		}
 	</style>
 	<script>
-		var sessionId = "${sessionId}";				// 접속자 ID
-	
 		function profile_edit() {
 			location.href="/user/update_form";		// 프로필 수정 페이지 이동
 		}
@@ -233,14 +231,14 @@
 			});
 		});
 	
-		/* 브라우저창 끝을 알림 */
+/* 		 브라우저창 끝을 알림 
 		$(window).scroll(function() {
 		    if($(window).scrollTop() == $(document).height() - $(window).height()) {
 		        alert('End of Window');
 		    }
 		}); 
-		
-		setInterval(function(){
+ */		
+/* 		setInterval(function(){
 		    $.ajax({ 
 		    	url: "/user/test",
 		    	datatype: "json",
@@ -252,7 +250,7 @@
 		    		
 		    	}
 		    });
-		}, 3000);
+		}, 3000); */
 	</script>
 </head>
 <body>
@@ -313,19 +311,23 @@
 		</div>
 		<div class="container bootstrap snippet">
 			<div class="row">
-				<!-- First Photo Grid-->
-	    		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 1" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/Penguins.jpg"></a></div>
-	    		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 2" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test.jpg"></a></div>
-	    		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 3" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test2.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 4" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test3.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 5" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test3.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 6" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test3.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 7" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test2.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 8" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 9" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/Penguins.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 10" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/Penguins.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 11" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test3.jpg"></a></div>
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 12" href="#"><img class="thumbnail img-responsive board_items" src="/resources/Image/test3.jpg"></a></div>
+				<form name="frm" id="frm">
+					<c:forEach items="${list}" var="list">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+							<a title="Image 1" href="#">
+								<c:choose>
+									<c:when test="${list.media_type == 'm'}">
+										<img class="thumbnail img-responsive board_items" src="${list.media_thumnail}" onclick="read(${list.board_num},0)">
+									</c:when>
+									<c:otherwise>
+										<img class="thumbnail img-responsive board_items" src="${list.media}" onclick="read(${list.board_num},0)">
+									</c:otherwise>
+								</c:choose>
+								<input type="hidden" id="bn" name="bn" value="${list.board_num}">
+							</a>
+						</div>
+					</c:forEach><!--  -->
+				</form>
 			</div>
 			
 			<!-- Modal 생성 -->
@@ -338,10 +340,15 @@
 						</div>
 						<div class="modal-body">
 							<div id="modalCarousel" class="carousel">
-								<div class="carousel-inner"></div>
-								<a class="carousel-control left" href="#modalCarousel" data-slide="prev"> <i class="glyphicon glyphicon-chevron-left"></i></a> 
-								<a class="carousel-control right" href="#modalCarousel" data-slide="next"> <i class="glyphicon glyphicon-chevron-right"></i></a>
+								<div id="image" class="carousel-inner"></div><div id="tag"></div>
+								<a id = "prev" class="carousel-control left" href="#modalCarousel" data-slide="prev" onclick=""> <i class="glyphicon glyphicon-chevron-left"></i></a> 
+								<a id = "next" class="carousel-control right" href="#modalCarousel" data-slide="next" onclick=""> <i class="glyphicon glyphicon-chevron-right"></i></a>
 							</div>
+							<div id="content"></div>
+							<div id="li">
+							<ul id="cnt_reply"></ul>
+							</div>
+							<div id="rep_inp"></div>
 						</div>
 						<div class="modal-footer">
 							<button class="btn btn-default" data-dismiss="modal">Close</button>
@@ -352,50 +359,252 @@
 		</div>
 	</div>
 </div>
-<div id="chat_box"></div>
-<script src="/resources/js/message.js"></script>
+
 
 	
 	<script>
-	/* Board-Modal 생성 스크립트  */	
+	var sessionId = "${vo.user_id }";		// 접속자 ID
+	var thisPage = false;					// 메시지 페이지가 아니라는 의미
+	var VIDEO = "m";
+	var IMAGE = "i";
+	var FLAG = true;
+		function getBoardCount(){
+			return frm.bn.length;
+		}
+		function deleteReply( bno, rno ) {
+			$.ajax({
+				type : 'delete',
+				url : '/board/'+ bno +'/' + rno,
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "DELETE",
+				},
+				data : '',
+				dataType : 'json',
+				success : function( result ) {
+					setReplyList(result.delList, bno);
+				},
+				error : function( result ) {
+					alert("fail");
+				}	
+			});
+		}
 	
-		/*<![CDATA[*//* copy loaded thumbnails into carousel */
-		$('.row .thumbnail').on('load', function() {
-
-		}).each(function(i) {
-			if (this.complete) {
-				var item = $('<div class="item"></div>');
-				var itemDiv = $(this).parents('div');
-				var title = $(this).parent('a').attr("title");
-
-				item.attr("title", title);
-				$(itemDiv.html()).appendTo(item);
-				item.appendTo('.carousel-inner');
-				if (i == 0) { // set first item active
-					item.addClass('active');
+		function viewclick(){
+			$("#tag").toggle();
+		}
+		function insertReply( bno ) {
+			var reply_content = $("#content"+bno).val();
+			var url = "/board/"+ bno +"/" + reply_content;
+			
+			$.ajax({
+				type : 'GET',
+				url : url,
+				headers : {
+					"Content-Type" : "application/json",
+				},
+				data : 
+					JSON.stringify({content:reply_content}),
+				dataType : 'json',
+				success : function(result){
+					setReplyList(result.result, bno);
+				},
+				error : function(result) {
+					alert("fail");
 				}
-			}
-		});
+			});
+		}
 
+		function heartCount(board_num ) {
+			var hc_url = "/board/heart/" + board_num;
+			$.ajax({
+				type : 'GET',
+				url : hc_url,
+				headers : {
+					"Content-Type" : "application/json",
+				},
+				data : '',
+				dataType : 'json',
+				success : function(result){
+					heartChange(result, board_num);
+				},
+				error : function(result) {
+					alert("insertHeart fail");
+				}
+			});
+		}
+		
+		function heartChange(result, board_num) {
+			var hep = document.getElementById("heart_empty" + board_num);
+			var hef = document.getElementById("heart_full" + board_num);
+
+			 if($(hep).css("display") == "none"){
+				 $(hef).hide();
+			      $(hep).show();
+			      
+			  } else {
+			      $(hep).hide();
+			      $(hef).show();
+			  }
+			
+			var cbh = document.getElementById("cnt_board_heart" + board_num);
+			cbh.innerHTML = "좋아요 " + result + "개";
+		}
+		
+		function setReplyList(data, bno) {
+			var	result	= "";
+
+			$(data).each(function() {	
+				result += "<li id='rep'><a class='user_id' href='#'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
+				if( sessionId == this.user_id ) {
+					result += "<input type='button' class='deleteBtn' value='삭제' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
+				}
+			});
+			document.getElementById( "cnt_reply" ).innerHTML = result;
+		}
+		
+		function addReplyList(data, bno) {
+			var	result	= "";
+
+			$(data).each(function() {	
+				result += "<li id='rep'><a class='user_id' href='#'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
+				if( sessionId == this.user_id ) {
+					result += "<input type='button' class='deleteBtn' value='삭제' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
+				}
+			});
+			document.getElementById( "cnt_reply" ).innerHTML += result;
+		}
 		/* activate the carousel */
 		$('#modalCarousel').carousel({
 			interval : false
 		});
-
+		
 		/* change modal title when slide changes */
 		$('#modalCarousel').on('slid.bs.carousel', function() {
 			$('.modal-title').html($(this).find('.active').attr("title"));
 		})
-
+		
+		function checkBoard(no){  // modal을 띄운후 현재게시물을 기준으로 이전게시물과 다음게시물의 target을 설정
+			var page=function(){var prev; var next;};	
+			
+			for(var i=0;i<frm.bn.length;i++){
+				if(no == frm.bn[i].value){
+					if(i == 0){ // 현재게시물이 첫번째인 경우 이전 페이지 이동은 없음
+						page.prev=no;
+						page.next=frm.bn[i+1].value;
+					}else if(i == frm.bn.length-1){ //현재게시물이 마지막 페이지인 경우 다음페이지에서 이동이 없음.
+						page.prev=frm.bn[i-1].value;
+						page.next=no;
+					}else{ 
+						page.prev=frm.bn[i-1].value;
+						page.next=frm.bn[i+1].value;
+					}
+				}
+			}
+			return page;
+		}
+		
 		/* when clicking a thumbnail */
-		$('.row .thumbnail').click(function() {
-			var idx = $(this).parents('div').index();
-			var id = parseInt(idx);
+		function read(no,idx) {
+			
 			$('#myModal').modal('show'); // show the modal
-			$('#modalCarousel').carousel(id); // slide carousel to selected
-
-		});/*]]>*/
+			$.ajax({ 
+	    		type: 'GET',
+                url: 'user/getNum/'+no+'/'+idx,
+                dataType: 'json',
+                contentType : 'application/json; charset=utf-8',
+	    	    success: function(result) {
+	    	    	var prevNext = checkBoard(no);
+	    	    	console.log(prevNext);
+	    	    	if(result.bd.media_type == IMAGE)
+	    	    		$("#image").html('<img src="'+result.bd.media+'">'+'<i id ="viewpeople" class="fa fa-info-circle fa-2x" onclick="viewclick()"></i>');
+	    	    	else
+	    	    		$("#image").html('<video src="'+result.bd.media+'" controls>');
+		    	    	$("#content").html(result.bd.user_id+" "+result.bd.content);
+		    	    	$("#tag").html(result.bd.tag).css("display","none");
+		    	    	$("#prev").attr("onclick","read("+prevNext.prev+",0)");
+		    	    	$("#next").attr("onclick","read("+prevNext.next+",0)");
+		    	    	setReplyList(result.rp, no);
+		    	    	$("#rep_inp").html('<input type="hidden" id="board_num" name="board_num" value="'+result.bd.board_num+'" /> ');
+		    	    	$("#rep_inp").html($("#rep_inp").html()+'<input type="text" id="content'+result.bd.board_num+'" name="content'+result.bd.board_num+'" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('+result.bd.board_num+')" placeholder="댓글달기..." />');						
+	    	    	
+	    	    },
+	    	    error:function(request,status,error){
+    	    	    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+    	   	 	}
+	    	});
+		}
+		
+		function readReply(data){
+			var result ="";
+			for(var d in data){
+				result += "<li id='rep'><a href='/"+data[d].user_id+"'>"+data[d].user_id+"</a> "+data[d].content+"</li>";
+			}
+			return result;
+		}
+	
+		function setScrollBoard(data){
+			for(var d in data){
+				if(data[d].media_type == IMAGE)
+					var input='<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 1" href="#"><img class="thumbnail img-responsive board_items" src="'+data[d].media+'" onclick="read('+data[d].board_num+',0)"><input type="hidden" id="bn" name="bn" value="'+data[d].board_num+'"></a></div>';
+				else
+					var input='<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 1" href="#"><img class="thumbnail img-responsive board_items" src="'+data[d].media_thumnail+'" onclick="read('+data[d].board_num+',0)"><input type="hidden" id="bn" name="bn" value="'+data[d].board_num+'"></a></div>';
+					document.getElementById("frm").innerHTML += input;
+			}
+		}
+		
+		String.prototype.replaceAll = function(org, dest) {
+		    return this.split(org).join(dest);
+		}
+		/* 브라우저 창의 스크롤 끝 부분일때 추가게시물을 가져옴 */
+		 $(window).scroll(function() {
+			 var no = getBoardCount();
+			 var url = 'board/scroll/';
+			 if(location.pathname.replaceAll("/","") != "" && location.pathname.replaceAll("/","") != "login"){
+				url += location.pathname.replaceAll("/","") +"/";
+			 }
+		   if(($(window).scrollTop() == $(document).height() - $(window).height())&& FLAG) {
+		        $.ajax({ 
+		    		type: 'POST',
+	                url: "http://"+location.host+"/"+url+no,
+	                dataType: 'json',
+	                contentType : 'application/json; charset=utf-8',
+		    	    success: function(result) {
+		    	   			setScrollBoard(result.list);
+		    	   			FLAG = result.flag;
+		    	    },
+		    	    error:function(request,status,error){
+	    	    	    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	    	    	}
+		    	});
+		   }
+		});  
+		
+		 /* 댓글리스트 끝을 알림 */
+		 $("#li").scroll(function() {
+			 var itemids = $.makeArray($("li").map(function(){
+				    return $(this).attr("id");
+				}));
+			 
+			 var no = $("#board_num").val()
+		   if($("#li").scrollTop() == $("#li").prop("scrollHeight")-$("#li").height()) {
+				   $.ajax({ 
+			    		type: 'GET',
+		                url: 'rep/'+no+"/"+itemids.length,
+		                dataType: 'json',
+		                contentType : 'application/json; charset=utf-8',
+			    	    success: function(result) {
+			    	    	addReplyList(result.rp, no);
+			    	    },
+			    	    error:function(request,status,error){
+		    	    	    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		    	    	}
+			    	});
+		   }
+		});
 	</script>
+	<div id="chat_box"></div>
+	<script src="/resources/js/message.js"></script>
 </body>
 </html>
 

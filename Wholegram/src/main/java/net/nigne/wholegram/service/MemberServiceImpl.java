@@ -84,6 +84,16 @@ public class MemberServiceImpl implements MemberService {
 	public List<MemberVO> getFollowinguser_Profile(List<String> user_ids) {
 		return dao.getFollowinguser_Profile(user_ids);
 	}
+	
+	@Override
+	public List<MemberVO> getNewPerson(String user_id) {
+		return dao.getNewPerson(user_id);
+	}
+
+	@Override
+	public List<MemberVO> getKnowablePerson(String user_id) {
+		return dao.getKnowablePerson(user_id);
+	}
 
 	/*사용자 프로필 이미지 크기 resize*/
 	@Override

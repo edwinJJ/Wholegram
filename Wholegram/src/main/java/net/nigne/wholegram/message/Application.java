@@ -1,10 +1,11 @@
-package net.nigne.wholegram.common;
+package net.nigne.wholegram.message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.web.socket.WebSocketSession;
@@ -36,12 +37,32 @@ public class Application {
 
 	public void setUserInfo(Map<String, Object> userInfo) {
 		this.userInfo.add(userInfo);
+		
+/*		System.out.println("test1");
+		
+		List<Map<String, Object>> test = this.userInfo;
+		System.out.println("test2");
+		Iterator<Map<String,Object>> it = test.iterator();
+		while(it.hasNext()) {
+			System.out.println("test3");
+			Map<String,Object> mp = new HashMap<String, Object>();
+			System.out.println("test4");
+			mp = it.next();
+			System.out.println("test5");
+			Iterator itt = mp.entrySet().iterator();
+			while(itt.hasNext()) {
+				System.out.println("test6");
+				Entry entry = (Entry) itt.next();
+				System.out.println("test7");
+				System.out.println("(접속)웹소켓 접속자 현황 - ID : " + entry.getKey() + " , session : " + entry.getValue());
+			}
+		}*/
 	}
 	
 	// 웹소켓 접속이 끊겼을때, 관리 목록에서 제거해준다
 	public void delUserInfo(WebSocketSession session) {
 		int count = 0;
-		int result_count = 0;
+		int result_count = -1;
 		Iterator<Map<String, Object>> extract = userInfo.iterator();
 		while(extract.hasNext()) {
 			Map<String, Object> data = new HashMap<String, Object>();
@@ -51,8 +72,17 @@ public class Application {
 			}
 			count++;
 		}
-		userInfo.remove(result_count);
+		if(result_count != -1) {
+			userInfo.remove(result_count);
+		}
+		
+/*		Iterator<Map<String,Object>> it = userInfo.iterator();
+		while(it.hasNext()) {
+			Map<String,Object> mp = new HashMap<String, Object>();
+			mp = it.next();
+			Entry entry = (Entry) mp.entrySet().iterator();
+			System.out.println("(삭제)웹소켓 접속자 현황 - ID : " + entry.getKey() + " , session : " + entry.getValue());
+		}*/
+		
 	}
-	
-	
 }

@@ -1,6 +1,8 @@
 package net.nigne.wholegram.persistance;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +10,12 @@ import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import net.nigne.wholegram.common.Criteria;
+import net.nigne.wholegram.common.HashTagScrollCriteria;
 import net.nigne.wholegram.domain.BoardVO;
+import net.nigne.wholegram.domain.MemberVO;
 
 @Repository
 public class BoardDAOImpl implements BoardDAO {
@@ -17,17 +23,38 @@ public class BoardDAOImpl implements BoardDAO {
 	private SqlSession session;
 	private static final String namespace="net.nigne.wholegram.mappers.boardMapper";
 	private static final String namespace2 = "net.nigne.wholegram.mapper.UploadMapper";
+
 	
 	@Override
-	public List<BoardVO> getList() {
-		return session.selectList( namespace + ".getList" );
+	public List<BoardVO> getList( String user_id, int startNum, int pagePerBlock ) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put( "startNum", startNum );
+		map.put( "pagePerBlock", pagePerBlock );
+		map.put( "user_id", user_id );
+
+		return session.selectList( namespace + ".getList", map );
 	}
 
 	@Override
-	public BoardVO get( BoardVO vo ) {
-		return session.selectOne( namespace + ".get", vo );
-	}
+	public List<BoardVO> get(List<MemberVO> mList) {
+		
+		Iterator<MemberVO> mIterator = mList.iterator();		
+		List<BoardVO> bList = new ArrayList<BoardVO>();
+		
+		while(mIterator.hasNext()) {		
 
+			MemberVO mv = new MemberVO();
+			mv = mIterator.next();
+			bList.add( (BoardVO) session.selectOne( namespace + ".get",mv) );
+		}
+		
+		return bList;
+	}
+	@Override
+	public BoardVO getOne( BoardVO vo ) {
+		return session.selectOne( namespace + ".getOne", vo );
+	}
+	
 	@Override
 	public void heartCount(int board_num, int criteria) {
 		
@@ -43,14 +70,68 @@ public class BoardDAOImpl implements BoardDAO {
 	}
 
 	@Override
-	public int abc() {
-		// TODO Auto-generated method stub
-		return 0;
+	public List<List<BoardVO>> getbdList(List<MemberVO> mbList) {
+		Iterator<MemberVO> mIterator = mbList.iterator();		
+		List<List<BoardVO>> bdList = new ArrayList<List<BoardVO>>();
+		
+		while(mIterator.hasNext()) {	
+			List<BoardVO> bdList2 = new ArrayList<BoardVO>();
+			MemberVO mv2 = new MemberVO();
+			mv2 = mIterator.next();
+			bdList2 = session.selectList( namespace + ".getbdList", mv2 );
+			bdList.add(bdList2);
+		}
+		
+		return bdList;
 	}
-
+	
+	@Transactional
 	@Override
 	public void BoardUP(BoardVO vo) {
 		session.insert(namespace2 +".Boardup", vo);
 		
 	}
+
+	@Override
+	public int getTotalCount() {
+		return session.selectOne( namespace + ".getTotalCount" );
+	}
+
+	@Override
+	public long getTime(int board_num) {
+		return session.selectOne( namespace + ".getTime", board_num);
+	}	
+	@Override
+	public List<BoardVO> getUserLimitList(MemberVO vo) {
+		return session.selectList(namespace+".getUserLimitList",vo);
+	}
+
+	@Override
+	public List<BoardVO> getScrollList(Criteria cr) {
+		return session.selectList(namespace+".getScrollList", cr);
+	}
+
+	@Override
+	public int getUserCount(Criteria cr) {
+		return session.selectOne(namespace+".getUserCount", cr);
+	}
+
+	@Override
+	public List<BoardVO> searchIterate(List<String> list) {
+		// TODO Auto-generated method stub
+		return session.selectList(namespace+".SearchIterate",list);
+	}
+
+	@Override
+	public int searchCount(List<String> list) {
+		
+		return session.selectOne(namespace+".searchCount", list);
+	}
+
+	@Override
+	public List<BoardVO> SearchScrollIterate(HashTagScrollCriteria list) {
+		// TODO Auto-generated method stub
+		return session.selectList(namespace+".SearchScrollIterate",list);
+	}
+
 }

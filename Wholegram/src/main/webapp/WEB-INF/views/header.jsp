@@ -2,8 +2,8 @@
 <link rel="stylesheet" href="/resources/css/header.css">  
 <script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 <script src="/resources/js/news.js"></script>
-<link rel="stylesheet" href="/resources/css/w3.css">
- 
+<!-- <link rel="stylesheet" href="/resources/css/w3.css">
+ --> 
 <div id="header" style="background: #FFFFFF; width: 100%">
 	<a href="/board"><span id="header-logo"><input type="image" src="/resources/Image/insta-logo.jpg" name="logo"/></span></a>
 	<span id="header-search"><input type="search" placeholder="search" ></span>

@@ -88,7 +88,7 @@ function showRoomList(roomList) {
 /* 유저가 속한 채팅방 상태 확인(헤더의 알림 메시지 띄우는 용도) */
 function checkReadRoomList(result) {
 	var count = 0;
-	if(thisPage != null) {
+	if(thisPage == true) {
 		$(result).each(function() {																// 유저가 속한 채팅방의 메시지를 다 읽었는지 확인해준다
 			var roomNumber = this.chat_chat_num;
 			if(document.getElementById("room_popup" + roomNumber).style.display != "none") {
@@ -159,7 +159,7 @@ function getChatRoom(chat_chat_num) {
 
 /* 메시지 보내기 */ 
 function send_message(chat_num) {
-	console.log("메시지보내기 chat_num : " + chat_num);
+	console.log("메시지보내기11 chat_num : " + chat_num);
 	var msg1 = "{num : " + chat_num + "}";						// 방 번호 추가
 	var msg2 = "[write : " + sessionId + "]";					// 작성자 ID
 	if(chat_num != 0) {
@@ -188,7 +188,7 @@ function showMessage(result) {
 	if((token != fail) && (nowShowingMsgForm == chat_room)) {							// 메시지창이 채팅방이 열려있을 경우 && 열려있는 메시지창의 방 번호가 메시지가 속해있는 방번호와 일치 할 경우만 내용을 뿌려준다
 		
 		document.getElementById("msg_content").innerHTML = "";							// 메시지창 내용 비워주기(전체 내용을 다시쓰기위해)
-		if(thisPage != null) {															// 메시지 페이지일 경우
+		if(thisPage == true) {															// 메시지 페이지일 경우
 			document.getElementById("room_popup" + chat_room).style.display = "none";	// 메시지를 읽었으면 알림 표시를 지워준다
 		}
 		
@@ -247,12 +247,13 @@ function showMessage(result) {
 
 
 // WebSocket Server connection
-var wsUrl = "ws://localhost:8082/chat";
+var host = location.host;
+var wsUrl = "ws://" + host + "/chat/init";   					// ws://ip:port/chat/init
+
 var ws;
 
 function init() {
 	ws = new WebSocket(wsUrl);  								//소켓 객체 생성
-	
 	ws.onopen = function(evt) { 								// 이벤트 발생시 opOpen()을 실행
 		onOpen(evt);
 		console.log("websocket connection : " + sessionId);
@@ -289,6 +290,7 @@ function onMessage(evt) {
 	} else if(impl == "Message") {													// 방금 접속하거나 다른 페이지에 있는데, 그동안 새로운 메시지가 와서 헤더에 메시지 알림 띄울 때
 		document.getElementById("header_popup").style.display = "block";
 	} else {																		// 메시지 채팅 주고받을 때
+		//console.log(evt.data);
 		showMessage(evt.data);
 	}
 }

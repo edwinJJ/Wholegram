@@ -82,7 +82,7 @@
 	</style>
 	<script>
 		var sessionId = "${sessionId}";				// 접속자 ID
-	
+		var thisPage = false;						// 메시지 페이지가 아니라는 의미
 		function msg() { 
 			if((user_name.value != "") && (user_id.value != "") && (info.value != "") && (email.value != "") && (phone.value != "") && (gender.value != "")) {
 				alert("프로필을 제출하였습니다.");

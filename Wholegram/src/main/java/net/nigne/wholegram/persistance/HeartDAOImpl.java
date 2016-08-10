@@ -17,12 +17,14 @@ public class HeartDAOImpl implements HeartDAO {
 	@Inject
 	private SqlSession session;
 	private static final String namespace="net.nigne.wholegram.mappers.heartMapper";
-	
+
+	@Transactional
 	@Override
 	public void insertHeart(HeartVO vo) {
 		session.insert( namespace + ".insertHeart", vo );
 	}
 
+	@Transactional
 	@Override
 	public void deleteHeart(HeartVO vo) {
 		session.delete( namespace + ".deleteHeart", vo );

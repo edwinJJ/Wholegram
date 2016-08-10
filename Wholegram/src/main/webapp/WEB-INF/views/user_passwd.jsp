@@ -80,7 +80,7 @@
 	</style>
 	<script>
 		var sessionId = "${sessionId}";				// 접속자 ID
-	
+		var thisPage = false;						// 메시지 페이지가 아니라는 의미
 		function update_passwd(){
 			check_passwd();
 		}

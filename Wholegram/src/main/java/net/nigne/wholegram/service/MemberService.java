@@ -16,5 +16,7 @@ public interface MemberService {
 	public int comparePasswd(String passwd_real, String passwd);
 	public void updatePasswd(MemberVO vo);
 	public List<MemberVO> getFollowinguser_Profile(List<String> user_ids);
+	public List<MemberVO> getNewPerson( String user_id );
+	public List<MemberVO> getKnowablePerson( String user_id );
 	public byte[] reSizeProfileImg(MultipartFile mpf);
 }
