@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="net.nigne.wholegram.mappers.NoticeMapper">
+	<insert id="noticeHeart">
+		insert into notice (user_id, other_id, board_num, media, flag) values (#{user_id}, #{other_id}, #{board_num}, #{media}, #{flag})
+	</insert>
+	<delete id="rnoticeHeart">
+		delete from notice where user_id = #{user_id} and board_num = #{board_num}
+	</delete>
+</mapper>

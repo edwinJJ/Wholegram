@@ -82,7 +82,7 @@ public class PersonController {
 			vo.setFollowing( uid );
 			vo.setFlag(1);
 			fService.followInsert(vo);
-			List<FollowVO> list = fService.getfwList( vo );
+			List<FollowVO> list = fService.getfwList();
 			Map<String, Object> map = new HashMap<>();
 			map.put("list", list);
 			entity = new ResponseEntity<>( map, HttpStatus.OK);
@@ -102,7 +102,7 @@ public class PersonController {
 			try {
 				FollowVO vo = new FollowVO();
 				fService.followDelete( fno, user );
-				List<FollowVO> delList = fService.getfwList( vo );
+				List<FollowVO> delList = fService.getfwList();
 				Map<String, Object> map = new HashMap<>();
 				map.put("delList", delList);
 				entity = new ResponseEntity<>( map, HttpStatus.OK );

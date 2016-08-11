@@ -3,7 +3,9 @@ package net.nigne.wholegram.persistance;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +41,19 @@ public class FollowDAOImpl implements FollowDAO {
 	}
 
 	@Override
-	public List<FollowVO> getfwList( FollowVO vo ) {
-		return session.selectList( namespace + ".getfwList", vo );
+	public List<FollowVO> getfwList() {
+		return session.selectList( namespace + ".getfwList");
+	}
+
+	@Override
+	public Map<String, Integer> getFollowNumberof(String user_id) {
+		
+		Map<String, Integer> data = new HashMap<String, Integer>();
+		
+		int following = session.selectOne(namespace + ".getFollowingNumberof", user_id);	// 유저가 팔로잉 하고있는 수
+		int follower = session.selectOne(namespace + ".getFollowerNumberof", user_id); 		// 유저를 팔로우 하고있는 다른유저들의 수
+		data.put("following", following);
+		data.put("follower", follower);
+		return data;
 	}
 }

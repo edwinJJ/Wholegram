@@ -7,17 +7,20 @@
 	<select id="getFollowing_Userid" resultType="String">
 		select follower from follow where following = #{user_id}
 	</select>
-
 	<select id="getfwList" resultType="net.nigne.wholegram.domain.FollowVO">
 		select * from follow 
 	</select>
-	
 	<insert id="followInsert">
 		insert into follow( follow_num, following, follower, flag, reg_date )
 		values( #{follow_num}, #{following}, #{follower}, #{flag}, #{reg_date} )
 	</insert>
-	
 	<delete id="followDelete">
 		delete from follow where follow_num = #{follow_num} and following = #{following}
 	</delete>
+	<select id="getFollowingNumberof" resultType="int">
+		select count(*) from follow where following = #{user_id}
+	</select>
+	<select id="getFollowerNumberof" resultType="int">
+		select count(*) from follow where follower = #{user_id}
+	</select>
 </mapper>

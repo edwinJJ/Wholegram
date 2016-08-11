@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ import net.nigne.wholegram.domain.ReplyVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.HeartService;
 import net.nigne.wholegram.service.HeartTableService;
+import net.nigne.wholegram.service.NoticeServiceImpl;
 import net.nigne.wholegram.service.ReplyService;
 
 @Controller
@@ -45,6 +47,8 @@ public class BoardController {
 	private HeartService hService;
 	@Inject
 	private HeartTableService htService;
+	@Inject
+	private NoticeServiceImpl nService;
 
 	/* 처음 게시물 리스트 보여줄 때*/ 
 	@RequestMapping(value = "", method = RequestMethod.GET)
@@ -273,13 +277,17 @@ public class BoardController {
 				hv.setBoard_num(board_num);
 				hv.setUser_id(user_id);
 
-				// Heart테이블 추가 or 제거 & 게시물 좋아요 증감
+				// Heart테이블 (추가 or 제거) & 게시물 좋아요 (증 감) 
 				if(HeartTableStatus.isSuccess()) {
 					hService.insertHeart(hv);
 					bService.heartCount(board_num, 1);
+					System.out.println("test1");
+					nService.noticeHeart(user_id, board_num, 2);		// 좋아요 누름 알림 표시 띄우기
+					System.out.println("test2");
 				} else {
 					hService.deleteHeart(hv);
 					bService.heartCount(board_num, -1);
+					nService.rnoticeHeart(user_id, board_num);			// 좋아요 누름 알림 표시 지우기
 				}
 				int heart = bService.getHeart(board_num);
 				entity = new ResponseEntity<>( heart, HttpStatus.OK );

@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="/resources/css/header.css">  
 <script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 <script src="/resources/js/news.js"></script>
@@ -6,7 +5,7 @@
  --> 
 <div id="header" style="background: #FFFFFF; width: 100%">
 	<a href="/board"><span id="header-logo"><input type="image" src="/resources/Image/insta-logo.jpg" name="logo"/></span></a>
-	<span id="header-search"><input type="search" placeholder="search" ></span>
+	<span id="header-search"><input type="search" id="autocomplete" name="searchValue" placeholder="search" onkeydown="javascript:if( event.keyCode == 13 ) search();" ></span>
 	<a id="header-upload" href="/upload"><i class="fa fa-upload fa-2x" style="color:black;"></i></a>
 	<a id="header-message" href="/message">
 		<i class="fa fa-weixin fa-2x" style="color:black;">

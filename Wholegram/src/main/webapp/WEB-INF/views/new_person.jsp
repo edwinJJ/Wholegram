@@ -118,7 +118,8 @@ var mno = '${mb.mem_no}';
 var sessionId = "${sessionId}";				// 접속자 ID
 var thisPage = false;						// 메시지 페이지가 아니라는 의미
 
-function insertFollow( uid, mno ) {
+
+function insertFollow( uid, mno ) {			// 유저가 선택한 Id를 팔로우한다.
 	$.ajax({
 		type : 'GET',
 		url : '/person/' + uid,
@@ -138,7 +139,7 @@ function insertFollow( uid, mno ) {
 	});
 }
 
-function Follow(data, uid) {
+function Follow(data, uid) {				// (이제는 팔로우했으니), 팔로우 버튼을 없애고 팔로잉버튼으로 바꾸어준다.
 	var result = "";
 	$(data).each(function() {	
 		if( sessionId == this.follower && uid == this.following ){

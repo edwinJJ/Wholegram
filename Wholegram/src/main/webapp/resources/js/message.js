@@ -249,7 +249,7 @@ function showMessage(result) {
 // WebSocket Server connection
 //var host = location.host;
 //var wsUrl = "ws://" + host + "/chat/init";   					// ws://ip:port/chat/init
-var wsUrl = "ws://localhost:80/chat/init"
+var wsUrl = "ws://localhost:8084/chat/init"
 var ws;
 
 function init() {

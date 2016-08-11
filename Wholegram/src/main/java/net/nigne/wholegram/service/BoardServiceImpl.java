@@ -112,7 +112,6 @@ public class BoardServiceImpl implements BoardService {
 	// user 화면 로딩 되었을경우 첫번째로 게시물을 가져옴
 	@Override
 	public List<BoardVO> getUserLimitList(MemberVO vo) {
-		// TODO Auto-generated method stub
 		return dao.getUserLimitList(vo);
 	}
 
@@ -120,7 +119,6 @@ public class BoardServiceImpl implements BoardService {
 	// user 화면에서 스크롤 끝가지 갔을 경우 게시물을 추가로 가져옴
 	@Override
 	public List<BoardVO> getScrollList(Criteria cr) {
-		// TODO Auto-generated method stub
 		return dao.getScrollList(cr);
 	}
 
@@ -139,21 +137,18 @@ public class BoardServiceImpl implements BoardService {
 	// 해시태그 키워드를 사용한 게시물 개수
 	@Override
 	public int searchCount(List<String> list) {
-		// TODO Auto-generated method stub
 		return dao.searchCount(list);
 	}
 
 	// 해시태그 검색결과에서 스크롤 처리
 	@Override
 	public List<BoardVO> SearchScrollIterate(HashTagScrollCriteria list) {
-		// TODO Auto-generated method stub
 		return dao.SearchScrollIterate(list);
 	}
 
 	//user화면에서 유저의 정보 가져옴
 	@Override
 	public BoardVO getOne(BoardVO vo) {
-		// TODO Auto-generated method stub
 		return	dao.getOne( vo );
 	}
 

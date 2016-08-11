@@ -286,9 +286,9 @@
 			</div>
 			<button id="profile_btn2-1" type="button" class="btn btn-default">프로필 편집2</button>
 			<span id="profile_info">
-				<span id="board_count">게시물 n개</span>&nbsp;
-				<span id="follower_count">팔로워 n명</span>&nbsp;
-				<span id="following_count">팔로잉 n명</span>
+				<span id="board_count">게시물 ${numberOfBoard }개</span>&nbsp;
+				<span id="follower_count">팔로워 ${numberOfFollow.follower }명</span>&nbsp;
+				<span id="following_count">팔로잉 ${numberOfFollow.following }명</span>
 			</span>
 		</div><br/><br/>
 	</div>

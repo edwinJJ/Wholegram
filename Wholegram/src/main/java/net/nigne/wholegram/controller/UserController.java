@@ -2,6 +2,7 @@ package net.nigne.wholegram.controller;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -23,12 +24,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import net.nigne.wholegram.common.Criteria;
 import net.nigne.wholegram.common.DebugStream;
 import net.nigne.wholegram.common.RepCriteria;
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.EncryptService;
+import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.MemberService;
 import net.nigne.wholegram.service.ProfileImageService;
 import net.nigne.wholegram.service.ReplyService;
@@ -42,10 +45,13 @@ public class UserController {
 	private MemberService service;
 
 	@Inject
-	private BoardService bd;
+	private BoardService bservice;
 	
 	@Inject
 	private ReplyService rService;
+	
+	@Inject
+	private FollowService fservice;
 	
 	@Inject
 	private EncryptService encrypt;
@@ -64,6 +70,8 @@ public class UserController {
 		mav.setViewName("redirect:/login");
 		return mav;
 	}
+	
+
 	
 	/*프로필 편집 페이지*/
 	@RequestMapping(value = "/update_form", method = RequestMethod.GET)
@@ -139,7 +147,7 @@ public class UserController {
 		vo.setBoard_num(board_num);
 		RepCriteria rc = new RepCriteria(board_num,rep_idx);
 		Map<String, Object> map = new HashMap<>();
-		map.put("bd", bd.getOne(vo));
+		map.put("bd", bservice.getOne(vo));
 		map.put("rp",rService.getListLimit(rc));
 		try{
 			entity = new ResponseEntity<>(map,HttpStatus.OK);

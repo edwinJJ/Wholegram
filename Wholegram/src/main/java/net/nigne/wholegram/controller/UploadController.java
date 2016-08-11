@@ -87,7 +87,7 @@ public class UploadController {
 				System.out.println(PATH+uploadPath+uid+"."+type);
 				grabber.start();    
 				Java2DFrameConverter paintConverter = new Java2DFrameConverter(); // Frame -> bufferedImage로 변환하기 위한 컨버터 생성
-				ImageIO.write(resizeImage(paintConverter.getBufferedImage(grabber.grab(),1),295,295),"png", new File(destination+uid+".png")); // bufferedImage를 이미지로 저장
+				ImageIO.write(resizeImage(paintConverter.getBufferedImage(grabber.grabImage(),1),295,295),"png", new File(destination+uid+".png")); // bufferedImage를 이미지로 저장
 				grabber.stop();  // for문이 없으므로 해당 동영상의 첫프레임을 이미지로 가져옴
 			}
 			
