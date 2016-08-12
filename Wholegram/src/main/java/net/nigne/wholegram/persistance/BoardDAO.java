@@ -23,4 +23,5 @@ public interface BoardDAO {
 	public int searchCount(List<String> list);
 	public List<BoardVO> SearchScrollIterate(HashTagScrollCriteria list);
 	public BoardVO getOne(BoardVO vo);
+	public String getThunmnail(int board_num);
 }

@@ -130,8 +130,12 @@ public class BoardDAOImpl implements BoardDAO {
 
 	@Override
 	public List<BoardVO> SearchScrollIterate(HashTagScrollCriteria list) {
-		// TODO Auto-generated method stub
 		return session.selectList(namespace+".SearchScrollIterate",list);
+	}
+
+	@Override
+	public String getThunmnail(int board_num) {
+		return session.selectOne(namespace + ".getThunmnail", board_num);
 	}
 
 }

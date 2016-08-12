@@ -281,13 +281,11 @@ public class BoardController {
 				if(HeartTableStatus.isSuccess()) {
 					hService.insertHeart(hv);
 					bService.heartCount(board_num, 1);
-					System.out.println("test1");
-					nService.noticeHeart(user_id, board_num, 2);		// 좋아요 누름 알림 표시 띄우기
-					System.out.println("test2");
+					nService.insertNoticeHeart(user_id, board_num, 2);		// 좋아요 누름 알림 표시 띄우기
 				} else {
 					hService.deleteHeart(hv);
 					bService.heartCount(board_num, -1);
-					nService.rnoticeHeart(user_id, board_num);			// 좋아요 누름 알림 표시 지우기
+					nService.deleteNoticeHeart(user_id, board_num);			// 좋아요 누름 알림 표시 지우기
 				}
 				int heart = bService.getHeart(board_num);
 				entity = new ResponseEntity<>( heart, HttpStatus.OK );

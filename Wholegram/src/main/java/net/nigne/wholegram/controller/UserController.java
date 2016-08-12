@@ -24,15 +24,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import net.nigne.wholegram.common.Criteria;
 import net.nigne.wholegram.common.DebugStream;
 import net.nigne.wholegram.common.RepCriteria;
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
+import net.nigne.wholegram.domain.NoticeVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.MemberService;
+import net.nigne.wholegram.service.NoticeService;
 import net.nigne.wholegram.service.ProfileImageService;
 import net.nigne.wholegram.service.ReplyService;
 
@@ -59,7 +60,8 @@ public class UserController {
 	@Inject
 	private ProfileImageService profileImageService;
 	
-
+	@Inject
+	private NoticeService nservice;
 	
 	/*로그아웃*/
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -206,6 +208,16 @@ public class UserController {
 		return entity;
 	}
 	
+	/* 알림(상대방) 프로필 이미지 출력 */
+	@RequestMapping(value="/getByteImage/{user_id}")
+	public ResponseEntity<byte[]> getByteImageNotice(@PathVariable("user_id") String user_id) {
+		
+	   byte[] Image = profileImageService.getProfileImage(user_id);				 // 프로필 이미지 추출		
+	   HttpHeaders headers = new HttpHeaders();
+	   headers.setContentType(MediaType.IMAGE_PNG);
+	   return new ResponseEntity<byte[]>(Image, headers, HttpStatus.OK);
+	}
+	
 	/* 프로필 이미지 출력 */
 	@RequestMapping(value="/getByteImage")
 	public ResponseEntity<byte[]> getByteImage(HttpServletRequest request) {
@@ -250,12 +262,19 @@ public class UserController {
 		return entity;
 	}
 
-	/* 프로필 이미지 등록 */
-	@RequestMapping(value = "/test", method = RequestMethod.POST)
-	public ResponseEntity<Object> test(HttpServletRequest request) {
+	/* 실시간으로(5초) 알림 확인 */
+	@RequestMapping(value = "/checkNotice", method = RequestMethod.POST)
+	public ResponseEntity<List<NoticeVO>> checkNotice(HttpServletRequest request) {
 
-		ResponseEntity<Object> entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
 		
+		ResponseEntity<List<NoticeVO>> entity = null;
+		try{
+			entity = new ResponseEntity<List<NoticeVO>>(nservice.checkNotice(user_id), HttpStatus.OK);
+		}catch (Exception e) {
+			entity = new ResponseEntity<List<NoticeVO>>(HttpStatus.BAD_REQUEST);
+		}
 		return entity;
 	}
 }

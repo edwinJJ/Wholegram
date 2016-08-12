@@ -30,4 +30,5 @@ public interface BoardService {
 	public List<BoardVO> searchIterate(List<String> list);
 	public int searchCount(List<String> list);
 	public List<BoardVO> SearchScrollIterate(HashTagScrollCriteria list);
+	public String getThunmnail(int board_num);
 }

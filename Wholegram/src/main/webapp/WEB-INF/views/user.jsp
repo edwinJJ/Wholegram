@@ -42,6 +42,16 @@
 			float: left;
 			cursor: pointer;
 		}
+		#profile_notice_img {
+			float: left;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+		}
+		#board_img {
+			width: 40px;
+			height: 40px;
+		}
 		#profile_all {
 			margin-left: 30%;
 		}
@@ -238,26 +248,27 @@
 		    }
 		}); 
  */		
-/* 		setInterval(function(){
+ 		/* 알림 메시지 가져옴(5초마다)  */
+ 		setInterval(function(){
 		    $.ajax({ 
-		    	url: "/user/test",
+		    	url: "/user/checkNotice",
 		    	datatype: "json",
 		    	type:'POST',
 		    	success: function(result){
-		    		console.log("abc");
+		    		makeNewsForm(result);
 		    	},
 		    	error: function(result) {
-		    		
+		    		alert("error : " + result)
 		    	}
 		    });
-		}, 3000); */
+		}, 5000);
 	</script>
 </head>
 <body>
 <!-- 상단의 head 부분 --><!-- test -->
 <%@include file="./header.jsp" %>
 
-<div id="news_box"></div>
+<div id="news_box" style="display: none;"></div>
 
 <!-- 게시물 사진 나오기 전까지의 프로필정보 / Browser창 size 768전후로 나뉘어짐-->
 <div id="profile_container">
@@ -300,13 +311,13 @@
 	<div id="container2" class="w3-content">
 		<div class="w3-row-padding">
 			<div class="w3-third w3-container w3-margin-bottom">
-				<span id="board_count2">게시물 n개</span>
+				<span id="board_count2">게시물 ${numberOfBoard }개</span>
 			</div>
 			<div class="w3-third w3-container w3-margin-bottom">
-				<span id="follower_count2">팔로워 n명</span>
+				<span id="follower_count2">팔로워 ${numberOfFollow.follower }명</span>
 			</div>
 			<div class="w3-third w3-container">
-				<span id="following_count2">팔로잉 n명</span>
+				<span id="following_count2">팔로잉 ${numberOfFollow.following }명</span>
 			</div>			
 		</div>
 		<div class="container bootstrap snippet">

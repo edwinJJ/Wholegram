@@ -152,4 +152,10 @@ public class BoardServiceImpl implements BoardService {
 		return	dao.getOne( vo );
 	}
 
+	// thumnail 값을 가져온다 (notice 알림용도)
+	@Override
+	public String getThunmnail(int board_num) {
+		return dao.getThunmnail(board_num);
+	}
+
 }

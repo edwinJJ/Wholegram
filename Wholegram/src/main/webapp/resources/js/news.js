@@ -3,49 +3,44 @@ var n_token = localStorage.getItem("news");
 var n_start = "true";
 var n_fail = "false";
 
-function showNewsForm() {
+function makeNewsForm(result) {
+	var html = "";
+	html += 
+		"<div class='w3-ul w3-border2 w3-center w3-hover-shadow' style='overflow:auto;'>" + 
+			"<div class='w3-container'>";
+	$(result).each(function() {
+		if(this.flag == 2) {
+			html += "<div class='w3-hover-shadow newsef'>" +
+						"<div class='test'>" +
+							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 회원님의 사진을 좋아합니다.   " +
+							"<img id='board_img' src='" + this.media + "' />" +
+						"</div>" +
+					"</div>";
+		}
+	});
+	html +=
+		"</div>" +
+	"</div>";
+	document.getElementById("news_box").innerHTML = html;
+}
+
+function showNewsForm(result) {
 	if((n_token == n_fail) || (n_token == null)) {
-		var html = "";
-		html += 
-	/*		"<div class='modal2 fade' id='myModal' role='dialog'>" +
-				"<div class='modal-dialog2 modal-lg2'>" +
-					"<div class='modal-content'>" +
-						"<div class='modal-header2'>" +
-							"<button type='button' class='close' data-dismiss='modal' onclick='addReceive()'>&times;</button>" +
-							"<h4 class='modal-title'>Message 보내기</h4>" +
-						"</div>" +
-						"<div>" +
-							"<input id='receive_user' class='w3-input3' type='text' placeholder='받는 사람'>" + 
-						"</div>" +
-						"<div id='followingList'></div>" +
-						"<div class='modal-footer'>" +
-							"<button type='button' class='btn btn-default' data-dismiss='modal' onclick='check_messageform()'>메시지 보내기</button>" +
-						"</div>" +
+/*		var html = "";
+		$(result).each(function() {
+			html += 
+				"<div class='w3-ul w3-border2 w3-center w3-hover-shadow' style='overflow:auto;'>" + 
+					"<div class='w3-container'>";
+			if(this.flag == 2) {
+				html += "<div class='w3-hover-shadow newsef'>" + this.user_id + "님이 회원님의 사진을 좋아합니다.</div>";
+			}
 					"</div>" +
-				"</div>" +
-			"</div>";*/      /**/
-			"<div class='w3-ul w3-border2 w3-center w3-hover-shadow' style='overflow:auto;'>" + 
-				"<div class='w3-container'>" +
-					"<div class='w3-hover-shadow newsef'>123</div>" +
-					"<div class='w3-hover-shadow newsef'>456</div>" +
-					"<div class='w3-hover-shadow newsef'>789</div>" +
-					"<div class='w3-hover-shadow newsef'>789</div>" +
-					"<div class='w3-hover-shadow newsef'>123</div>" +
-					"<div class='w3-hover-shadow newsef'>456</div>" +
-					"<div class='w3-hover-shadow newsef'>789</div>" +
-					"<div class='w3-hover-shadow newsef'>789</div>" +
-					"<div class='w3-hover-shadow newsef'>789</div>" +
-					"<div class='w3-hover-shadow newsef'>123</div>" +
-					"<div class='w3-hover-shadow newsef'>456</div>" +
-					"<div class='w3-hover-shadow newsef'>789</div>" +
-					"<div class='w3-hover-shadow newsef'>789</div>" +
-				"</div>" +
-			"</div>";
-		document.getElementById("news_box").innerHTML = html;
-		document.getElementById("news_box").style.display = "block";
-		
-		localStorage.setItem("news", "true");
-		n_token = localStorage.getItem("news");
+				"</div>";
+			document.getElementById("news_box").innerHTML = html;
+*/			document.getElementById("news_box").style.display = "block";
+			
+			localStorage.setItem("news", "true");
+			n_token = localStorage.getItem("news");
 	} else {
 		localStorage.setItem("news", "false");
 		n_token = localStorage.getItem("news");

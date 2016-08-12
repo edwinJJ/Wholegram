@@ -403,7 +403,11 @@ input[type=checkbox].w3-check:disabled+.w3-validate{color:#f44336},input[type=ra
 
 
 
-
+.test {
+	margin-top:15px;
+	margin-bottom:-20px!important;
+	padding-bottom:-20px!important;
+}
 
 .newsef {
 	height:50px;
