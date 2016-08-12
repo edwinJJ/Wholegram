@@ -138,4 +138,9 @@ public class BoardDAOImpl implements BoardDAO {
 		return session.selectOne(namespace + ".getThunmnail", board_num);
 	}
 
+	@Override
+	public int getBoardNum(BoardVO vo) {
+		return session.selectOne(namespace+".getBoardNum", vo);
+	}
+
 }

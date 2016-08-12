@@ -13,4 +13,10 @@
 	<select id="checkNotice" resultType="net.nigne.wholegram.domain.NoticeVO">
 		select * from notice where other_id = #{user_id} order by date desc limit 30;
 	</select>
+	<insert id="insertFromUpload">
+		insert into notice(user_id,other_id,refer_content,media,flag,board_num) values
+		<foreach item="item" index="index" collection="user_id2"  separator=",">
+            (#{other_id},#{item},#{refer_content},#{media},#{flag},#{board_num})		<!-- 처음에 Controller에서 vo를 설정해줄 때, user_id 와 other_id 값 설정실수(바뀌었음), 그래서 이곳에서 바꿔서 insert해줌-->
+    	</foreach>
+	</insert>
 </mapper>

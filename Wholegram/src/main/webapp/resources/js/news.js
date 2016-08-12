@@ -9,10 +9,18 @@ function makeNewsForm(result) {
 		"<div class='w3-ul w3-border2 w3-center w3-hover-shadow' style='overflow:auto;'>" + 
 			"<div class='w3-container'>";
 	$(result).each(function() {
-		if(this.flag == 2) {
+		if(this.flag == 2) {	// 좋아요
 			html += "<div class='w3-hover-shadow newsef'>" +
 						"<div class='test'>" +
 							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 회원님의 사진을 좋아합니다.   " +
+							"<img id='board_img' src='" + this.media + "' />" +
+						"</div>" +
+					"</div>";
+		}
+		if(this.flag == 4) {	// 게시물 내용중 언급
+			html += "<div class='w3-hover-shadow newsef'>" +
+						"<div class='test'>" +
+							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 게시글에서 회원님을 언급했습니다.   " +
 							"<img id='board_img' src='" + this.media + "' />" +
 						"</div>" +
 					"</div>";

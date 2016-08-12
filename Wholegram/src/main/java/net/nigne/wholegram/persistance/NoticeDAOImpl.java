@@ -31,6 +31,8 @@ public class NoticeDAOImpl implements NoticeDAO {
 			data.put("user_id", user_id);
 			data.put("other_id", vo.getUser_id());
 			data.put("board_num",  board_num);
+			System.out.println("media : " + vo.getMedia());
+			System.out.println("media_thumb : " + vo.getMedia_thumnail());
 			data.put("media", vo.getMedia_thumnail());
 			data.put("flag", flag);
 			session.insert( namespace + ".insertNoticeHeart", data);
@@ -48,7 +50,11 @@ public class NoticeDAOImpl implements NoticeDAO {
 	@Override
 	public List<NoticeVO> checkNotice(String user_id) {
 		return session.selectList(namespace + ".checkNotice", user_id);
-		
+	}
+	
+	@Override
+	public void insertFromUpload(NoticeVO vo) {
+		session.insert(namespace+".insertFromUpload", vo);
 	}
 
 }

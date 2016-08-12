@@ -226,7 +226,7 @@ input[type=checkbox].w3-check:disabled+.w3-validate{color:#f44336},input[type=ra
 }
 .w3-border2{
 	position: absolute;
-	width: 380px;
+	width: 400px;
 	height: 400px;
 	z-index: 1;
 	float: right;
@@ -408,6 +408,7 @@ input[type=checkbox].w3-check:disabled+.w3-validate{color:#f44336},input[type=ra
 	margin-bottom:-20px!important;
 	padding-bottom:-20px!important;
 }
+
 
 .newsef {
 	height:50px;

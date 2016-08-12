@@ -20,6 +20,7 @@ public interface BoardService {
 	public int getHeart(int board_num);
 	public int getTotalCount();
 	public long getTime( int board_num );
+	public int getBoardNum(BoardVO vo);
 	
 
 	public BoardVO getOne(BoardVO vo);

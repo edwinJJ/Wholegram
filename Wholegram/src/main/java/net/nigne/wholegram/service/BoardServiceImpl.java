@@ -158,4 +158,10 @@ public class BoardServiceImpl implements BoardService {
 		return dao.getThunmnail(board_num);
 	}
 
+	// 게시물 번호 가져옴 (notice 알림용도)
+	@Override
+	public int getBoardNum(BoardVO vo) {
+		return dao.getBoardNum(vo);
+	}
+
 }

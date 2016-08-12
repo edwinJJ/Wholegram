@@ -5,6 +5,10 @@
  
 <mapper namespace="net.nigne.wholegram.mappers.boardMapper">
 	
+	<select id="getBoardNum" resultType="int">
+		select board_num from board where media = #{media}
+	</select>
+	
 	<select id="getOne" resultType="net.nigne.wholegram.domain.BoardVO">
 		select * from board where board_num = #{board_num}
 	</select>

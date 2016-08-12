@@ -255,6 +255,7 @@
 		    	datatype: "json",
 		    	type:'POST',
 		    	success: function(result){
+		    		console.log(result);
 		    		makeNewsForm(result);
 		    	},
 		    	error: function(result) {

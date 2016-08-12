@@ -33,6 +33,12 @@ public class NoticeServiceImpl implements NoticeService {
 		return dao.checkNotice(user_id);
 	}
 
+	// 게시물 업로드시에 글내용중 다른유저를 언급한경우 (notice)
+	@Override
+	public void insertFromUpload(NoticeVO vo) {
+		dao.insertFromUpload(vo);
+	}
+
 
 
 }

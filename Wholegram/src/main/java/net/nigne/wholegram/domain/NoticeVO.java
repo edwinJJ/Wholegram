@@ -1,6 +1,9 @@
 package net.nigne.wholegram.domain;
 
+import java.util.List;
+
 public class NoticeVO {
+	private List<String> user_id2;
 	private int notice_num;
 	private String user_id;
 	private String other_id;
@@ -10,6 +13,12 @@ public class NoticeVO {
 	private int flag;
 	private String date;
 	
+	public List<String> getUser_id2() {
+		return user_id2;
+	}
+	public void setUser_id2(List<String> user_id2) {
+		this.user_id2 = user_id2;
+	}
 	public int getNotice_num() {
 		return notice_num;
 	}

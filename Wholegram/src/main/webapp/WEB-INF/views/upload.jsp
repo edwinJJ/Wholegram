@@ -218,6 +218,7 @@
 		<div id = "canvas" class="canvas" >
 			<i class="fa fa-refresh fa-3x" aria-hidden="true" id ="delete" style="display:none" onclick="deleteButtonShow()"></i> <!-- 파일 업로드시 나타남 -->
 		
+			<img id="int" src="/resources/Image/plus-sign.jpg" style="display:none"> <!-- 캔버스에 넣을 이미지 버퍼 (보이지않음) --> 
 			<!-- image buffer -->
 			<img id="img" src="/resources/Image/plus-sign.jpg" style="display:none"> <!-- 캔버스에 넣을 이미지 버퍼 (보이지않음) --> 
 			<!-- view buffer -->

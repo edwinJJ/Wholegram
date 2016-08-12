@@ -2,6 +2,7 @@
    		var canvas = document.getElementById("myCanvas"); // 캔버스 
    		var context = canvas.getContext("2d"); // 캔버스에 출력할 이미지 타입 설정
    	 	var img = document.getElementById("img"); // 이미지 태그 전체를 가져옴
+   	 	var ini = document.getElementById("int"); // 이미지 태그 전체를 가져옴
 	    var panel = document.getElementById("panel");
 	    var cvs = document.getElementById("canvas");
 	    var vss = document.getElementById("videoshow");
@@ -17,7 +18,7 @@
 		var VIDEOTYPE = ["mp4","avi"];
 		var IMAGETYPE = ["jpg","jpeg","gif","png","bmp"];
 	    panelInit();
-	    set_init_size(img,canvas,context,panel);
+	    set_init_size(ini,canvas,context,panel);
 	    $(document).ready(function(){
 			$('#file').change(function(e) {
 				  var file    = document.querySelector('input[type=file]').files[0];
@@ -82,14 +83,7 @@
 			vss.style.display = "none";
 			$("#delete2").css("display","none");
 			$("#delete").css("display","none");
-			context.clearRect(0, 0, 600, 900);
-			panel.style.width=(width+2)+"px";
-			panel.style.height=(height+2)+"px";
-			$("#canvas").css("height",height+ "px");
-			$("#myCanvas").css("width",width+ "px");
-			$("#myCanvas").css("height",height+ "px");
-			$("#myCanvas").css("margin-left",-1*width/2+ "px");
-			$("#panel").css("margin-left",-1*width/2+ "px");
+		    set_init_size(ini,canvas,context,panel);
 	    }
 	    
 	    function canvasEvent(){
@@ -116,25 +110,35 @@
 			//dataurl = canvas.toDataURL();
 		}; 
 		
-		function convertTohashTag(){
-			var tx = $("#content").val();
-			var temp = tx.split(" ");
-			var text ="";
-			var temp2="";
-			for(var tm in temp){
-				if(temp[tm].indexOf("#")!=FALSE ){
-					temp2 =temp[tm].split("#");
-					for(var i =1;i<temp2.length;i++){
-						text += " <a href='/hash/%23"+temp2[i]+"'>#"+temp2[i]+" </a>";
-					}	
-				}else{
-					text += " "+temp[tm];
-				}
-				content = text;
-				console.log(content);
-			}// 공백단위로 분리 -> 분리된 값들에 #이 있는지 없는지 확인 -> 있으면 #으로 분리 ->그걸 a태그로처리
-			
+		function replaceAll(str, searchStr, replaceStr) {
+
+		    return str.split(searchStr).join(replaceStr);
 		}
+		function allTrim(str) {
+
+		    return str.split(" ").join("");
+		}
+		function convertTohashTag(){
+		   var tx = document.getElementById("content").value;
+		   tx = replaceAll(tx,"#"," #");
+		   tx = replaceAll(tx,"@"," @");
+		   var temp = tx.split(" ");
+		   var text ="";
+		   var temp2="";
+		   var aa = tx;
+		   for(var tm in temp){
+			    if(temp[tm].indexOf("#")!=-1 || temp[tm].indexOf("@")!=-1){
+			    	 temp2 =temp[tm].split("#");
+				     if(temp2[0].indexOf("@")!=-1){
+				    	 tx =tx.replace(temp2[0], " <a href='/"+temp2[0].substring(1)+"'>"+temp2[0]+" </a>");
+				     }
+				     for(var i =1;i<temp2.length;i++){
+				    	 tx =tx.replace("#"+temp2[i], " <a href='/hash/%23"+temp2[i]+"'>#"+temp2[i]+" </a>");
+				     } 
+			    }
+		   }// 공백단위로 분리 -> 분리된 값들에 #이 있는지 없는지 확인 -> 있으면 #으로 분리 ->그걸 a태그로처리
+		   content = tx;
+		  }
 		
 		//test예정
 		function uploads(){
@@ -185,7 +189,7 @@
 	    	}else if($("#content").val()==NULL){
 	    		alert("내용을 작성하세요");
 	    	}else{
-		    	convertTohashTag();
+	    		var content = document.getElementById("content").value;
 		    	var json = JSON.stringify({
 		    			dataurl : dataurl,
 		    			atag : atag,
@@ -383,7 +387,7 @@
 		}
 		// 원상복구
 		function restore(){
-		    set_size(img,canvas,context,panel);
+			set_size(img,canvas,context,panel);
 		}
 		
 		// 그레이 스케일 필터
