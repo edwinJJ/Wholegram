@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
+import net.nigne.wholegram.domain.FollowVO;
 import net.nigne.wholegram.domain.NoticeVO;
 import net.nigne.wholegram.persistance.NoticeDAO;
 
@@ -39,6 +40,23 @@ public class NoticeServiceImpl implements NoticeService {
 		dao.insertFromUpload(vo);
 	}
 
+	// 댓글 달았을시 notice(알림) 테이블에 추가
+	@Override
+	public void rnInsert( String user_id, int board_num, String content, int flag, int reply_num ) {
+		dao.rnInsert(user_id, board_num, content, flag, reply_num);
+	}
+	
+	// 댓글 지웠을시 notice(알림) 테이블에 삭제
+	@Override
+	public void rnDelete(int reply_num) {
+		dao.rnDelete(reply_num);
+	}
 
+	// 누가 누구를 팔로우 하고있는 noitce(알림) 테이블에 추가
+	@Override
+	public void insertFollow(FollowVO vo, int flag) {
+		System.out.println("abc1-1");
+		dao.insertFollow(vo, flag);
+	}
 
 }

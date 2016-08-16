@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.nigne.wholegram.common.RepCriteria;
 import net.nigne.wholegram.domain.ReplyVO;
@@ -21,9 +22,11 @@ public class ReplyDAOImpl implements ReplyDAO {
 		return session.selectList( namespace + ".getList", board_num );
 	}
 
+	@Transactional
 	@Override
-	public void insert(ReplyVO vo) {
+	public int insert(ReplyVO vo) {
 		session.insert( namespace + ".insert", vo );
+		return session.selectOne(namespace + ".getReplynum");
 	}
 
 	@Override

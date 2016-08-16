@@ -2,21 +2,11 @@
     pageEncoding="EUC-KR"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<!DOCTYPE>
-<html>
-<head>
-<link rel="stylesheet" href="/resources/css/message.css">
 <script src="resources/js/jquery.lazyloadxt.js" type="text/javascript"></script>
-<script>
-	var sessionId = "${sessionId}";				// 접속자 ID
-	var thisPage = false;						// 메시지 페이지가 아니라는 의미
-</script>
-</head>
-<body>
 <c:forEach items="${bList}" var="bd">
 	<div id="cnt_header">
 		<a id="cnt_user_img" class="fl" herf=""> 
-			<img src="/resources/Image/Hydrangeas.jpg">
+			<img src="/user/getByteImage/">
 		</a>
 		<div id="cnt_header_user" class="fl">
 			<c:if test="${bd.place eq null}"> 
@@ -33,7 +23,7 @@
 			<a href="#" style="display:none;">
 				<c:set var="toDay" value="<%=new java.util.Date() %>" />
 				<fmt:parseDate var="regDate" value="${bd.reg_date }" pattern="yyyy-MM-dd HH:mm:ss" />
-				<fmt:formatDate value="${regDate }" pattern="yyyyMMddHHmmss" />
+				<fmt:formatDate value="${regDate}" pattern="yyyyMMddHHmmss" />
 				<fmt:parseNumber value="${toDay.time}" integerOnly="true" var="nowDays" scope="request" />
 				<fmt:parseNumber value="${regDate.time}" integerOnly="true" var="oldDays" scope="request" />
 			</a>
@@ -58,7 +48,7 @@
 			</c:if>
 			
 			<c:if test="${(nowDays-oldDays)/1000 > 604800 }"> 
-				<fmt:formatDate value="${regDate }" pattern="yyyy년 MM월 dd일" />
+				<fmt:formatDate value="${regDate}" pattern="yyyy년 MM월 dd일" />
 			</c:if>
 		</span>
 	</div>
@@ -87,10 +77,10 @@
 					<span> ${bd.content} </span>
 				</h1>
 			</li>								
-			<li id="reply_list${bd.board_num }" class="reply_list">
+			<li id="reply_list${bd.board_num}" class="reply_list">
 				<c:forEach items="${replyResult}" var="rp">
 					<c:if test="${bd.board_num == rp.board_num}">
-						<a class="user_id" href="">${rp.user_id }</a> 
+						<a class="user_id" href="">${rp.user_id}</a> 
 						<span>${rp.content}</span>
 						<c:if test="${sessionId == rp.user_id}">
 							<input type="button" class="deleteBtn fr" value="X" onclick="deleteReply(${bd.board_num},${rp.reply_num})" />
@@ -106,22 +96,33 @@
 				<c:choose>
 				<c:when test="${bd.aldy_heart}"> <!-- 게시물에 좋아요가 눌러져있는 경우 -->
 				<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num} )"></i> 
-				<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num} )"></i>
+				<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num})"></i>
 				</c:when>
 				<c:otherwise>  <!-- 게시물에 좋아요가 안 눌러져있는 경우 -->
-				<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num} )"></i>
-				<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num} )"></i> 
+				<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num})"></i>
+				<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num})"></i> 
 				</c:otherwise>
 				</c:choose>
 			</a>
-			<input type="hidden" id="board_num" name="board_num" value="${bd.board_num }" /> 
-			<input type="text" id="content${bd.board_num}" name="content${bd.board_num}" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply(${bd.board_num})" placeholder="댓글달기..." /> 
+			<input type="hidden" id="board_num" name="board_num" value="${bd.board_num}" /> 
+			<input type="text" id="content${bd.board_num}" name="content${bd.board_num}" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('${bd.board_num}', '${bd.user_id}')" placeholder="댓글달기..." /> 
 			
-			<a href="#self" id="openPopup"> 
+			<a href="#self" onclick="openPopup(${bd.board_num})">
 				<i class="fa fa-ellipsis-h fa-2x fr" style="color: #bfbfbf;" aria-hidden="true"></i>
 			</a>
 		</div>
 	</div>
+
+	<!-- option 메뉴 팝업 -->
+	<div id="popup_wrap">
+		<div id="popupLayer${bd.board_num}" class="popupLayer">
+			<div class="bg"></div>
+			<ul id="popupContents">
+				<li><a href="#" id="">부적절한 콘텐츠 신고${bd.board_num}</a></li>
+				<li><a href="#" id="">퍼가기</a></li>
+				<li><a href="#" id="">다운로드</a></li>
+				<li><a href="#self" onclick="closePopup(${bd.board_num})">취소</a></li>
+			</ul>
+		</div>
+	</div>
 </c:forEach>
-</body>
-</html>

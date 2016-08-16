@@ -1,6 +1,7 @@
 package net.nigne.wholegram.controller;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -204,36 +205,79 @@ public class BoardController {
 	}
 	
 	/* 댓글 입력할 때*/ 
-	@RequestMapping(value = "/{board_num}/{content}", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> insert(@PathVariable("board_num") int board_num, @PathVariable("content")String content, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/{board_num}/{content}/{uid}", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> insert(@PathVariable("uid")String uid, @PathVariable("board_num") int board_num, @PathVariable("content")String content, HttpServletRequest request, HttpServletResponse response) {
+		
 		ResponseEntity<Map<String, Object>> entity = null;
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
 		
 		if (user_id != null) {
-			try {
-				ReplyVO vo = new ReplyVO();
-				vo.setBoard_num(board_num);
-				vo.setUser_id(user_id);
-				vo.setContent(content);
-				rService.insert(vo);
+			List<String> compare = new ArrayList<String>();
+	         List<String> ls = new ArrayList<String>();
+	         
+	         try { 
+	            // 댓글 입력 (reply table)
+	            ReplyVO vo = new ReplyVO();
+	            vo.setBoard_num(board_num);
+	            vo.setUser_id(user_id);
+	            
+	            String test = content;
 
-				List<ReplyVO> list = rService.getList( board_num );
-				Map<String, Object> map = new HashMap<>();
-				map.put("result", list);
-				entity = new ResponseEntity<>( map, HttpStatus.OK);
-			} catch (Exception e) {
-				entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-		} else {
-			try {
-				response.sendRedirect("login");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return entity;
-	}
+	               test = test.replaceAll("@", " @").replaceAll("#"," #").replaceFirst(" ","");
+	               String[] test2 = test.split(" ");
+	               String temp=test;
+	                for(String s:test2){
+	                  if(s.indexOf("@")!=-1 || s.indexOf("#")!=-1){
+	                     if(!find(compare,s)){
+	                        System.out.println(s);
+	                        System.out.println(find(compare,s));
+	                        if(s.indexOf("@")!=-1 ){
+	                           temp = temp.replaceAll(s, "<a href=/"+s.substring(1)+">"+s+" </a>");
+	                           ls.add(s.substring(1));
+	                           compare.add(s);
+	                          
+	                        }else
+	                           temp = temp.replaceAll(s,"<a href=/hash/"+URLEncoder.encode(s,"UTF-8")+">"+s+" </a>");
+	                           compare.add(s);
+	                     }
+	                  }
+	               }
+	            
+	            vo.setContent(temp);
+	            int reply_num = rService.insert(vo);
+
+	            if( !ls.isEmpty() ) {
+	               Iterator<String> it = ls.iterator();
+	               while( it.hasNext() ) {
+	            	   System.out.println("www");
+	                  nService.rnInsert(it.next(), board_num, temp, 5, reply_num);
+	               }
+	            } 
+	            
+	            // 접속자 ID와 게시물 작성자 ID가 다른 경우,
+	            if( uid != user_id && !uid.equals( user_id ) ) {
+	               // 게시물에 접속자가 댓글을 입력하면 reply, notice table에 입력
+	               nService.rnInsert(user_id, board_num, temp, 3, reply_num);
+	            }    
+	            
+	            List<ReplyVO> list = rService.getList( board_num );
+	            Map<String, Object> map = new HashMap<>();
+	            map.put("result", list);
+	            
+	            entity = new ResponseEntity<>( map, HttpStatus.OK);
+	         } catch (Exception e) {
+	            entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	         }
+	      } else {
+	         try {
+	            response.sendRedirect("login");
+	         } catch (IOException e) {
+	            e.printStackTrace();
+	         }
+	      }
+	      return entity;
+	   }
 
 	/* 댓글 삭제할 때 */
 	@RequestMapping( value = "/{board_num}/{reply_num}", method = RequestMethod.DELETE )
@@ -242,7 +286,10 @@ public class BoardController {
 		HttpSession session = request.getSession();
 		if ((session.getAttribute("user_id")) != null && !(session.getAttribute("user_id").equals(""))) {
 			try {
+				nService.rnDelete( reply_num ); 
 				rService.delete( reply_num );
+
+				
 				List<ReplyVO> delList = rService.getList( board_num );
 				Map<String, Object> map = new HashMap<>();
 				map.put("delList", delList);
@@ -302,4 +349,14 @@ public class BoardController {
 		return entity;
 	}
 
+	public static boolean find(List<String> buf,String idx){
+        boolean flag = false;
+        
+        for(String s:buf){
+           if(s.equals(idx))
+              flag = true;
+        }
+        
+        return flag;
+     }
 }

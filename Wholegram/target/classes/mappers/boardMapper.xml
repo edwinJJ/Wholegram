@@ -58,7 +58,7 @@
 	</select>
 	
 	<select id="getList" resultType="net.nigne.wholegram.domain.BoardVO">
-		select * from board order by board_num desc limit #{startNum}, #{pagePerBlock}
+		select distinct * from board where user_id in(select following from follow where follower = #{user_id}) or user_id = #{user_id} order by reg_date desc limit #{startNum}, #{pagePerBlock}
 	</select>
 	
 	<select resultType="int" id="getUserCount">

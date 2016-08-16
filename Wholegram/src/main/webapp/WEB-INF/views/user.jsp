@@ -115,80 +115,224 @@
 		#board_count {
 			text-align: center;
 		}
+    </style> <style type="text/css">
+      #profile_container{
+         margin-left: 25%;
+         width: 1000px;
+         height: 100%;
+         margin:0 auto;
+      }
+       #container2 {
+         padding-left: 5%;
+      } 
+      #modalCarousel >#image> img{
+         max-width: 600px;
+      }
+      #profile{
+         height: 30%;
+         width: 100%;
+         float:left;
+      }
+      #profile_layout {
+         margin-left: 5%;
+      }
+      #profile_img {
+         float: left;
+         cursor: pointer;
+      }
+      #profile_all {
+         margin-left: 30%;
+      }
+      #user_id {
+         font-size: 35px;
+         float: left;
+      }
+      #user_id2 {
+         font-size: 20px;
+         margin-left: -20%;
+      }
+      #profile_btn {
+         margin-left: 1%;
+      }
+      #profile_btn2 {
+         margin-top: 1%;
+      }
+      .btn-group {
+         margin-top: 1.5%;
+         margin-left: 1.5%;
+      }
+      #profile_btn2-1 {
+         margin-left: -20%;
+      }
+      .logout {
+         margin-top: 0.8%;
+      }
+      .logout2 {
+         margin-top: -1.6%;
+         margin-left: 1%;
+      }
+      #profile_intro_scope {
+         width: 400px;
+      }
+      #profile_intro {
+         overflow:hidden;
+           height:auto;
+         font-size: 20px;
+      }
+      #profile_intro_scope2 {
+         margin-left: -20%;
+         width: 400px;
+      }
+      #profile_intro2 {
+         overflow:hidden;
+           height:auto;
+         font-size: 20px;
+      }
+      #profile_info {
+         font-size: 20px;
+      }
+      #follower_count {
+         margin-left: 5%;
+      }
+      #following_count {
+         margin-left: 5%;
+      }
+      .items {
+         margin-left: 6.1%;
+      }
+      #board_count {
+         text-align: center;
+      }
+      .modal-body{
+         padding-left: 9px;
+          padding-right: 9px;
+      }
+      .modal-dialog{
+         width:620px;
+      }
+      .carousel {
+         text-align:center;
+      }
+      .carousel-inner {
+         display: inline-block;
+      }
+      #content #cnt_reply{
+         padding:10px;
+      }
+      #content{
+         border-bottom: 2px solid#eee;
+      }
+      li{
+         list-style: none;
+         
+      }
+      ul{
+         padding-left: 0px;
+         
+      }
+      #li{
+         max-height: 400px;
+          overflow: auto;
+      }   
+      video{
+         width:295px;
+         height:295px;
+         background: white;
+         border: 1px solid #ddd;
+             border-radius: 4px;
+      }
+      #image > video {
+         max-width:600px;
+         max-height:600px;
+         width:600px !important;
+      }
+      .modal-content{
+         width:680px;
+      }
+      .carousel-control{
+         width:5%;
+      }
+      #viewpeople{
+         left: 5%;
+           top: 92%;
+            position: absolute;
+         cursor:pointer;
+      }
+      
     </style>
 
-	<style>
-		@media all and (max-width: 575px) {
-			#profile_intro_scope2{ width: 300px;}
-		}
-		@media all and (max-width: 768px) {
-			#profile_img { 
-				width:80px;
-				height:80px;
-				border-radius: 50%;
-			}
-			#profile_info {
-				margin-top: 15%;
-			}
-			#user_id{display: none;}
-			#profile_btn2{display: none;}
-			.logout{display: none;}
-			#profile_name{display: none;}
-			#profile_name2{
-				font-size: 20px; 
-				margin-left: -20%;
-				padding-top: -50%;
-				margin-top: - 50%;
-			}
-			#profile_intro{display: none;}
-			#line2{
-				padding-top: -50px;
-				/* border-bottom:1px solid #DADADA;   */
-			}
-			#board_count{display: none;}
-			#follower_count{display: none;}
-			#following_count{display: none;}
-			.board_items {
-				width: 60%;
-				height: 60%;
-			}
-		}
-		@media all and (min-width: 769px) and (max-width: 1200px){
-			#container{
-				margin-left: 8%;
-			}
-		}
-		@media all and (min-width: 769px) and (max-width: 1950px){
-			#profile_img { 
-				width: 150px;
-				height: 150px; 
-				border-radius: 50%;
-				margin-left: 5%;
-			}
-			#user_id2{display: none;}
-			#profile_btn2-1{display: none;}
-			.logout2{display: none;}
-			#profile_name{font-size: 20px;}
-			#profile_name2{display: none;}
-			#profile_intro2{display: none;}
-			#line2{display: none;}
-			#board_count2{display: none;}
-			#follower_count2{display: none;}
-			#following_count2{display: none;}
-		}
-		@media all and (min-width: 769px) and (max-width: 1179px){
- 			.board_items{
-				width: 255px;
-				height: 255px;
-			} 
-		}
-		@media all and (min-width: 1180px) and (max-width: 1950px){
- 			.board_items{
-				width: 295px;
-				height: 295px;
-			} 
-		}
-	</style>
+   <style>
+      @media all and (max-width: 575px) {
+         #profile_intro_scope2{ width: 300px;}
+      }
+      @media all and (max-width: 768px) {
+         #profile_img { 
+            width:80px;
+            height:80px;
+            border-radius: 50%;
+         }
+         #profile_info {
+            margin-top: 15%;
+         }
+         #user_id{display: none;}
+         #profile_btn2{display: none;}
+         .logout{display: none;}
+         #profile_name{display: none;}
+         #profile_name2{
+            font-size: 20px; 
+            margin-left: -20%;
+            padding-top: -50%;
+            margin-top: - 50%;
+         }
+         #profile_intro{display: none;}
+         #line2{
+            padding-top: -50px;
+            /* border-bottom:1px solid #DADADA;   */
+         }
+         #board_count{display: none;}
+         #follower_count{display: none;}
+         #following_count{display: none;}
+         .board_items {
+            width: 60%;
+            height: 60%;
+         }
+      }
+      @media all and (min-width: 769px) and (max-width: 1200px){
+         #container{
+            margin-left: 8%;
+         }
+      }
+      @media all and (min-width: 769px) and (max-width: 1950px){
+         #profile_img { 
+            width: 150px;
+            height: 150px; 
+            border-radius: 50%;
+            margin-left: 5%;
+         }
+         #user_id2{display: none;}
+         #profile_btn2-1{display: none;}
+         .logout2{display: none;}
+         #profile_name{font-size: 20px;}
+         #profile_name2{display: none;}
+         #profile_intro2{display: none;}
+         #line2{display: none;}
+         #board_count2{display: none;}
+         #follower_count2{display: none;}
+         #following_count2{display: none;}
+      }
+      @media all and (min-width: 769px) and (max-width: 1179px){
+          .board_items{
+            width: 255px;
+            height: 255px;
+         } 
+      }
+      @media all and (min-width: 1180px) and (max-width: 1950px){
+          .board_items{
+            width: 295px;
+            height: 295px;
+         } 
+      }
+   </style>
 	<script>
 		function profile_edit() {
 			location.href="/user/update_form";		// 프로필 수정 페이지 이동
@@ -375,7 +519,7 @@
 
 	
 	<script>
-	var sessionId = "${vo.user_id }";		// 접속자 ID
+	var sessionId = "${user_id }";		// 접속자 ID
 	var thisPage = false;					// 메시지 페이지가 아니라는 의미
 	var VIDEO = "m";
 	var IMAGE = "i";
@@ -405,9 +549,9 @@
 		function viewclick(){
 			$("#tag").toggle();
 		}
-		function insertReply( bno ) {
+		function insertReply( bno, uid ) {
 			var reply_content = $("#content"+bno).val();
-			var url = "/board/"+ bno +"/" + reply_content;
+			var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
 			
 			$.ajax({
 				type : 'GET',
@@ -538,7 +682,7 @@
 		    	    	$("#next").attr("onclick","read("+prevNext.next+",0)");
 		    	    	setReplyList(result.rp, no);
 		    	    	$("#rep_inp").html('<input type="hidden" id="board_num" name="board_num" value="'+result.bd.board_num+'" /> ');
-		    	    	$("#rep_inp").html($("#rep_inp").html()+'<input type="text" id="content'+result.bd.board_num+'" name="content'+result.bd.board_num+'" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('+result.bd.board_num+')" placeholder="댓글달기..." />');						
+		    	    	$("#rep_inp").html($("#rep_inp").html()+"<input type=\"text\" id=\"content" + result.bd.board_num+"\" name=\"content"+result.bd.board_num+"\" style=\"width: 450px; outline-style: none;\" onkeydown=\"javascript:if( event.keyCode == 13 ) insertReply('" + result.bd.board_num +"' , '"+result.bd.user_id+"')\" placeholder=\"댓글달기...\" />");						
 	    	    	
 	    	    },
 	    	    error:function(request,status,error){

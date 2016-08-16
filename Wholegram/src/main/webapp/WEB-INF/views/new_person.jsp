@@ -21,6 +21,13 @@
 	<link rel="stylesheet" href="/resources/css/header.css"> 
 	<script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 	<script type="text/javascript" src="/resources/js/search.js"></script>
+	<script src="resources/js/jquery.lazyloadxt.js" type="text/javascript"></script>
+	<style>
+		.lazy{
+			display: none;
+		}
+
+	</style>
 	<script>
 		// 탭메뉴
 		function showTab(val) {
@@ -58,12 +65,16 @@
 
 			<!-- 둘러보기 / 사용자가 following하지 않은 다른 user 리스트 -->
 			<div id="titleA">
-				<c:forEach items="${bList}" var="b">
-					<a href="${b.user_id}"> 
-						<input type="hidden" id="board_num" name="board_num" value="${b.user_id}" /> 
-						<img class="cnt_img" src="/resources/Image/Hydrangeas.jpg" style="margin-bottom: 16px;">
-					</a>
-				</c:forEach>
+
+					<c:forEach items="${bList}" var="b">
+						<c:if test="${b.media_type == 'i'}">
+						<a href="${b.user_id}"> 
+							<input type="hidden" id="board_num" name="board_num" value="${b.user_id}" /> 
+							<img class="cnt_img" src="${b.media}" style="margin-bottom: 16px;">
+						</a>
+						</c:if>
+					</c:forEach>
+		
 			</div>
 			
 			<!-- 알 수도 있는 사람 / 사용자가 following한 유저의 following user 리스트 -->
@@ -73,7 +84,7 @@
 						<div id="wrapper">
 							<div id="b_header">
 								<a id="cnt_user_img" class="fl" href="${mb.user_id}"> 
-									<img id="${mb.user_profile}" src="/resources/Image/Hydrangeas.jpg" />
+									<img id="${mb.user_profile}" src="/user/getByteImage/" >
 								</a> 
 								<input type="button" id="followBtn${mb.user_id}" name="followBtn${mb.user_id}" class="followBtn fr" value="팔로우" onclick="insertFollow('${mb.user_id}','${mb.mem_no}')" />
 								
@@ -96,7 +107,9 @@
 									<c:forEach items="${bdList}" var="bl">
 										<c:forEach items="${bl}" var="bd">
 											<c:if test="${bd.user_id == mb.user_id}">
-												<img id="${bd.user_id}" class="cnt_img ${bd.board_num} fl" src="/resources/Image/Hydrangeas.jpg" />
+											<c:if test="${bd.media_type == 'i'}">
+												<img id="${bd.user_id}" class="cnt_img ${bd.board_num} fl" src="${bd.media}" />
+											</c:if>
 											</c:if>
 										</c:forEach>
 									</c:forEach>
@@ -115,11 +128,10 @@
 
 var fno = '${f.follow_num}';
 var mno = '${mb.mem_no}';
-var sessionId = "${sessionId}";				// 접속자 ID
-var thisPage = false;						// 메시지 페이지가 아니라는 의미
+var sessionId = '${sessionId}';
 
 
-function insertFollow( uid, mno ) {			// 유저가 선택한 Id를 팔로우한다.
+function insertFollow( uid, mno ) {
 	$.ajax({
 		type : 'GET',
 		url : '/person/' + uid,
@@ -139,7 +151,7 @@ function insertFollow( uid, mno ) {			// 유저가 선택한 Id를 팔로우한�
 	});
 }
 
-function Follow(data, uid) {				// (이제는 팔로우했으니), 팔로우 버튼을 없애고 팔로잉버튼으로 바꾸어준다.
+function Follow(data, uid) {
 	var result = "";
 	$(data).each(function() {	
 		if( sessionId == this.follower && uid == this.following ){
@@ -180,7 +192,6 @@ function unFollow(data, user) {
 }
 </script>
 
-<div id="chat_box"></div>
 <script src="/resources/js/message.js"></script>
 	
 </body>

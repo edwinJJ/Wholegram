@@ -20,27 +20,9 @@
 	<script src="resources/js/jquery.lazyloadxt.js" type="text/javascript"></script>
   	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" href="/resources/css/header.css"> 
 	<script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 	<script type="text/javascript" src="/resources/js/search.js"></script>
-	<script>
 
-		function popup() {
-			
-			$(".openPopup").on("click", function() {
-				$("#popupLayer").fadeIn();
-			});
-			$("#closePopup").on("click", function() {
-				$("#popupLayer").fadeOut();
-			});
-		};
-
-		$(document).ready( function() {
-			popup();
-			
-		});
-	
-	</script>
 	<style>
 		.lazy{
 			display: none;
@@ -76,7 +58,7 @@
 		}
 	</style>
 </head>
-<body style="background: #fafafa;" >
+<body style="background: #fafafa;">
 
 <%@include file="./header.jsp" %>
 
@@ -90,138 +72,147 @@
 				<div id="cnt_board2">
 
 					<c:forEach items="${bList}" var="bd">
-								<div id="cnt_header">
-									<a id="cnt_user_img" class="fl" href=""> 
-										<img src="/resources/Image/Hydrangeas.jpg">
-									</a>
-									<div id="cnt_header_user" class="fl">
-										<c:if test="${bd.place eq null}"> 
-											<a class="user" style="padding-top: 10px;" href="#"> ${bd.user_id}</a>
-										</c:if>	
-										<c:if test="${bd.place ne null}"> 
-											<a class="user" href="#"> ${bd.user_id}</a>
-											<a class="bd_place" href="#">${bd.place}</a>
-										</c:if>
-									</div>
-									
-									<!-- 현재일에서 등록일간의 차이 구하기 7일이후면 등록일 표기 -->
-									<span id="reg_date" class="fr reg_date"  value="${bd.board_num}">
-										<a href="#" style="display:none;">
-											<c:set var="toDay" value="<%=new java.util.Date() %>" />
-											<fmt:parseDate var="regDate" value="${bd.reg_date }" pattern="yyyy-MM-dd HH:mm:ss" />
-											<fmt:formatDate value="${regDate }" pattern="yyyyMMddHHmmss" />
-											<fmt:parseNumber value="${toDay.time}" integerOnly="true" var="nowDays" scope="request" />
-											<fmt:parseNumber value="${regDate.time}" integerOnly="true" var="oldDays" scope="request" />
-										</a>
-										<c:if test="${(nowDays-oldDays)/1000 < 60}"> 
-											<fmt:parseNumber var="sec" value="${(nowDays-oldDays)/1000}" integerOnly="true" />
+						<div id="cnt_header">
+							<a id="cnt_user_img" class="fl" href=""> 
+							<img src="/user/getByteImage/">
+							</a>
+							<div id="cnt_header_user" class="fl">
+								<c:if test="${bd.place eq null}">
+									<a class="user" style="padding-top: 10px;" href="#">
+										${bd.user_id}</a>
+								</c:if>
+								<c:if test="${bd.place ne null}">
+									<a class="user" href="#"> ${bd.user_id}</a>
+									<a class="bd_place" href="#">${bd.place}</a>
+								</c:if>
+							</div>
+
+							<!-- 현재일에서 등록일간의 차이 구하기 7일이후면 등록일 표기 -->
+							<span id="reg_date" class="fr reg_date" value="${bd.board_num}">
+								<a href="#" style="display: none;"> <c:set var="toDay"
+										value="<%=new java.util.Date() %>" /> <fmt:parseDate
+										var="regDate" value="${bd.reg_date }"
+										pattern="yyyy-MM-dd HH:mm:ss" /> <fmt:formatDate
+										value="${regDate }" pattern="yyyyMMddHHmmss" /> <fmt:parseNumber
+										value="${toDay.time}" integerOnly="true" var="nowDays"
+										scope="request" /> <fmt:parseNumber value="${regDate.time}"
+										integerOnly="true" var="oldDays" scope="request" />
+							</a> <c:if test="${(nowDays-oldDays)/1000 < 60}">
+									<fmt:parseNumber var="sec" value="${(nowDays-oldDays)/1000}"
+										integerOnly="true" />
 											${sec}초 전
-										</c:if>
-										
-										<c:if test="${(nowDays-oldDays)/1000 > 60 && (nowDays-oldDays)/1000 < 3600 }">
-											<fmt:parseNumber var="min" value="${((nowDays-oldDays)/(1000 * 60))}" integerOnly="true" /> 
+										</c:if> <c:if
+									test="${(nowDays-oldDays)/1000 > 60 && (nowDays-oldDays)/1000 < 3600 }">
+									<fmt:parseNumber var="min"
+										value="${((nowDays-oldDays)/(1000 * 60))}" integerOnly="true" /> 
 											${min}분 전
-										</c:if>
-										
-										<c:if test="${(nowDays-oldDays)/1000 > 3600 && (nowDays-oldDays)/1000 < 86400 }"> 
-											<fmt:parseNumber var="hour" value="${(nowDays-oldDays)/(1000 * 60 * 60)}" integerOnly="true" />
+										</c:if> <c:if
+									test="${(nowDays-oldDays)/1000 > 3600 && (nowDays-oldDays)/1000 < 86400 }">
+									<fmt:parseNumber var="hour"
+										value="${(nowDays-oldDays)/(1000 * 60 * 60)}"
+										integerOnly="true" />
 											${hour}시간 전
-										</c:if>
-										
-										<c:if test="${(nowDays-oldDays)/1000 > 86400 && (nowDays-oldDays)/1000 < 604800 }"> 
-											<fmt:parseNumber var="day" value="${(nowDays-oldDays)/(1000* 60 * 60 * 24)}" integerOnly="true" />
+										</c:if> <c:if
+									test="${(nowDays-oldDays)/1000 > 86400 && (nowDays-oldDays)/1000 < 604800 }">
+									<fmt:parseNumber var="day"
+										value="${(nowDays-oldDays)/(1000* 60 * 60 * 24)}"
+										integerOnly="true" />
 											${day}일 전
+										</c:if> <c:if test="${(nowDays-oldDays)/1000 > 604800 }">
+									<fmt:formatDate value="${regDate}" pattern="yyyy년 MM월 dd일" />
+								</c:if>
+							</span>
+						</div>
+						<!-- 변경-->
+						<div id="cnt_board_img">
+							<div id="panel">
+								<c:choose>
+									<c:when test="${bd.media_type == 'm'}">
+										<video class="lazy" data-src="${bd.media}" width="600"
+											height="600" preload="metadata" controls></video>
+									</c:when>
+									<c:otherwise>
+										<img class="lazy" id="image${bd.board_num}" data-src="${bd.media}" height="600">
+										<div id="tag${bd.board_num}" style="display: none">${bd.tag}</div>
+										<i id="viewpeople" class="fa fa-info-circle fa-2x" onclick="viewClick('${bd.board_num}')"></i>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</div>
+
+						<div id="cnt_board_content">
+							<div id="cnt_board_heart${bd.board_num}" class="fwb">좋아요
+								${bd.heart}개</div>
+							<ul id="cnt_board_list">
+								<li>
+									<h1 class="title">
+										<a class="user_id fwb" href="/${bd.user_id}">${bd.user_id}</a>
+										<span> ${bd.content} </span>
+									</h1>
+								</li>
+								<li id="reply_list${bd.board_num }" class="reply_list">
+									<c:forEach items="${replyResult}" var="rp">
+										<c:if test="${bd.board_num == rp.board_num}">
+											<a class="user_id fwb" href="/${rp.user_id }">${rp.user_id }</a>
+											<span>${rp.content}</span>
+											<c:if test="${sessionId == rp.user_id}">
+												
+												<input type="button" class="deleteBtn fr" value="X" onclick="deleteReply(${bd.board_num},${rp.reply_num})" />
+												
+											</c:if>
+											<br />
 										</c:if>
-										
-										<c:if test="${(nowDays-oldDays)/1000 > 604800 }"> 
-											<fmt:formatDate value="${regDate }" pattern="yyyy년 MM월 dd일" />
-										</c:if>
-									</span>
-								</div>
-								<!-- 변경-->
-								<div id="cnt_board_img">
-									<div id="panel">
-									   <c:choose>
-									   		 <c:when test="${bd.media_type == 'm'}">
-									   		 	<video class="lazy" data-src="${bd.media}" width="600" height="600" preload="metadata" controls></video>
-       										 </c:when>
-       									<c:otherwise>
-											<img class="lazy" id="image${bd.board_num}" data-src="${bd.media}" height="600">
-											<div id="tag${bd.board_num}" style="display:none">${bd.tag}</div>
-											<i id ="viewpeople" class="fa fa-info-circle fa-2x" onclick="viewClick('${bd.board_num}')"></i>
-										</c:otherwise>
-										</c:choose>
-									</div>
-								</div>
-		
-								<div id="cnt_board_content">
-									<div id="cnt_board_heart${bd.board_num}" class="fwb">좋아요 ${bd.heart}개</div>
-									<ul id="cnt_board_list">
-										<li>
-											<h1 class="title">
-												<a class="user_id fwb" href="/${bd.user_id}">${bd.user_id}</a> 
-												<span> ${bd.content} </span>
-											</h1>
-										</li>								
-										<li id="reply_list${bd.board_num }" class="reply_list">
-											<c:forEach items="${replyResult}" var="rp">
-												<c:if test="${bd.board_num == rp.board_num}">
-													<a class="user_id" href="">${rp.user_id }</a> 
-													<span>${rp.content}</span>
-													<c:if test="${sessionId == rp.user_id}">
-														<input type="button" class="deleteBtn fr" value="X" onclick="deleteReply(${bd.board_num},${rp.reply_num})" />
-													</c:if>
-													<br/>
-												</c:if>
-											</c:forEach>
-										</li>
-									</ul>
-									<div id="cnt_reply">
-										<a class="heart" href="#self">
-											<br/>
-											<c:choose>
-											<c:when test="${bd.aldy_heart}"> <!-- 게시물에 좋아요가 눌러져있는 경우 -->
-											<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num})"></i> 
+									</c:forEach>
+								</li>
+							</ul>
+							<div id="cnt_reply">
+								<a class="heart" href="#self"> <br /> 
+									<c:choose>
+										<c:when test="${bd.aldy_heart}">
+											<!-- 게시물에 좋아요가 눌러져있는 경우 -->
+											<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num})"></i>
 											<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num} )"></i>
-											</c:when>
-											<c:otherwise>  <!-- 게시물에 좋아요가 안 눌러져있는 경우 -->
+										</c:when>
+										<c:otherwise>
+											<!-- 게시물에 좋아요가 안 눌러져있는 경우 -->
 											<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num} )"></i>
-											<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num} )"></i> 
-											</c:otherwise>
-											</c:choose>
-										</a>
-										<input type="hidden" id="board_num" name="board_num" value="${bd.board_num }" /> 
-										<input type="text" id="content${bd.board_num}" name="content${bd.board_num}" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply(${bd.board_num})" placeholder="댓글달기..." /> 
-										
-										<a href="#self" id="openPopup"> 
-											<i class="fa fa-ellipsis-h fa-2x fr" style="color: #bfbfbf;" aria-hidden="true"></i>
-										</a>
-									</div>
-								</div>
+											<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num} )"></i>
+										</c:otherwise>
+									</c:choose>
+								</a> 
+								<input type="hidden" id="board_num" name="board_num" value="${bd.board_num}" /> 
+								<input type="text" id="content${bd.board_num}" name="content${bd.board_num}" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('${bd.board_num}', '${bd.user_id}')" placeholder="댓글달기..." /> 
+								<a href="#self" onclick="openPopup(${bd.board_num})"> 
+									<i class="fa fa-ellipsis-h fa-2x fr" style="color: #bfbfbf;" aria-hidden="true"></i>
+								</a>
+							</div>
+						</div>
+
+						<!-- option 메뉴 팝업 -->
+						<div id="popup_wrap">
+							<div id="popupLayer${bd.board_num}" class="popupLayer">
+								<div class="bg"></div>
+								<ul id="popupContents">
+									<li><a href="#" id="">부적절한 콘텐츠 신고${bd.board_num}</a></li>
+									<li><a href="#" id="">퍼가기</a></li>
+									<li><a href="#" id="">다운로드</a></li>
+									<li><a href="#self" onclick="closePopup(${bd.board_num})">취소</a></li>
+								</ul>
+							</div>
+						</div>
 					</c:forEach>
 					<div id="result"></div>
 				</div>
-				
+
 			</div>
-							
+
 		</div>
 		
 	</div>
 	
 	
 	
-	<!-- option 메뉴 팝업 -->
-	<div id="popup_wrap">
-		<div id="popupLayer">
-			<div class="bg"></div>
-			<ul id="popupContents">
-				<li><a href="#" id="">부적절한 콘텐츠 신고</a></li>
-				<li><a href="#" id="">퍼가기</a></li>
-				<li><a href="#" id="">다운로드</a></li>
-				<li><a href="#" id="closePopup">취소</a></li>
-			</ul>
-		</div>
-	</div>
+
 	
 	<div id="chat_box"></div>
 <script src="/resources/js/message.js"></script>
@@ -229,12 +220,23 @@
 <script>
 	var bno = '${bd.board_num}';
 	var rno = '${rp.reply_num}';
-	var sessionId = "${sessionId}";				// 접속자 ID
-	var thisPage = false;						// 메시지 페이지가 아니라는 의미
+	var sessionId = '${sessionId}';
 	var lno = '${likeNum}';
+	var thisPage = null;			// 메시지 알림 on/off 용도
 
 	var page; 
 	var scrollCurrentTop = 0;
+	
+	function openPopup( bno ) {
+		var popup = document.getElementById("popupLayer" + bno);
+		      $(popup).fadeIn();
+	}
+	
+	function closePopup( bno ) {
+		var popup = document.getElementById("popupLayer" + bno);
+		 $(popup).fadeOut();
+	}
+	
 	if( page == null ) {
 		page = 1;
 	} 
@@ -286,31 +288,38 @@
 			},
 			error : function( result ) {
 				alert("deleteReply fail");
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 			}	
 		});
 	}
 	
-	function insertReply( bno ) {
-		var reply_content = $("#content"+bno).val();
-		var url = "/board/"+ bno +"/" + reply_content;
-		
-		$.ajax({
-			type : 'GET',
-			url : url,
-			headers : {
-				"Content-Type" : "application/json",
-			},
-			data : 
-				JSON.stringify({content:reply_content}),
-			dataType : 'json',
-			success : function(result){
-				setReplyList(result.result, bno);
-			},
-			error : function(result) {
-				alert("insertReply fail");
-			}
-		});
-	}
+	String.prototype.replaceAll = function(org, dest) {
+	       return this.split(org).join(dest);
+	   }
+	   
+	   function insertReply( bno, uid ) {
+	      var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
+	      alert(reply_content);
+	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
+	      
+	      $.ajax({
+	         type : 'GET',
+	         url : url,
+	         headers : {
+	            "Content-Type" : "application/json",
+	         },
+	         data : 
+	            JSON.stringify({content:reply_content}),
+	         dataType : 'json',
+	         success : function(result){
+	            setReplyList(result.result, bno);
+	         },
+	         error : function(request,status,error) {
+	            alert("insertReply fail");
+	            alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	         }
+	      });
+	   }
 	
 	function heartCount( board_num ) {
 		var hc_url = "/board/heart/" + board_num;
@@ -330,29 +339,7 @@
 			}
 		});
 	}
-	
-/*
-	function sendBoardnum() {
-		var sbno = $("#reg_date" + bno).val();
-		$.ajax({
-			type : 'POST',
-			url : "/board/" + 34,
-			headers : {
-				"Content-Type" : "application/json",
-			},
-			data : '',
-			dataType : 'json',
-			success : function(result){
-				alert("성공!!");
-				alert( sbno );
-			},
-			error : function(result) {
-				alert("sendBoardnum fail");
-				alert( sbno );
-			}
-		});
-	}
-*/
+
 	function heartChange(value, board_num) {
 		var hep = document.getElementById("heart_empty" + board_num);
 		var hef = document.getElementById("heart_full" + board_num);
@@ -373,7 +360,7 @@
 	function setReplyList(data, bno) {
 		var	result	= "";
 		$(data).each(function() {	
-			result += "<li><a class='user_id' href='#'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
+			result += "<li><a class='user_id fwb' href='/"+ this.user_id +"'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
 			if( sessionId == this.user_id ) {
 				result += " " + "<input type='button' class='deleteBtn fr' value='X' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
 			} 
@@ -385,7 +372,7 @@
 	function setScrollBoard(data){
 		var result = '<div id="cnt_header">'
 					+'<a id="cnt_user_img" class="fl" herf="">'
-					+'<img src="/resources/Image/Hydrangeas.jpg">'
+					+'<img src="/user/getByteImage/">'
 					+'</a>';
 					
 	}
@@ -393,8 +380,5 @@
 		$("#tag"+no).toggle();
 	}
 </script>
-
-<div id="chat_box"></div>
-<script src="/resources/js/message.js"></script>
 </body>
 </html>

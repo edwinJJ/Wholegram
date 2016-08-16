@@ -45,11 +45,11 @@
 		select user_id, user_profile from member where user_id = #{user_id}
 	</select>
 	<select id="getNewPerson" resultType="net.nigne.wholegram.domain.MemberVO">
-		select distinct user_id from board where user_id not in(select following from follow where follower = #{user_id}) order by rand() limit 12
-	</select>
+      select distinct user_id from board where user_id not in(select follower from follow where following = #{user_id}) and user_id not in(#{user_id}) order by rand() limit 12
+   </select>
 	<select id="getKnowablePerson" resultType="net.nigne.wholegram.domain.MemberVO">
-		 select distinct * from member where user_id in ( select following from follow where follower in ( select following from follow where follower = #{user_id} ) ) and user_id not in ( select following from follow where follower = #{user_id} ) order by rand() 
-	</select>
+       select distinct * from member where user_id in ( select follower from follow where following in ( select follower from follow where following = #{user_id} ) ) and user_id not in ( select follower from follow where following = #{user_id} ) order by rand() 
+   </select>
 	<update id="setProfileImage">
 		update member
 		<set>

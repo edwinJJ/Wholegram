@@ -127,16 +127,17 @@ public class UploadController {
 				System.out.println(PATH+uploadPath+uid+"."+type);
 				grabber.start();    
 				Java2DFrameConverter paintConverter = new Java2DFrameConverter(); // Frame -> bufferedImage濡� 蹂��솚�븯湲� �쐞�븳 而⑤쾭�꽣 �깮�꽦
-				ImageIO.write(resizeImage(paintConverter.getBufferedImage(grabber.grabImage(),1),295,295),"png", new File(destination+uid+".png")); // bufferedImage瑜� �씠誘몄�濡� ���옣
+				ImageIO.write(resizeImage(paintConverter.getBufferedImage(grabber.grabImage(),1),295,295,type),"png", new File(destination+uid+".png")); // bufferedImage瑜� �씠誘몄�濡� ���옣
 				grabber.stop();  // for臾몄씠 �뾾�쑝誘�濡� �빐�떦 �룞�쁺�긽�쓽 泥ロ봽�젅�엫�쓣 �씠誘몄�濡� 媛��졇�샂
 			}else{
+				System.out.println("test중 : " + type);
 				BufferedImage buf = ImageIO.read(new File(PATH+uploadPath+uid+"."+type));
-				ImageIO.write(resizeImage(buf,200,200), "png",new File(destination+uid+".png"));
+				ImageIO.write(resizeImage(buf,200,200,type), "png",new File(destination+uid+".png"));
 			}
 			int board_num = bs.getBoardNum(vo);
 			if(param.get("content").toString().indexOf("@")!=-1){
 				NoticeVO nvo = new NoticeVO();
-				nvo.setMedia(URLPATH+uploadPath+uid+"."+type);
+				nvo.setMedia(URLPATH+"video_thumnail//"+uid+".png");
 				nvo.setBoard_num(board_num);
 				nvo.setOther_id((String) session.getAttribute("user_id"));
 				nvo.setFlag(4);
@@ -208,7 +209,7 @@ public class UploadController {
 	}
 	
 	// �룞�쁺�긽�뿉�꽌 �씫�뼱�삩 �씠誘몄�瑜� resizing
-	public static BufferedImage resizeImage(BufferedImage image, int width, int height) {
+	public static BufferedImage resizeImage(BufferedImage image, int width, int height, String type) {
 		float w = new Float(width) ;
 		float h = new Float(height) ;
 
@@ -227,12 +228,13 @@ public class UploadController {
 		BufferedImage resizedImage = new BufferedImage(wi,he,BufferedImage.TYPE_INT_RGB);
 		Graphics2D rImage = (Graphics2D) resizedImage.getGraphics();
 		rImage.drawImage(image.getScaledInstance(wi,he,image.SCALE_AREA_AVERAGING),0,0,wi,he,null);
-		if(w>h)
-			return Scalr.rotate(resizedImage, Rotation.CW_90);
-		else
-			return resizedImage;
 		
+		if(compareToDataType(type)) {
+	         return Scalr.rotate(resizedImage, Rotation.CW_90);
+		} else {
+			return resizedImage;
 		}
+	}
 	/* TODO �젣嫄곗삁�젙
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public String upload(MultipartFile file,@RequestParam("dataurl")String rsq,@RequestParam("content")String cnt,@RequestParam("atag")String atag,Model model) throws IOException {

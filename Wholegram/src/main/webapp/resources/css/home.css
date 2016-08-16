@@ -23,9 +23,9 @@ li {
 	list-style: none;
 }
 
-input {
-	outline-style: none; /* �룷而ㅼ뒪�떆 諛쒖깮�븯�뒗 �슚怨� �젣嫄� */
-	-webkit-appearance: none; /* 釉뚮씪�슦��蹂� 湲곕낯 �뒪���씪留� �젣嫄� */
+input[type="button"], input[type="text"] {
+	outline-style: none; /* 포커스시 발생하는 효과 제거 */
+	-webkit-appearance: none; /* 브라우저별 기본 스타일링 제거 */
 	-moz-appearance: none;
 	appearance: none;
 	border-style: none;
@@ -173,16 +173,18 @@ input[type="button"] {
 	padding-left: 15px;
 }
 
-/* option �뙘�뾽 */
+
+
+/* option 팝업 */
 #popup_wrapper {
 	width: 100%;
 }
 
-#popupLayer {
+.popupLayer {
 	display: none;
 }
 
-#popupLayer .bg {
+.popupLayer .bg {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -193,6 +195,7 @@ input[type="button"] {
 }
 
 #popupContents {
+	z-index: 9999;
 	position: fixed;
 	top: 50%;
 	left: 50%;

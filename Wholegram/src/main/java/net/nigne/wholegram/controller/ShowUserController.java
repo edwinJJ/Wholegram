@@ -43,15 +43,18 @@ public class ShowUserController {
 	
 	//검색창에서 아이디를 입력시에 동작
 	@RequestMapping(value = "{idx}", method = RequestMethod.GET)
-	public ModelAndView searchText(@PathVariable("idx")String idx,Locale locale, Model model) {
-			MemberVO vo = service.MemInfo(idx);
-			List<BoardVO> list = bdservice.getUserLimitList(vo);
-			ModelAndView mav = new ModelAndView();		
-			mav.setViewName("user");
-			mav.addObject("vo", vo);
-			mav.addObject("list", list);
-			return mav;
-	}
+	   public ModelAndView searchText(@PathVariable("idx")String idx,Locale locale, Model model,HttpServletRequest request) {
+	      HttpSession session = request.getSession();
+	      String user_id = (String)session.getAttribute("user_id");
+	      MemberVO vo = service.MemInfo(idx);
+	      List<BoardVO> list = bdservice.getUserLimitList(vo);
+	      ModelAndView mav = new ModelAndView();      
+	      mav.setViewName("user");
+	      mav.addObject("user_id",user_id);
+	      mav.addObject("vo", vo);
+	      mav.addObject("list", list);
+	      return mav;
+	   }
 	
 	//해시태그 검색후 스크롤링과 관련
 	@RequestMapping( value = "scroll/hash/{text}/{count}", method = RequestMethod.GET )

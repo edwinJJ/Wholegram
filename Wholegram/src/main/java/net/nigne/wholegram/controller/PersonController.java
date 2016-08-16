@@ -27,6 +27,7 @@ import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.MemberService;
+import net.nigne.wholegram.service.NoticeService;
 
 
 @RestController
@@ -38,6 +39,8 @@ public class PersonController {
 	private MemberService mService;
 	@Inject
 	private FollowService fService;
+	@Inject
+	private NoticeService nService;
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ModelAndView Person(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -78,11 +81,15 @@ public class PersonController {
 		try {
 
 			FollowVO vo = new FollowVO();
-			vo.setFollower( user_id );
-			vo.setFollowing( uid );
+			vo.setFollower( uid );
+			vo.setFollowing( user_id );
 			vo.setFlag(1);
 			fService.followInsert(vo);
-			List<FollowVO> list = fService.getfwList();
+			List<FollowVO> list = fService.getfwList();					// follow 테이블에 입력
+			
+			System.out.println("abc1");
+			nService.insertFollow(vo, 1);								// notice 테이블에 입력
+			System.out.println("abc2");
 			Map<String, Object> map = new HashMap<>();
 			map.put("list", list);
 			entity = new ResponseEntity<>( map, HttpStatus.OK);

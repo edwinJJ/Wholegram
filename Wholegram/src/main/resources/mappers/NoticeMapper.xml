@@ -19,4 +19,14 @@
             (#{other_id},#{item},#{refer_content},#{media},#{flag},#{board_num})		<!-- 처음에 Controller에서 vo를 설정해줄 때, user_id 와 other_id 값 설정실수(바뀌었음), 그래서 이곳에서 바꿔서 insert해줌-->
     	</foreach>
 	</insert>
+	<insert id="rnInsert">
+		insert into notice(user_id, other_id, refer_content, media, flag, reply_num, board_num )
+		values(#{user_id}, #{other_id}, #{refer_content}, #{media}, #{flag}, #{reply_num}, #{board_num} )
+	</insert>
+	<delete id="rnDelete">
+		delete from notice where reply_num = #{reply_num}
+	</delete>
+	<insert id="insertFollow">
+		insert into notice(user_id, other_id, flag) values(#{vo.following}, #{vo.follower}, #{flag});
+	</insert>
 </mapper>

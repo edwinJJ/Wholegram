@@ -9,22 +9,70 @@ function makeNewsForm(result) {
 		"<div class='w3-ul w3-border2 w3-center w3-hover-shadow' style='overflow:auto;'>" + 
 			"<div class='w3-container'>";
 	$(result).each(function() {
-		if(this.flag == 2) {	// 좋아요
+		html += "<div class='w3-hover-shadow newsef'>" +
+					"<div class='test'>";
+						if(this.flag == 1) { 
+							html += "<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 회원님을 팔로우하기 시작했습니다.";
+						} else if(this.flag == 2) {
+							html += "<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 회원님의 사진을 좋아합니다." +
+								"<img id='board_img' src='" + this.media + "' />";
+						} else if(this.flag == 3) {
+							html += "<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 댓글을 남겼습니다." +
+								"<img id='board_img' src='" + this.media + "' />";
+						} else if(this.flag == 4) {
+							html += "<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 게시글에서 회원님을 언급했습니다." +
+								"<img id='board_img' src='" + this.media + "' />";
+						} else if(this.flag == 5) {
+							html += "<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 댓글에서 회원님을 언급했습니다." +
+								"<img id='board_img' src='" + this.media + "' />";
+						}
+				html += 
+					"</div>" +
+				"</div>";
+		
+		
+		
+		
+/*		if(this.flag == 1) {	// 팔로우
 			html += "<div class='w3-hover-shadow newsef'>" +
 						"<div class='test'>" +
-							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 회원님의 사진을 좋아합니다.   " +
+							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 회원님을 팔로우하기 시작했습니다." +
 							"<img id='board_img' src='" + this.media + "' />" +
 						"</div>" +
 					"</div>";
+		}
+		if(this.flag == 2) {	// 좋아요
+			html += "<div class='w3-hover-shadow newsef'>" +
+						"<div class='test'>" +
+							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 회원님의 사진을 좋아합니다." +
+							"<img id='board_img' src='" + this.media + "' />" +
+						"</div>" +
+					"</div>";
+		}
+		if(this.flag == 3) { 	// 게시물에 댓글이 달렸을 경우
+			html += "<div class='w3-hover-shadow newsef'>" +
+			"<div class='test'>" +
+				"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 회원님의 게시글에 답글을 남겼습니다." +
+				"<img id='board_img' src='" + this.media + "' />" +
+			"</div>" +
+		"</div>";
 		}
 		if(this.flag == 4) {	// 게시물 내용중 언급
 			html += "<div class='w3-hover-shadow newsef'>" +
 						"<div class='test'>" +
-							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 게시글에서 회원님을 언급했습니다.   " +
+							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 게시글에서 회원님을 언급했습니다." +
 							"<img id='board_img' src='" + this.media + "' />" +
 						"</div>" +
 					"</div>";
 		}
+		if(this.flag == 5) {	// 댓글 내용중에 언급
+			html += "<div class='w3-hover-shadow newsef'>" +
+						"<div class='test'>" +
+							"<img id='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> " + this.user_id + "님이 댓글에서 회원님을 언급했습니다." +
+							"<img id='board_img' src='" + this.media + "' />" +
+						"</div>" +
+					"</div>";
+		}*/
 	});
 	html +=
 		"</div>" +
