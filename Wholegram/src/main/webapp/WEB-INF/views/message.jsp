@@ -13,6 +13,11 @@
 	<link rel="stylesheet" href="/resources/css/message.css">
 	<link rel="stylesheet" href="/resources/css/w3.css">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	
+	<script type="text/javascript" src="/resources/js/search.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+	
 	<style>
 		#header-logo {
 			margin-left: -4px;

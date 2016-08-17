@@ -100,7 +100,7 @@ public class ShowUserController {
 	
 	// 해시태그를 검색시 해시태그검색가 있는 게시물을 찾아 뿌림.
 	@RequestMapping(value = "hash/{idx}", method = RequestMethod.GET)
-	public ModelAndView searchHash(@PathVariable("idx")String idx,Locale locale, Model model) {
+	public ModelAndView searchHash(@PathVariable("idx")String idx,Locale locale, Model model, HttpServletRequest request) {
 			DebugStream.activate();
 			String urlToIdx = null;
 			// '#'문자가 브라우저 URL로 들어갈시 자기자신을 가리키므로 스크립트에서 URL인코딩하여 넘겨놓았음.
@@ -125,13 +125,16 @@ public class ShowUserController {
 				}
 			}
 
-			List<BoardVO> blist= bdservice.searchIterate(queryList);
-			int bcount= bdservice.searchCount(queryList);
-			ModelAndView mav = new ModelAndView();		
-			mav.setViewName("searchResult");
-			mav.addObject("list",blist);
-			mav.addObject("count",bcount);
-			mav.addObject("searchTag",tempIdx);
+			HttpSession hs = request.getSession();
+	        String user_id = (String)hs.getAttribute("user_id");
+	        List<BoardVO> blist= bdservice.searchIterate(queryList);
+	        int bcount= bdservice.searchCount(queryList);
+	        ModelAndView mav = new ModelAndView();      
+	        mav.setViewName("searchResult");
+	        mav.addObject("sessionId", user_id);
+	        mav.addObject("list",blist);
+	        mav.addObject("count",bcount);
+	        mav.addObject("searchTag",tempIdx);
 			return mav;
 	}
 }

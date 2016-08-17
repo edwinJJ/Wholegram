@@ -215,7 +215,7 @@ function showMessage(result) {
 			el.scrollTop = el.scrollHeight;
 		}
 		
-		var rc_url= "message/readCheck/" + chat_chat_num; 								// 메시지 읽은 유저 등록하기
+		var rc_url= "/message/readCheck/" + chat_chat_num; 								// 메시지 읽은 유저 등록하기
 		$.ajax({
 			type : 'POST',
 			url : rc_url,
@@ -256,6 +256,7 @@ function init() {
 	ws = new WebSocket(wsUrl);  								//소켓 객체 생성
 	ws.onopen = function(evt) { 								// 이벤트 발생시 opOpen()을 실행
 		onOpen(evt);
+		console.log("sessionId : " + sessionId);
 		console.log("websocket connection : " + sessionId);
 		ws.send("Login : " + sessionId);						// 웹소켓 접속을 알림
 	};

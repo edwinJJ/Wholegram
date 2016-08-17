@@ -129,6 +129,7 @@
 var fno = '${f.follow_num}';
 var mno = '${mb.mem_no}';
 var sessionId = '${sessionId}';
+var thisPage = false;						// 메시지 페이지가 아니라는 의미
 
 
 function insertFollow( uid, mno ) {

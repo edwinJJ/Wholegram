@@ -54,9 +54,13 @@ public class UploadController {
 	private NoticeService ns;
 	
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
-	public ModelAndView signUp(Locale locale, Model model) {
-	
-		return new ModelAndView("upload");
+	public ModelAndView signUp(Locale locale, Model model, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("sessionId", user_id);
+		mav.setViewName("upload");
+		return mav;
 	}
 	
 	//TODO formdata濡� �뾽濡쒕뱶 援ъ꽦�삁�젙

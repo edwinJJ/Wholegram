@@ -17,7 +17,7 @@
 	padding-left: 11%;
 }
 #header-upload {
-	padding-left: 11.2%;
+	margin-left: 11.2%;
 }
 #header-message {
 	padding-left: 2%;
@@ -30,6 +30,15 @@
 }
 #header-user {
 	padding-left: 2%;
+}
+#search_form{
+   position: absolute;
+    margin-left: 320px;
+    margin-top: 5px;
+}
+#btn_group{
+   position: relative;
+    left: 300px;
 }
 
 @media all and (max-width: 1140px) {
