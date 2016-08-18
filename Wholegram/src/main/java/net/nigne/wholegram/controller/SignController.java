@@ -94,7 +94,7 @@ public class SignController{
             MimeMessage msg = new MimeMessage(session);
  
             msg.setSubject("메일 제목");
-            Address fromAddr = new InternetAddress("edwinj0326@gmail.com"); // 보내는사람 EMAIL
+            Address fromAddr = new InternetAddress("wholegramroot@gmail.com"); // 보내는사람 EMAIL
             msg.setFrom(fromAddr);
             Address toAddr = new InternetAddress("edwin0326@naver.com");    //받는사람 EMAIL
             msg.addRecipient(Message.RecipientType.TO, toAddr);
@@ -114,7 +114,7 @@ public class SignController{
 	private static class senderAccount extends javax.mail.Authenticator {
 		 
 	    public PasswordAuthentication getPasswordAuthentication() {
-	        return new PasswordAuthentication("edwinj0326@gmail.com", "smd7furj@"); // @gmail.com 제외한 계정 ID, PASS
+	        return new PasswordAuthentication("wholegramroot@gmail.com", "wholeh0t$ix"); // @gmail.com 제외한 계정 ID, PASS
 
 	    }
 	}
