@@ -20,6 +20,7 @@
 				html += '<input type="text" id="email" name="email" class="mg5" placeholder="이메일" onblur="email_check()" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);"><div id="check_email" class="check"></div>';
 				html += '<input type="text" id="phone" name="phone" class="mg5" maxlength="11" placeholder="전화번호 ex)0000000000" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);">';
 				html += '<input type="button" class="btn btn-info" onclick="checkSignUp()" value="가입">';
+				html += '<input type="button" onclick="sendMail();">';
 				html += '</form>';
 			var change_login = '<div class="center">';
 				change_login += '계정이 있으신가요? <a href="#" onclick="change_login()">로그인</a>';
@@ -171,4 +172,21 @@
 				flag=true;
 			}
 			return flag;
+		}
+		
+		function sendMail() {
+			var url = "/sendMail";
+			$.ajax({
+				type:'GET',
+				url:url,
+				headers:{
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override":"GET",
+				},
+				dataType:'JSON',
+				data: '',
+				success : function(result){
+					alert(result);
+				}
+			});
 		}
