@@ -358,12 +358,12 @@
 		
 		/* 프로필 이미지 변경  */
 		$(document).ready(function(){
-			$("#file1").change(function() {
+			$("#upload").change(function() {
 				if(this.value == "") {}
 				else {
 		            var form = $('FILE_FORM')[0];
 		            var formData = new FormData(form);
-		            formData.append("fileObj", $("#file1")[0].files[0]);
+		            formData.append("fileObj", $("#upload")[0].files[0]);
 		            var upu_url = "/user/change_profile";
 		            $.ajax({
 		                url: upu_url,
@@ -409,6 +409,35 @@
 		    	}
 		    });
 		}, 5000);
+ 
+ 		/* 프로필 이미지 클릭 메뉴 */
+	 	function profile_menu(flag) {
+		    var x = document.getElementById("menu_list");
+		    if (x.className.indexOf("w3-show") == -1) {
+		        x.className += " w3-show";
+		    } else if(flag) {
+		    	x.className = x.className.replace(" w3-show", "");
+		    } else {
+		        x.className = x.className.replace(" w3-show", "");
+		    }
+		}
+	 	
+ 		/* 프로필 이미지를 기본 이미지로 변경 */
+	 	function defaultSet() {
+ 			var defaultImg_url = "/user/change_default_profile";
+	 		$.ajax({ 
+	 			type: 'GET',
+	 			url: defaultImg_url,
+	 			dataType: 'json',
+	 			contentType : 'application/json; charset=utf-8',
+	 			success: function(result) {
+	 				document.getElementById("profile_img").src = "/resources/upload/image/Default.png";		// 프로필 이미지를 Default로 변경
+	 			},
+	 			error:function(request,status,error){
+	 				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	 			}
+	 		});
+	 	}
 	</script>
 </head>
 <body>
@@ -422,8 +451,25 @@
 	<div id="profile"><br/><br/>
 		<div id="profile_layout">
 			<form id="FILE_FORM" method="post" enctype="multipart/form-data" action="">
-				<input type="file" id="file1" name="file1" style="display:none;"> 
-				<img id="profile_img" src="/user/getByteImage" onclick="document.all.file1.click();"/>
+				<input type="file" id="upload" name="upload" style="display:none;">
+				<c:choose>
+					<c:when test="${vo.default_profile != 1 }">
+						<img id="profile_img" src="/user/getByteImage" onclick="profile_menu();"/>
+						<div id="menu_list" class="w3-dropdown-content w3-card-4">
+						    <a href="#" onclick="upload.click();">프로필 사진 변경</a>
+						    <a href="#" onclick="defaultSet();">기본 이미지</a>
+						    <a href="#" onclick="profile_menu('cancel');">취소</a>
+						</div>
+					</c:when>
+					<c:otherwise>				   
+						<img id="profile_img" src="/resources/upload/image/Default.png" onclick="profile_menu();"/>
+						<div id="menu_list" class="w3-dropdown-content w3-card-4">
+						    <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
+						    <a href="#" onclick="defaultSet();">기본 이미지</a>
+						    <a href="#" onclick="profile_menu('cancel');">취소</a>
+						</div>
+					</c:otherwise>
+				</c:choose>
 			</form>
 		</div>
 		<div id="profile_all">

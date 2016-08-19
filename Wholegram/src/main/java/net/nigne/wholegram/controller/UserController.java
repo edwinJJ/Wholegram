@@ -262,6 +262,25 @@ public class UserController {
 		return entity;
 	}
 
+	
+	/* 프로필 이미지 -> 기본 이미지로 변경 */
+	@RequestMapping(value = "/change_default_profile", method = RequestMethod.POST)
+	public ResponseEntity<Object> change_default_profile(MultipartHttpServletRequest request) {
+
+		DebugStream.activate(); // 디버그.. 에러난곳 위치 찾아줌
+
+		HttpSession session = request.getSession();
+		String user_id = (String) session.getAttribute("user_id");
+		
+		ResponseEntity<Object> entity = null;
+		
+		
+		
+		entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		return entity;
+	}
+	
+	
 	/* 실시간으로(5초) 알림 확인 */
 	@RequestMapping(value = "/checkNotice", method = RequestMethod.POST)
 	public ResponseEntity<List<NoticeVO>> checkNotice(HttpServletRequest request) {

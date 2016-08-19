@@ -13,6 +13,7 @@ public class MemberVO {
 	private String gender;
 	private int recommend;
 	private MultipartFile user_profile;
+	private int default_profile;
 	private int follow;
 	
 	public int getMem_no() {
@@ -90,5 +91,12 @@ public class MemberVO {
 	}
 	public void setFollow(int follow) {
 		this.follow = follow;
+	}
+	
+	public int getDefault_profile() {
+		return default_profile;
+	}
+	public void setDefault_profile(int default_profile) {
+		this.default_profile = default_profile;
 	}
 }

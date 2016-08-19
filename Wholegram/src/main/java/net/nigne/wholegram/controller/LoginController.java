@@ -93,13 +93,13 @@ public class LoginController {
 			
 			MemberVO vo = service.MemInfo(user_id);
 			List<BoardVO> list = bdservice.getUserLimitList(vo);
+			
 			Criteria cr = new Criteria();
 			cr.setItem(user_id);
 			int numberOfBoard = bdservice.getUserCount(cr);
 			Map<String, Integer> numberOfFollow= fservice.getFollowNumberof(user_id);
 			
 			// 이동할 페이지, 사용자 정보 설정
-			
 			mav.addObject("vo", vo);
 			mav.addObject("list", list);
 			mav.addObject("numberOfBoard", numberOfBoard);			// 유저가 올린 게시물 개수
