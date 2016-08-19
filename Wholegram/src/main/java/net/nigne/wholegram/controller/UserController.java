@@ -25,12 +25,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.nigne.wholegram.common.DebugStream;
+import net.nigne.wholegram.common.Encrypt;
 import net.nigne.wholegram.common.RepCriteria;
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.domain.NoticeVO;
 import net.nigne.wholegram.service.BoardService;
-import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.MemberService;
 import net.nigne.wholegram.service.NoticeService;
@@ -55,7 +55,7 @@ public class UserController {
 	private FollowService fservice;
 	
 	@Inject
-	private EncryptService encrypt;
+	private Encrypt encrypt;
 	
 	@Inject
 	private ProfileImageService profileImageService;

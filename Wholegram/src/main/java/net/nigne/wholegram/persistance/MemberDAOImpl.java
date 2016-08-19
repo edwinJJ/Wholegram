@@ -79,4 +79,14 @@ public class MemberDAOImpl implements MemberDAO {
 		return session.selectList( namespace + ".getKnowablePerson", user_id );
 	}
 
+	@Transactional
+	@Override
+	public void updateLostPasswd(String emailaddress, String authstr) {
+		int mem_no = session.selectOne(namespace + ".getUserMem_no", emailaddress);
+		MemberVO vo = new MemberVO();
+		vo.setMem_no(mem_no);
+		vo.setPasswd(authstr);
+		session.update(namespace + ".updatePasswd", vo);
+	}
+
 }

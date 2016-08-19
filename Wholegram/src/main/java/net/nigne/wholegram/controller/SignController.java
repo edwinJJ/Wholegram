@@ -1,17 +1,8 @@
 package net.nigne.wholegram.controller;
 
 import java.util.Locale;
-import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.mail.Address;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -23,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import net.nigne.wholegram.common.Encrypt;
 import net.nigne.wholegram.domain.MemberVO;
-import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.SignService;
 
 
@@ -33,15 +24,17 @@ import net.nigne.wholegram.service.SignService;
 public class SignController{
 
 	@Inject
-	private EncryptService encrypt;
+	private Encrypt encrypt;
 	@Inject
 	private SignService sign;
+	
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public ModelAndView signUp(Locale locale, Model model) {
 	
 		return new ModelAndView("login");
 	}
 
+	/*비밀번호 암호화시킨후 등록*/
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ModelAndView insertSignUp(MemberVO vo,Locale locale, Model model, HttpServletRequest req) {
 		String passwd = vo.getPasswd();
@@ -50,6 +43,7 @@ public class SignController{
 		return new ModelAndView("login");
 	}
 	
+	/*아이디 중복 확인*/
 	@RequestMapping(value = "/checkId/{user_id}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> CheckId(@PathVariable("user_id") String id) {
 		ResponseEntity<Boolean> entity = null;
@@ -61,6 +55,7 @@ public class SignController{
 		return entity;
 	}
 
+	/*이메일 중복 확인*/
 	@RequestMapping(value = "/checkEmail/{email}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> CheckEmail(@PathVariable("email") String email) {
 		System.out.println(sign.checkEmail(email+"%"));
@@ -73,55 +68,31 @@ public class SignController{
 		return entity;
 	}
 	
-	@RequestMapping(value = "/sendMail", method = RequestMethod.GET)
-	public ResponseEntity<Boolean> sendMail() {
+	/*이메일 인증*/
+	@RequestMapping(value = "/sendMail/{emailad1}/{emailad2}", method = RequestMethod.GET)
+	public ResponseEntity<String> sendMail(@PathVariable("emailad1") String emailad1, @PathVariable("emailad2") String emailad2) {
 		
-		Properties properties = new Properties();
-        properties.put("mail.smtp.user", "edwinj0326@gmail.com"); //구글 계정
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "465");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.debug", "true");
-        properties.put("mail.smtp.socketFactory.port", "465");
-        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        properties.put("mail.smtp.socketFactory.fallback", "false");
-        
-        try {
-            Authenticator auth = new senderAccount();
-            Session session = Session.getInstance(properties, auth);
-            session.setDebug(true); // 메일을 전송할 때 상세한 상황을 콘솔에 출력한다.
-            MimeMessage msg = new MimeMessage(session);
- 
-            msg.setSubject("메일 제목");
-            Address fromAddr = new InternetAddress("wholegramroot@gmail.com"); // 보내는사람 EMAIL
-            msg.setFrom(fromAddr);
-            Address toAddr = new InternetAddress("edwin0326@naver.com");    //받는사람 EMAIL
-            msg.addRecipient(Message.RecipientType.TO, toAddr);
-            msg.setContent("메일에 전송될 내용", "text/plain;charset=KSC5601"); //메일 전송될 내용
-            Transport.send(msg);
-            
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-		
-		ResponseEntity<Boolean> entity = new ResponseEntity<>(true,HttpStatus.OK);
-		
+		ResponseEntity<String> entity = null;
+		try {
+			entity = new ResponseEntity<>(sign.sendMail(emailad1, emailad2), HttpStatus.OK);	
+		} catch(Exception e) {
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 		return entity;
 	}
 	
-	private static class senderAccount extends javax.mail.Authenticator {
-		 
-	    public PasswordAuthentication getPasswordAuthentication() {
-	        return new PasswordAuthentication("wholegramroot@gmail.com", "wholeh0t$ix"); // @gmail.com 제외한 계정 ID, PASS
-
-	    }
+	/*이메일로 비밀번호 찾기*/
+	@RequestMapping(value = "/sendMailFind", method = RequestMethod.POST)
+	public ModelAndView sendMailFind(HttpServletRequest request) {
+		String emailaddress = request.getParameter("email");
+		
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("login");
+		sign.sendFindMail(emailaddress);		// 새로운 비밀번호 메일로 전송
+		return mav;
 	}
+	
 }
-
-
-
 
 class checkValue{
 	// 중복되는 값이 없을 경우('0') TRUE 중복되는 값이 있을 경우 FALSE

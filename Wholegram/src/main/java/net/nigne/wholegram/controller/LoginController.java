@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.nigne.wholegram.common.Criteria;
+import net.nigne.wholegram.common.Encrypt;
 import net.nigne.wholegram.common.Status;
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.service.BoardService;
-import net.nigne.wholegram.service.EncryptService;
 import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.LoginService;
 import net.nigne.wholegram.service.MemberService;
@@ -35,7 +35,7 @@ public class LoginController {
 	private MemberService service;
 	
 	@Inject
-	private EncryptService encrypt;
+	private Encrypt encrypt;
 	
 	@Inject
 	private LoginService loginService;
@@ -123,4 +123,5 @@ public class LoginController {
 		}
 		return mav;
 	}
+	
 }

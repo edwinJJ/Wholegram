@@ -1,16 +1,15 @@
-package net.nigne.wholegram.service;
+package net.nigne.wholegram.common;
 
 import java.security.MessageDigest;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class EncryptServiceImpl implements EncryptService {
+@Component
+public class Encrypt {
 
 	/* 암호화 */
 	@Transactional
-	@Override
 	public String shaEncrypt(String passwd) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");

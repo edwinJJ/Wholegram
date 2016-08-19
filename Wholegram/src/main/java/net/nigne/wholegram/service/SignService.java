@@ -9,4 +9,6 @@ public interface SignService {
 	public List<MemberVO> selectAll();
 	public int checkId(String id);
 	public int checkEmail(String email);
+	public String sendMail(String emailad1, String emailad2);
+	public void sendFindMail(String emailaddress);
 }

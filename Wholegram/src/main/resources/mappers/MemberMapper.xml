@@ -41,6 +41,9 @@
 		</set>
 		where mem_no = #{mem_no}
 	</update>
+	<select id="getUserMem_no" resultType="int">
+		select mem_no from member where email = #{emailaddress}
+	</select>
 	<select id="getFollowinguser_Profile" resultType="net.nigne.wholegram.domain.MemberVO">
 		select user_id, user_profile from member where user_id = #{user_id}
 	</select>

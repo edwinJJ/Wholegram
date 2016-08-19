@@ -53,5 +53,7 @@
    			 width: 80%;
 		}
 	}
-	
+	.auth {
+		display: none;
+	}
 </style>

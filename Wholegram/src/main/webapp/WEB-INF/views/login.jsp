@@ -11,6 +11,7 @@
    <script type="text/javascript" src="resources/js/jquery.bxslider.js"></script>
    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
    <script src ="resources/js/signup.js"></script>
+   <script src ="resources/js/passwd_lose.js"></script>
    <script type="text/javascript">
 
    localStorage.setItem("chat", "false");
@@ -169,7 +170,14 @@
          font-weight: bold;
          text-align: center;
       }
-
+	  .email_submit {
+         background: #3897f0;
+         color: #fff;
+         border: 1px solid #3897f0;
+         font-size: 16px;
+         font-weight: bold;
+         text-align: center;	  
+	  }
       @media all and ( max-width: 874px ) and ( min-width: 451px ) {
          #img_box {
             display: none;
@@ -229,7 +237,7 @@
          <input type="text" id="user_id" name="user_id" class="mg5" placeholder=" 사용자 이름" /><br />
          <div id="pw_box">
                <input type="password" id="passwd" name="passwd" class="mg5" placeholder=" 비밀번호" />
-               <a class="passfg" href="">비밀번호를 잊으셨나요?</a> <br />
+               <a class="passfg" href="#" onclick="passwdLoseForm()">비밀번호를 잊으셨나요?</a> <br />
          </div>
          <input type="button" id="btn_login" value="로그인" onclick="doLogin()" />
       </form>   

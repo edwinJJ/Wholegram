@@ -78,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
 	public void updatePasswd(MemberVO vo) {
 		dao.updatePasswd(vo);
 	}
-
+	
 	/*Following 하고있는 유저 정보(id, profile사진)을 가져온다*/
 	@Override
 	public List<MemberVO> getFollowinguser_Profile(List<String> user_ids) {
@@ -279,4 +279,6 @@ public class MemberServiceImpl implements MemberService {
 		}
         return convFile;
 	}
+
+
 }
