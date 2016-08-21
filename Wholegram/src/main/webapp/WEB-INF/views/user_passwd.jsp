@@ -169,15 +169,20 @@
 			<ul class="w3-ul w3-border w3-center w3-hover-shadow">
 				<li class="w3-padding-16"><a href="/user/update_form" style="text-decoration: none;">프로필 편집</a></li>
 				<li class="w3-padding-16"><a href="/user/passwd_form" style="text-decoration: none;">비밀번호 변경</a></li>
-				<li class="w3-padding-16"><a href="#" style="text-decoration: none;">허가된 앱</a></li>
-				<li class="w3-padding-16"><a href="#" style="text-decoration: none;">이메일 기본 설정</a></li>
 			</ul>
 		</div>
 		<div class="w3-third menu_content">
 			<div class="w3-ul w3-border w3-center w3-hover-shadow">
 				<div class="w3-container">
 					<h4 class="w3-center" style="margin-top: 4.5%;">${vo.user_id }</h4>
-					<p class="w3-center"><img src="/resources/Image/Penguins.jpg" class="w3-circle" style="height: 106px; width: 106px"></p>
+					<c:choose>
+						<c:when test="${vo.default_profile != 1 }">
+							<p class="w3-center"><img src="/user/getByteImage" class="w3-circle" style="height: 106px; width: 106px"></p>
+						</c:when>
+						<c:otherwise>
+							<p class="w3-center"><img src="/resources/upload/image/Default.png" class="w3-circle" style="height: 106px; width: 106px"></p>
+						</c:otherwise>
+					</c:choose>
 				</div>
 				<form id="passwd_edit" onSubmit="return false">
 					<input type="hidden" id="mem_no" name="mem_no" value="${vo.mem_no }">

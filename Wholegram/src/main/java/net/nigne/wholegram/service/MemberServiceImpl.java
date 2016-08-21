@@ -280,5 +280,11 @@ public class MemberServiceImpl implements MemberService {
         return convFile;
 	}
 
+	/*프로필 이미지를 기본으로 변경*/
+	@Override
+	public void setDefaultProfileImage(String user_id) {
+		dao.setDefaultProfileImage(user_id);
+	}
+
 
 }

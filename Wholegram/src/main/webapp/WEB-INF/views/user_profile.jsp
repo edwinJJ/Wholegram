@@ -48,6 +48,15 @@
 			width: 100%;
 			resize: none;
 		}
+		.checkbox-inline {
+			margin-left: -20px;
+		}
+		.btn-info {
+			margin-top: 15px;
+		}
+		#genderLabel {
+			margin-top: 10px;
+		}
 	</style>
 	<style>
 		@media all and (min-width: 1075px) and (max-width: 1260px){
@@ -83,9 +92,13 @@
 	<script>
 		var sessionId = "${sessionId}";				// 접속자 ID
 		var thisPage = false;						// 메시지 페이지가 아니라는 의미
+		
 		function msg() { 
-			if((user_name.value != "") && (user_id.value != "") && (info.value != "") && (email.value != "") && (phone.value != "") && (gender.value != "")) {
+			if((user_name.value != "") && (user_id.value != "") && (info.value != "") && (email.value != "") && (phone.value != "") && ($(genderMan).prop("checked") != false || $(genderWoman).prop("checked") != false)) {
+				document.getElementById("pro_edit").submit();
 				alert("프로필을 제출하였습니다.");
+			} else {
+				alert("모든 항목을 체크해주세요");
 			}
 		}
 		/* Id 중복체크 */
@@ -115,8 +128,12 @@
 					error : function(result){
 						alert("e : " + result);
 					}
-				})
+				});
 			}
+		}
+		
+		function checkGenderRadio() {
+			genderLabel.style.color = "#009688";
 		}
 		/* Email 중복체크 */
 /* 		function email_chk() {
@@ -159,17 +176,22 @@
 			<ul class="w3-ul w3-border w3-center w3-hover-shadow">
 				<li class="w3-padding-16"><a href="/user/update_form" style="text-decoration: none;">프로필 편집</a></li>
 				<li class="w3-padding-16"><a href="/user/passwd_form" style="text-decoration: none;">비밀번호 변경</a></li>
-				<li class="w3-padding-16"><a href="#" style="text-decoration: none;">허가된 앱</a></li>
-				<li class="w3-padding-16"><a href="#" style="text-decoration: none;">이메일 기본 설정</a></li>
 			</ul>
 		</div>
 		<div class="w3-third menu_content">
 			<div class="w3-ul w3-border w3-center w3-hover-shadow">
 				<div class="w3-container">
 					<h4 class="w3-center" style="margin-top: 4.5%;">${vo.user_id }</h4>
-					<p class="w3-center"><img src="/resources/Image/Penguins.jpg" class="w3-circle" style="height: 106px; width: 106px"></p>
+					<c:choose>
+						<c:when test="${vo.default_profile != 1 }">
+							<p class="w3-center"><img src="/user/getByteImage" class="w3-circle" style="height: 106px; width: 106px"></p>
+						</c:when>
+						<c:otherwise>
+							<p class="w3-center"><img src="/resources/upload/image/Default.png" class="w3-circle" style="height: 106px; width: 106px"></p>
+						</c:otherwise>
+					</c:choose>
 				</div>
-				<form id="pro_edit" action="/user/update_user" method="post">
+				<form id="pro_edit" action="/user/update_user" method="post" onsubmit="return false">
 					<input type="hidden" id="mem_no" name="mem_no" value="${vo.mem_no }">
 					<div class="input_scope">
 						<div class="w3-group">
@@ -185,20 +207,39 @@
 					    	<label class="w3-label w3-validate2">소개</label>
 					    </div>
 					   	<div class="w3-group">
-							<input id="email" name="email" class="w3-input" type="text" required value="${vo.email }" onblur="email_chk()"> 
-							<label id="email_label" class="w3-label w3-validate">E-mail</label>
+							<input id="email" name="email" class="w3-input" type="text" required value="${vo.email }" readonly> 
+							<label id="email_label" class="w3-label w3-validate" style="color:#009688;">E-mail</label>
 						</div>
 					   	<div class="w3-group">
 							<input id="phone" name="phone" class="w3-input" type="text" required value="${vo.phone }"> 
 							<label class="w3-label w3-validate">Phone</label>
 						</div>
 					   	<div class="w3-group">
-							<input id="gender" name="gender" class="w3-input" type="text" required value="${vo.gender }"> 
-							<label class="w3-label w3-validate">Gender</label>
+						   	<c:choose>
+						   		<c:when test="${vo.gender == 'm' }">
+						   			<label class="checkbox-inline"><input type="radio" id="genderMan" name="gender" class="w3-radio" value="m" checked="checked">남</label>
+								   	<label class="checkbox-inline"><input type="radio" id="genderWoman" name="gender" class="w3-radio" value="w">여</label>
+								   	<div>
+								   		<label id="genderLabel" class="w3-label w3-validate" style="color:#009688;">Gender</label>
+								   	</div>
+						   		</c:when>
+						   		<c:when test="${vo.gender == 'w' }">
+								   	<label class="checkbox-inline"><input type="radio" id="genderMan" name="gender" class="w3-radio" value="m">남</label>
+								   	<label class="checkbox-inline"><input type="radio" id="genderWoman" name="gender" class="w3-radio" value="w" checked="checked">여</label>
+								   	<div>
+								   		<label id="genderLabel" class="w3-label w3-validate" style="color:#009688;">Gender</label>
+								   	</div>
+								</c:when>
+								<c:otherwise>
+									<label class="checkbox-inline"><input type="radio" id="genderMan" name="gender" class="w3-radio" value="m" onclick="checkGenderRadio();">남</label>
+								   	<label class="checkbox-inline"><input type="radio" id="genderWoman" name="gender" class="w3-radio" value="w" onclick="checkGenderRadio();">여</label>
+								   	<div>
+								   		<label id="genderLabel" class="w3-label w3-validate" style="color:#f44336;">Gender</label>
+								   	</div>
+								</c:otherwise>   	
+							</c:choose>
 						</div>
-					    <input id="recommend" name="recommend" class="w3-check" type="checkbox" style="margin-top:10px;" value="1">
-						<label class="w3-validate">계정추천</label>
-						<button type="submit" class="btn btn-info" style="margin-left: 50px" onclick="msg()">프로필 제출</button>
+						<button type="submit" class="btn btn-info" onclick="msg()">프로필 제출</button>
  					</div>
 				</form>
 			</div>

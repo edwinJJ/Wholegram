@@ -260,7 +260,15 @@
             position: absolute;
          cursor:pointer;
       }
-      
+      #gender_img {
+      	width:25px;
+      	height:25px;
+      	margin-top:-12px;
+      }
+      #gender_img2 {
+      	width:15px;
+      	height:15px;
+      }
     </style>
 
    <style>
@@ -298,6 +306,9 @@
             width: 60%;
             height: 60%;
          }
+         #gender_img {
+         	display:none;
+         }
       }
       @media all and (min-width: 769px) and (max-width: 1200px){
          #container{
@@ -321,6 +332,9 @@
          #board_count2{display: none;}
          #follower_count2{display: none;}
          #following_count2{display: none;}
+         #gender_img2 {
+         	display: none;
+         }
       }
       @media all and (min-width: 769px) and (max-width: 1179px){
           .board_items{
@@ -372,7 +386,7 @@
                         data: formData,
                         type: 'POST',
                         success: function(result){
-                        	alert(result);
+                        	alert("프로필 사진이 변경되었습니다.");
                         	if(result == null || result == ""){
                         		alert("파일 용량이 너무 큽니다(10MB이하).")
                         	} else {
@@ -425,18 +439,22 @@
  		/* 프로필 이미지를 기본 이미지로 변경 */
 	 	function defaultSet() {
  			var defaultImg_url = "/user/change_default_profile";
-	 		$.ajax({ 
-	 			type: 'GET',
-	 			url: defaultImg_url,
-	 			dataType: 'json',
-	 			contentType : 'application/json; charset=utf-8',
-	 			success: function(result) {
-	 				document.getElementById("profile_img").src = "/resources/upload/image/Default.png";		// 프로필 이미지를 Default로 변경
-	 			},
-	 			error:function(request,status,error){
-	 				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-	 			}
-	 		});
+	 		$.ajax({
+				type: 'POST',
+				url: defaultImg_url,
+				headers:{
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override":"POST",
+				},
+				dataType:'text',
+				success : function(result) {
+					alert("프로필 사진을 기본으로 변경하였습니다.")
+					document.getElementById("profile_img").src = "/resources/upload/image/Default.png";		// 프로필 이미지를 Default로 변경
+				},
+				error : function(result){
+					alert("error : " + result);
+				}
+			});
 	 	}
 	</script>
 </head>
@@ -456,8 +474,8 @@
 					<c:when test="${vo.default_profile != 1 }">
 						<img id="profile_img" src="/user/getByteImage" onclick="profile_menu();"/>
 						<div id="menu_list" class="w3-dropdown-content w3-card-4">
-						    <a href="#" onclick="upload.click();">프로필 사진 변경</a>
-						    <a href="#" onclick="defaultSet();">기본 이미지</a>
+						    <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
+						    <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
 						    <a href="#" onclick="profile_menu('cancel');">취소</a>
 						</div>
 					</c:when>
@@ -465,7 +483,7 @@
 						<img id="profile_img" src="/resources/upload/image/Default.png" onclick="profile_menu();"/>
 						<div id="menu_list" class="w3-dropdown-content w3-card-4">
 						    <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
-						    <a href="#" onclick="defaultSet();">기본 이미지</a>
+						    <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
 						    <a href="#" onclick="profile_menu('cancel');">취소</a>
 						</div>
 					</c:otherwise>
@@ -480,20 +498,40 @@
 				<button id="profile_btn2" type="button" class="btn btn-default" onclick="profile_edit()">프로필 편집</button> 
 				<a href="#" id="confirm" class="btn btn-default logout" >. . .</a>
 			</span><br/><br/>
-			<span id="profile_name">${vo.user_name }</span><br/>
+			<span id="profile_name">${vo.user_name }</span>
+			<c:choose>
+				<c:when test="${vo.gender == 'm'}">
+					<img id="gender_img" src="/resources/upload/image/man.jpg"/><br/>
+				</c:when>
+				<c:when test="${vo.gender == 'w'}">
+					<img id="gender_img" src="/resources/upload/image/woman.jpg"/><br/>
+				</c:when>
+			</c:choose>
 			<div id="profile_intro_scope">
 				<span id="profile_intro">${vo.info }</span>
 			</div>
-			<span id="profile_name2">${vo.user_name }</span><br/>
+			<span id="profile_name2">${vo.user_name }</span>
+			<c:choose>
+				<c:when test="${vo.gender == 'm'}">
+					<img id="gender_img2" src="/resources/upload/image/man.jpg"/><br/>
+				</c:when>
+				<c:when test="${vo.gender == 'w'}">
+					<img id="gender_img2" src="/resources/upload/image/woman.jpg"/><br/>
+				</c:when>
+			</c:choose>
 			<div id="profile_intro_scope2">
 				<span id="profile_intro2">${vo.info }</span><br/>
 			</div>
-			<button id="profile_btn2-1" type="button" class="btn btn-default">프로필 편집2</button>
+			<button id="profile_btn2-1" type="button" class="btn btn-default" onclick="profile_edit()">프로필 편집</button>
 			<span id="profile_info">
 				<span id="board_count">게시물 ${numberOfBoard }개</span>&nbsp;
-				<span id="follower_count">팔로워 ${numberOfFollow.follower }명</span>&nbsp;
-				<span id="following_count">팔로잉 ${numberOfFollow.following }명</span>
-			</span>
+				<a data-toggle="modal" data-target="#followModal" style="text-decoration:none; color:black; cursor:pointer">
+					<span id="follower_count">팔로워 ${numberOfFollow.follower }명</span>&nbsp;
+				</a>
+				<a data-toggle="modal" data-target="#followModal" style="text-decoration:none; color:black; cursor:pointer">
+					<span id="following_count">팔로잉 ${numberOfFollow.following }명</span>
+				</a>
+			</span>	
 		</div><br/><br/>
 	</div>
 </div>
@@ -534,7 +572,28 @@
 				</form>
 			</div>
 			
-			<!-- Modal 생성 -->
+			<!-- 팔로잉 / 팔로우 목록 Modal 생성 -->
+			<div class="modal fade" id="followModal" role="dialog">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header2">
+							<button type="button" class="close" data-dismiss="modal" onclick="addReceive()">&times;</button>
+							<h4 class="modal-title">Message 보내기</h4>
+						</div>
+						<div>
+							<input id="receive_user" class="w3-input3" type="text" placeholder="받는 사람"> 
+						</div>
+						팔로우 / 팔로잉 뿌리면 됨
+						<div id="followingList"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" onclick="check_messageform()">메시지 보내기</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<!-- 게시물 Modal 생성 -->
 			<div class="modal" id="myModal" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">

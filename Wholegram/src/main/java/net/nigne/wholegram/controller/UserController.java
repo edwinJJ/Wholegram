@@ -265,18 +265,22 @@ public class UserController {
 	
 	/* 프로필 이미지 -> 기본 이미지로 변경 */
 	@RequestMapping(value = "/change_default_profile", method = RequestMethod.POST)
-	public ResponseEntity<Object> change_default_profile(MultipartHttpServletRequest request) {
-
+	public ResponseEntity<String> change_default_profile(HttpServletRequest request) {
+		
 		DebugStream.activate(); // 디버그.. 에러난곳 위치 찾아줌
 
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
 		
-		ResponseEntity<Object> entity = null;
+		ResponseEntity<String> entity = null;
 		
-		
-		
-		entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		try{
+			service.setDefaultProfileImage(user_id);
+			entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+		} catch(Exception e) {
+			System.out.println(e.toString());
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 		return entity;
 	}
 	

@@ -1,7 +1,9 @@
 package net.nigne.wholegram.persistance;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -87,6 +89,12 @@ public class MemberDAOImpl implements MemberDAO {
 		vo.setMem_no(mem_no);
 		vo.setPasswd(authstr);
 		session.update(namespace + ".updatePasswd", vo);
+	}
+
+	@Transactional
+	@Override
+	public void setDefaultProfileImage(String user_id) {
+		session.update(namespace + ".setDefaultProfileImage", user_id);
 	}
 
 }

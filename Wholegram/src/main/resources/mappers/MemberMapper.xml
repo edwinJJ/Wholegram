@@ -56,11 +56,20 @@
 	<update id="setProfileImage">
 		update member
 		<set>
-			user_profile = #{ImageFile}
+			user_profile = #{ImageFile},
+			default_profile = 0
 		</set>
 		where user_id = #{user_id}
 	</update>
 	<select id="getProfileImage" resultType="Object">
 		select user_profile from member where user_id = #{user_id}
 	</select>
+	<update id="setDefaultProfileImage">
+		update member
+		<set>
+			user_profile = NULL,
+			default_profile = 1
+		</set>
+		where user_id = #{user_id}
+	</update>
 </mapper>
