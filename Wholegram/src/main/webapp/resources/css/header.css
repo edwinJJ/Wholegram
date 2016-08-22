@@ -40,7 +40,27 @@
    position: relative;
     left: 300px;
 }
-
+.profile_notice_img {
+	float: left;
+	width: 30px;
+	height: 30px;
+	margin-top:3px;
+	border-radius: 50%;
+}
+.board_img {
+	width: 40px;
+	height: 40px;
+}
+.notice_message {
+	float:left;
+	margin-top: 7px;
+	margin-left:25px;
+}
+.noticeList {
+	margin-top:30px!important;
+	margin-bottom:-20px!important;
+	padding-bottom:-20px!important;
+}
 @media all and (max-width: 1140px) {
 	#header-user { display: none;}
 }

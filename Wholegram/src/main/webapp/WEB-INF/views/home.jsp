@@ -23,6 +23,8 @@
 	<script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 	<script type="text/javascript" src="/resources/js/search.js"></script>
 
+
+
 	<style>
 		.lazy{
 			display: none;
@@ -61,6 +63,9 @@
 <body style="background: #fafafa;">
 
 <%@include file="./header.jsp" %>
+
+<!-- 뉴스(소식)  -->
+<div id="news_box" style="display: none;"></div>
 
 <!-- line -->
 <div class="line"></div>
@@ -203,18 +208,11 @@
 					</c:forEach>
 					<div id="result"></div>
 				</div>
-
 			</div>
-
 		</div>
-		
 	</div>
 	
-	
-	
-
-	
-	<div id="chat_box"></div>
+<div id="chat_box"></div>
 <script src="/resources/js/message.js"></script>
 	
 <script>
@@ -379,6 +377,8 @@
 	function viewClick(no){
 		$("#tag"+no).toggle();
 	}
+	
+
 </script>
 </body>
 </html>

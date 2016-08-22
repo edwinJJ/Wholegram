@@ -205,10 +205,18 @@
          overflow:auto;
       }
    }
-   
+   .msg_position {
+ 		margin-bottom: -1px;
+   }
+   .msg_content2 {
+   		width:250px;
+   }
 </style>
 <body>
 <%@ include file="header.jsp" %>
+
+<!-- 뉴스(소식)  -->
+<div id="news_box" style="display: none;"></div>
 
       <div id="myModal2" class="modal2">
          <span id="circle" class="a">

@@ -13,6 +13,8 @@ public class NoticeVO {
 	private int flag;
 	private String date;
 	
+	private int default_profile;
+	
 	public List<String> getUser_id2() {
 		return user_id2;
 	}
@@ -66,6 +68,12 @@ public class NoticeVO {
 	}
 	public void setDate(String date) {
 		this.date = date;
+	}
+	public int getDefault_profile() {
+		return default_profile;
+	}
+	public void setDefault_profile(int default_profile) {
+		this.default_profile = default_profile;
 	}
 	
 	

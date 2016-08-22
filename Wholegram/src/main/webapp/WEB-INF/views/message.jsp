@@ -57,10 +57,11 @@
 		.user_img {
 			width: 65px;
 			height: 65px;
-			margin-bottom: -15px;
 			margin-right: 20px;
+			border-radius: 50%;
 		}
 		.user_nm {
+			margin-top: 16px;
 			margin-left: 10px;
 			font-size: 20px;
 		}
@@ -77,7 +78,7 @@
 			background-color: #FFFFFF;
 		}
 		.add_chat1 {
-			margin-top:13px;
+			margin-top:15px;
 			float:right;
 		}
 		.add_chat2 {
@@ -198,7 +199,7 @@
 					showFollowingList(result);
 				},
 				error : function(result){
-					alert("e : " + result);
+					alert("error : " + result);
 				}
 			}); 
 		}
@@ -208,13 +209,19 @@
 			var html = "";
 			var identify_count = 0;
 			$(result).each(function() {
+				console.log(this.user_id);
 					html +=
 					"<div class='modal-body'>"
 					+	"<div class='panel panel-default'>"
 					+		"<div class='panel-body'>"
-					+        	"<div class='[ form-group ]'>"
-					+				"<img class='user_img' src='/resources/Image/Penguins.jpg'>"
-					+				"<span class='user_nm'>" + this.user_id + "</span>"
+					+        	"<div class='[ form-group ]' style='height:50px;'>";
+
+					if(this.default_profile != 1) {
+						html += 	"<img class='user_img' src='/user/getByteImage/" +  this.user_id + "' style='float:left;'>";
+					} else {
+						html +=		"<img class='user_img' src='/resources/upload/user/Default.png' style='float:left;'>";
+					}
+						html +=		"<div class='user_nm' style='float:left;'>" + this.user_id + "</div>"
 					+				"<input type='checkbox' name='fancy-checkbox-success" + identify_count + "' id='fancy-checkbox-success" + identify_count +"' autocomplete='off' value='" + this.user_id + "' onclick='addReceive(this)'/>"
 					+				"<div class='[ btn-group ] add_chat1'>"
 					+					"<label for='fancy-checkbox-success" + identify_count + "' class='[ btn btn-success ]'>"
@@ -251,10 +258,15 @@
 				}
 			});
 		}
+
 	</script>
 </head>
 <body>
 <%@include file="./header.jsp" %>
+
+<!-- 뉴스(소식)  -->
+<div id="news_box" style="display: none;"></div>
+
 <div style="background: #F8F8F8; height: 90.5%">
 	<div class="container-fluid">
 		<div class="row content">
@@ -300,7 +312,7 @@
 							<!-- 사용자가 팔로우하고있는 유저 목록 -->
 							<div id="followingList"></div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal" onclick="check_messageform()">메시지 보내기</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal" onclick="check_messageform()">채팅방 생성</button>
 							</div>
 						</div>
 					</div>

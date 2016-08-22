@@ -48,12 +48,16 @@
 				$("#titleB").css( "display", "block");
 			}
 		}
+		
 	</script>
 </head>
 <body>
 
 <!-- 상단의 head 부분 -->
 <%@include file="./header.jsp" %>
+
+<!-- 뉴스(소식)  -->
+<div id="news_box" style="display: none;"></div>
 
 	<!-- 게시물 영역 -->
 	<div id="section">

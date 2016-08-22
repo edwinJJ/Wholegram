@@ -180,7 +180,7 @@
 							<p class="w3-center"><img src="/user/getByteImage" class="w3-circle" style="height: 106px; width: 106px"></p>
 						</c:when>
 						<c:otherwise>
-							<p class="w3-center"><img src="/resources/upload/image/Default.png" class="w3-circle" style="height: 106px; width: 106px"></p>
+							<p class="w3-center"><img src="/resources/upload/user/Default.png" class="w3-circle" style="height: 106px; width: 106px"></p>
 						</c:otherwise>
 					</c:choose>
 				</div>

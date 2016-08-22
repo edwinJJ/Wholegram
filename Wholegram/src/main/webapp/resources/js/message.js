@@ -5,19 +5,23 @@ var fail = "false";									// fail  - Message창 닫기
 
 /* Message창 display 여부 확인 */
 function check_messageform() {
-	token = localStorage.getItem("chat");
-	if(token == fail || token == null) {
-		localStorage.setItem("chat", "true");
+	
+	var ids = document.getElementById("receive_user").value;			// 채팅방에 참여되는 유저들 목록
+	if(ids != "") {
 		token = localStorage.getItem("chat");
+		if(token == fail || token == null) {
+			localStorage.setItem("chat", "true");
+			token = localStorage.getItem("chat");
+		}
+		set_chatroom(token, ids);
+	} else {
+		alert("대화 상대를 선택해주세요.");
 	}
-	set_chatroom(token);
 }
 
 /* 채팅방 생성 */
-function set_chatroom(token) {
-	var ids = document.getElementById("receive_user").value;			// 채팅방에 참여되는 유저들 목록
+function set_chatroom(token, ids) {
 	var cr_url = "/message/chatroom/" + ids;
-
 	$.ajax({
 		type: 'POST',
 		url: cr_url,
@@ -107,13 +111,16 @@ function show_messageform(token, chat_num) {
 	if(token == start) {
 		if(typeof(localStorage) !== "undefined") {
 			var html = 
-				"<div id='message_container' class='panel2 panel-info msg_position' style='overflow:auto;'>"
+				"<div class='panel2 panel-info msg_position' >"
 				+	"<input id='chat_num' type='hidden' value='" + chat_num + "'/>"
 				+	"<span onclick='close_message()' class='w3-closebtn'>&times;</span>" 
-				+	"<div  class='panel-heading'>Message 보내기</div>"
-				+	"<div id='msg_content'></div>" +
+				+	"<div class='panel-heading'>Message 보내기</div>"
+				+	"<div id='message_container' style='height:255px; overflow:auto;'>"
+				+		"<div id='msg_content'></div>"
+				+	"</div>"
+				+	"<input id='send_msg' class='form-control2 msg_content2' type='text' onkeypress='if(event.keyCode==13) {send_message(" + chat_num + "); return false;}'>";
 				"</div>"
-				+	"<input id='send_msg' class='form-control2 msg_content' type='text' onkeypress='if(event.keyCode==13) {send_message(" + chat_num + "); return false;}'>";
+				
 				document.getElementById("chat_box").innerHTML = html;
 		} else {
 			document.getElementById("result").innerHTML = "Sorry, your browser does not support web storage...";
@@ -192,9 +199,7 @@ function showMessage(result) {
 			document.getElementById("room_popup" + chat_room).style.display = "none";	// 메시지를 읽었으면 알림 표시를 지워준다
 		}
 		
-		/* 메시지 확인 체크하기위한 변수 */
-		var chat_chat_num;
-		
+		var chat_chat_num;																// 메시지 확인 체크하기위한 변수
 		$(object).each(function() {														// 대화목록을 화면에 뿌려줌
 			var msgBox = document.createElement("div");		
 			if(sessionId == this.written_user_id) {										// 사용자(본인)이 작성한 글이면 오른쪽으로 출력

@@ -16,5 +16,17 @@
 	z-index: 1;
 	opacity: 1;
 	right: 0;
-	bottom: 0;	
+	bottom: 0;
+}
+.msg_content2 {
+	border: 1px solid #BCE8F1!important;
+	position: fixed;
+	margin-right: 18px;
+	z-index: 1;
+	opacity: 1;
+	right: 0;
+	bottom: 0;
+}
+#message_container {
+	background: white;
 }

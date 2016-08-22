@@ -135,37 +135,6 @@
 		function checkGenderRadio() {
 			genderLabel.style.color = "#009688";
 		}
-		/* Email 중복체크 */
-/* 		function email_chk() {
-			var em = document.getElementById("email").value;
-			var ec_url = "/user/email_chk/" + em;
-			alert(ec_url);
-			if(em.indexOf('@')== -1 || em.indexOf('.') == -1){
-				email_label.style.color="red";
-				email_label.innerHTML="잘못된 형식의 이메일입니다.";
-			} else{
-				$.ajax({
-					type:'POST',
-					url:ec_url,
-					headers:{
-						"Content-Type" : "application/json",
-						"X-HTTP-Method-Override":"POST",
-					},
-					dataType:'JSON',
-					data: '',
-					success : function(result){
-						// 바꾸려는 Email가 원래 Email이면 2 / 중복된 Id가 있으면 1, 없으면 0 
-						if(result == 1) {
-							email_label.style.color = "red";
-							email_label.innerHTML = "Email이 이미 있습니다.";
-						} else {
-							email_label.style.color = "#009688";
-							email_label.innerHTML = "E-mail";
-						}
-					}
-				});
-			}
-		} */
 	</script>
 <body>
 <!-- 상단의 head 부분 -->
@@ -187,7 +156,7 @@
 							<p class="w3-center"><img src="/user/getByteImage" class="w3-circle" style="height: 106px; width: 106px"></p>
 						</c:when>
 						<c:otherwise>
-							<p class="w3-center"><img src="/resources/upload/image/Default.png" class="w3-circle" style="height: 106px; width: 106px"></p>
+							<p class="w3-center"><img src="/resources/upload/user/Default.png" class="w3-circle" style="height: 106px; width: 106px"></p>
 						</c:otherwise>
 					</c:choose>
 				</div>

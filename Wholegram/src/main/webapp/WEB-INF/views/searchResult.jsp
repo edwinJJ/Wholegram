@@ -281,6 +281,9 @@
 <body>
 <%@include file="./header.jsp" %>
 
+<!-- 뉴스(소식)  -->
+<div id="news_box" style="display: none;"></div>
+
 <!-- 게시물 사진 나오기 전까지의 프로필정보 / Browser창 size 768전후로 나뉘어짐-->
 <div id="profile_container">
 	<div id="profile">
@@ -577,7 +580,6 @@
 			    	});
 		   }
 		});  
-		 
 		 
 	</script>
 	<div id="chat_box"></div>

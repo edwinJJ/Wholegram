@@ -1,6 +1,8 @@
 package net.nigne.wholegram.persistance;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.FollowVO;
+import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.domain.NoticeVO;
 
 @Repository
@@ -22,6 +25,7 @@ public class NoticeDAOImpl implements NoticeDAO {
 	
 	private static final String namespace = "net.nigne.wholegram.mappers.NoticeMapper";
 	private static final String namespace2 = "net.nigne.wholegram.mappers.boardMapper";
+	private static final String namespace3 = "net.nigne.wholegram.mappers.MemberMapper";
 	
 	@Override
 	public void insertNoticeHeart(String user_id, int board_num, int flag) {
@@ -51,7 +55,22 @@ public class NoticeDAOImpl implements NoticeDAO {
 
 	@Override
 	public List<NoticeVO> checkNotice(String user_id) {
-		return session.selectList(namespace + ".checkNotice", user_id);
+
+		List<NoticeVO> Finaldata = new ArrayList<NoticeVO>();									// 최종적으로 리턴해줄 알림 data
+
+		List<NoticeVO> data = session.selectList(namespace + ".checkNotice", user_id);
+		Iterator<NoticeVO> extract = data.iterator();
+		
+		while(extract.hasNext()) {
+			NoticeVO data_vo = new NoticeVO();													// Notice의 행위자 id 추출
+			data_vo = extract.next();
+			String id = data_vo.getUser_id();
+			
+			MemberVO mvo = session.selectOne(namespace3 + ".MemInfo", id);						// 행위자의 프로필 image가 있는지 여부 추출
+			data_vo.setDefault_profile(mvo.getDefault_profile());								// 알림 내용에 추가
+			Finaldata.add(data_vo);																
+		}
+		return Finaldata;
 	}
 	
 	@Override
