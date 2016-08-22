@@ -25,19 +25,21 @@ public class ChatServiceImpl implements ChatService {
 	@Transactional
 	@Override
 	public int chat_room(String id_list) {
-		//채팅방 생성
-		dao.chat_room();
-		
-		//채팅방 고유번호 가져옴
-		int chat_num = dao.getchat_room();
-		
-		//이미 있는 채팅방인지 확인
-//		dao.checkAldyRoom(id_list);
-		
-		//참여 유저 등록
-		dao.user_room(chat_num, id_list);
-		
-		return chat_num;
+		System.out.println("test2");
+		boolean flag = dao.checkAldyRoom(id_list);	// 중복된 채팅방인지 체크
+		System.out.println("test3");
+		if(flag == true) {
+			dao.chat_room();						//채팅방 생성
+			
+			int chat_num = dao.getchat_room();		//채팅방 고유번호 가져옴
+			
+			dao.user_room(chat_num, id_list);		//참여 유저 등록
+			
+			return chat_num;						//새로 생긴 채팅방 번호 리턴
+		} else {
+			System.out.println("test4");
+			return 0;								//채팅방 만들기 실패
+		}
 	}
 
 	/* msg_list에 메시지 내용 저장 + 메시지 읽은 유저에 본인 추가 */

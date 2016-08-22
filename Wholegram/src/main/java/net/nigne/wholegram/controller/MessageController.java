@@ -72,10 +72,11 @@ public class MessageController {
 	public ResponseEntity<Integer> set_chat_room(@PathVariable("ids") String id_list, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
-		id_list += user_id;
+		id_list += user_id;													// 채팅방에 참여할 유저 목록
 		ResponseEntity<Integer> entity = null;
 		try{
-			int chat_num = chatservice.chat_room(id_list);					//chat table에 채팅방 번호 생성
+			System.out.println("test1");
+			int chat_num = chatservice.chat_room(id_list);			//chat table에 채팅방 번호 생성
 			entity = new ResponseEntity<>(chat_num, HttpStatus.OK);	
 		} catch(Exception e) {
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);

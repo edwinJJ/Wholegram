@@ -8,6 +8,7 @@ import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.Msg_listVO;
 
 public interface ChatDAO {
+	public boolean checkAldyRoom(String id_list);
 	public void chat_room();
 	public int getchat_room();
 	public void user_room(int chat_num, String id_list);

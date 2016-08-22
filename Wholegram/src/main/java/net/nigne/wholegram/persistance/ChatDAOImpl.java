@@ -30,6 +30,52 @@ public class ChatDAOImpl implements ChatDAO {
 	private static final String namespace="net.nigne.wholegram.mappers.chatMapper";
 
 	@Override
+	public boolean checkAldyRoom(String id_list) {
+		System.out.println("test5");
+		StringTokenizer stiz = new StringTokenizer(id_list, ",");								// 채팅방 유저 목록중 한명 뽑음
+		int id_list_length = stiz.countTokens();												// 유저 개수(몇명)
+		boolean flag = false;
+		String user_id = stiz.nextToken();
+		System.out.println("test6");
+		List<Integer> chatNumList = session.selectList(namespace + ".getRoomList", user_id);	// 유저가 속해있는 채팅방 번호 리스트를 가져온다
+		Iterator<Integer> extract = chatNumList.iterator();										// 방번호 리스트 추출
+		while(extract.hasNext()) {
+			System.out.println("test7");
+			int chat_num = extract.next();
+			List<Chat_userVO> userList = session.selectList(namespace + ".userList", chat_num);		// 채팅방 번호에 해당되는 유저리스트 가져옴
+			Iterator<Chat_userVO> extract2 = userList.iterator();									// 유저 리스트 추출
+			System.out.println(extract2);
+			System.out.println("test8");
+			int count = 0;
+			StringTokenizer stiz2 = new StringTokenizer(id_list, ",");
+			while(extract2.hasNext()) {															// 뽑아온 각 채팅방의 유저리스트와 현재 생성하려는 채팅방 유저리스트와 비교
+
+				System.out.println("test9");
+				Chat_userVO cvo = new Chat_userVO();
+				cvo = extract2.next();
+				System.out.println("test9-1");
+				while(stiz2.hasMoreTokens()) {
+					System.out.println(stiz2.nextToken());
+					System.out.println("test10");
+					if(cvo.getMember_user_id().equals(stiz2.nextToken())) {								// 기존에 있던 유저이름, 현재 만드려는 채팅방 유저이름 일치하면 count하여서, 새로만들 채팅방 유저수와 count와 일치하면 flag -> false 리턴 (중복되니까 만들지 말란 의미)
+						count++;
+					}
+				}
+			}
+			System.out.println("test11");
+			if(count == id_list_length) {
+				flag = false;
+			} else {
+				flag = true;
+			}
+			System.out.println("count : " + count);
+		}
+		
+		System.out.println("id_list_length : " + id_list_length);
+		return flag;
+	}
+	
+	@Override
 	public void chat_room() {
 		session.insert(namespace + ".chat_room");
 	}
@@ -179,4 +225,6 @@ public class ChatDAOImpl implements ChatDAO {
 	public List<Integer> getRoomList(String user_id) {
 		return session.selectList(namespace + ".getRoomList", user_id);
 	}
+
+
 }

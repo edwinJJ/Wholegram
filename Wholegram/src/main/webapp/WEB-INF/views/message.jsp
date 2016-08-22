@@ -209,7 +209,6 @@
 			var html = "";
 			var identify_count = 0;
 			$(result).each(function() {
-				console.log(this.user_id);
 					html +=
 					"<div class='modal-body'>"
 					+	"<div class='panel panel-default'>"

@@ -31,13 +31,17 @@ function set_chatroom(token, ids) {
 		},
 		dataType:'JSON',
 		data: '',
-		success : function(result) {									// result : 채팅방 번호
-			localStorage.setItem("chat_num", result);					// 채팅방 번호 localStroage에 저장
-			
-			show_messageform(token, localStorage.getItem("chat_num"));	// 메시지 창 보여주기
-			getRoomList(null);											// 전체 채팅방 목록 다시 가져오기 (방금 유저가 새로 만든 방이 있으니깐)
-			
-			ws.send("Notic : " + sessionId + " : " + result);			// WebSocket서버를 통해 채팅방에 참여되는 유저들의 채팅방리스트를 갱신한다
+		success : function(result) {										// result : 채팅방 번호
+			if(result != 0) {
+				localStorage.setItem("chat_num", result);					// 채팅방 번호 localStroage에 저장
+				
+				show_messageform(token, localStorage.getItem("chat_num"));	// 메시지 창 보여주기
+				getRoomList(null);											// 전체 채팅방 목록 다시 가져오기 (방금 유저가 새로 만든 방이 있으니깐)
+				
+				ws.send("Notic : " + sessionId + " : " + result);			// WebSocket서버를 통해 채팅방에 참여되는 유저들의 채팅방리스트를 갱신한다
+			} else {
+				alert("이미 채팅방이 있습니다.");
+			}
 		},
 		error : function(result){
 			alert("e : " + result);
@@ -254,7 +258,7 @@ function showMessage(result) {
 // WebSocket Server connection
 //var host = location.host;
 //var wsUrl = "ws://" + host + "/chat/init";   					// ws://ip:port/chat/init
-var wsUrl = "ws://localhost:8084/chat/init"
+var wsUrl = "ws://localhost/chat/init"
 var ws;
 
 function init() {
