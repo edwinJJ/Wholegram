@@ -32,9 +32,10 @@ public class ChatDAOImpl implements ChatDAO {
 	@Override
 	public boolean checkAldyRoom(String id_list) {
 		StringTokenizer stiz = new StringTokenizer(id_list, ",");									// 채팅방 유저 목록중 한명 뽑음
-		int id_list_length = stiz.countTokens();													// 유저 개수(몇명)
+		int id_list_length;																			// 기존 채팅방 유저 개수(몇명)
+		int id_list_length2 = stiz.countTokens();														// 새로 만들 채팅방 유저 개수(몇명)
 		boolean flag = false;
-
+		System.out.println("새로 생길 채팅방 인원 수: " + id_list_length2);
 		String user_id = stiz.nextToken();
 		List<Integer> chatNumList = session.selectList(namespace + ".getRoomList", user_id);		// 유저가 속해있는 채팅방 번호 리스트를 가져온다(채팅방에 속해있는 아무 유저 상관없음)
 		Iterator<Integer> extract = chatNumList.iterator();											// 방번호 리스트 추출
@@ -45,29 +46,34 @@ public class ChatDAOImpl implements ChatDAO {
 			int chat_num = extract.next(); 
 			List<Chat_userVO> userList = session.selectList(namespace + ".userList", chat_num);		// 채팅방 번호에 해당되는 유저리스트 가져옴
 			Iterator<Chat_userVO> extract2 = userList.iterator();									// 유저 리스트 추출
-
-			int count = 0;
+			id_list_length = userList.size();														// 기존에 있던 채팅방 유저 수
+			System.out.println("기존에 있던 채팅방 인원 수 : " + id_list_length);
+			int count = 0;																			
 			while(extract2.hasNext()) {																// 뽑아온 각 채팅방의 유저리스트와 현재 생성하려는 채팅방 유저리스트와 비교
 				StringTokenizer stiz2 = new StringTokenizer(id_list, ",");
 				Chat_userVO cvo = new Chat_userVO();
 				cvo = extract2.next();
+				System.out.println("기존 채팅방 비교대상 : " + cvo.getMember_user_id());
 				while(stiz2.hasMoreTokens()) {
-					if(cvo.getMember_user_id().equals(stiz2.nextToken())) {							// 기존에 있던 유저이름, 현재 만드려는 채팅방 유저이름 일치하면 count하여서, 새로만들 채팅방 유저수와 count와 일치하면 flag -> false 리턴 (중복되니까 만들지 말란 의미)
+					String impl = stiz2.nextToken();
+					System.out.println("새로운 채팅방 비교대상 : " + impl);
+					if(cvo.getMember_user_id().equals(impl)) {							// 기존에 있던 유저이름, 현재 만드려는 채팅방 유저이름 일치하면 count하여서, 새로만들 채팅방 유저수와 count와 일치하면 flag -> false 리턴 (중복되니까 만들지 말란 의미)
 						count++;
+						System.out.println("count : " + count);
 					}
 				}
 			}
-			if(count == id_list_length) {
-				flag = false;																		// 채팅방 만들어도 됨 (중복 안됨)
+			if((count == id_list_length) && (count == id_list_length2)) {
+				flag = false;																		// 채팅방 만들면 안됨 (중복)
 			} else {
-				flag = true;																		// 채팅방 만들면 안됨 (중복됨)
+				flag = true;																		// 채팅방 생성 OK (중복 안됨)
 			}
 		}
-		
 		if(dist == 0) {
-			flag = true;																			// 채팅방 만들어도 됨 (중복 안됨) -> 유저가 속해있는 채팅방이 아에 없으므로 위의 while 자체가 동작을 안함
+			flag = true;																			// 채팅방 생성 OK (중복 안됨) -> 유저가 속해있는 채팅방이 아에 없으므로 위의 while 자체가 동작을 안함
 		}
-		
+		System.out.println("flag : " + flag);
+		System.out.println("dist : " + dist);
 		return flag;
 	}
 	

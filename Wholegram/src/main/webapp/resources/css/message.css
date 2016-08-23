@@ -33,5 +33,12 @@
 .chat_name {
 	width:30px;
 	height:30px;
-	margin-top:-10px;
+}
+
+.chat_name_change {
+	width:30px;
+	height:30px;
+	float:right; 
+	margin-right:50px; 
+	margin-top:13px;
 }

@@ -79,7 +79,7 @@ public class MessageController {
 		id_list += user_id;													// 채팅방에 참여할 유저 목록
 		ResponseEntity<Integer> entity = null;
 		try{
-			int chat_num = chatservice.chat_room(id_list);			//chat table에 채팅방 번호 생성
+			int chat_num = chatservice.chat_room(id_list);					//chat table에 채팅방 번호 생성 , 채팅방이 중복이라 생성안될경우 0 리턴
 			entity = new ResponseEntity<>(chat_num, HttpStatus.OK);	
 		} catch(Exception e) {
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -181,7 +181,7 @@ public class MessageController {
 		ResponseEntity<Map<String, Object>> entity = null;						
 		try{						  
 			chatservice.changeRoom(chat_chat_num, chatName);		// 채팅방 이름 변경
-			String encode = URLEncoder.encode(chatName);			// 한글깨짐 방지
+			String encode = URLEncoder.encode(chatName);			// 한글깨짐 방지 encoding
 			
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("chat_chat_num", chat_chat_num);

@@ -334,7 +334,7 @@
 								</c:otherwise>
 							</c:choose>
 							<span>${ri.member_user_id}</span>
-							<a href="#" data-toggle="modal" onclick="chatNameModal(${ri.chat_chat_num})"><img class="chat_name" src='/resources/Image/chat_room_name.jpg'></a>
+							<a href="#" data-toggle="modal" onclick="chatNameModal(${ri.chat_chat_num})"><img class="chat_name_change" src='/resources/Image/chat_room_name.jpg'></a>
 							<!-- <span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span> -->
 						</div>
 					</c:forEach>

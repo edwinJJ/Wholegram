@@ -40,11 +40,15 @@ function set_chatroom(token, ids) {
 				
 				ws.send("Notic : " + sessionId + " : " + result);			// WebSocket서버를 통해 채팅방에 참여되는 유저들의 채팅방리스트를 갱신한다
 			} else {
+				if(token != start) {
+					localStorage.setItem("chat", "false");					// 채팅방 생성 안됫으니, 메시지창을 열어주지 않는다.
+					token = localStorage.getItem("chat");
+				}
 				alert("이미 채팅방이 있습니다.");
 			}
 		},
 		error : function(result){
-			alert("e : " + result);
+			alert("error : " + result);
 		}
 	});
 	document.getElementById("receive_user").value = "";
@@ -92,7 +96,7 @@ function showRoomList(roomList) {
 		}
 			html +=
 				"<span>" + this.member_user_id + "</span>" + 
-				"<a href='#' data-toggle='modal' onclick='chatNameModal(${ri.chat_chat_num})'><img class='chat_name' src='/resources/Image/chat_room_name.jpg'></a>" +
+				"<a href='#' data-toggle='modal' onclick='chatNameModal(${ri.chat_chat_num})'><img class='chat_name_change' src='/resources/Image/chat_room_name.jpg'></a>" +
 			"</div>";
 	});
 	document.getElementById("roomList").innerHTML = html;
@@ -264,7 +268,7 @@ function showMessage(result) {
 // WebSocket Server connection
 //var host = location.host;
 //var wsUrl = "ws://" + host + "/chat/init";   					// ws://ip:port/chat/init
-var wsUrl = "ws://localhost:8084/chat/init"
+var wsUrl = "ws://localhost/chat/init"
 var ws;
 
 function init() {
