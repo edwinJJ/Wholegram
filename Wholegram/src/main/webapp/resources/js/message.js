@@ -84,10 +84,16 @@ function showRoomList(roomList) {
 			"<div class='well'>"
 			+   "<span id='room_popup" + this.chat_chat_num + "' class='w3-badge w3-left w3-small w3-red' style='display:none;'>!</span>"
 			+	"<button type='button' class='close' onclick='delRoom(" + this.chat_chat_num + ")'>&times;</button>"
-			+	"<span><img class='chat_img' src='/resources/Image/Penguins.jpg'></span>"
-			+	"<a href='#' class='chat_aname' onclick='getChatRoom(" + this.chat_chat_num + ")'><span class='chat_name'>채팅방 : " + this.chat_chat_num + " </span></a>"
-			+	"<span>" + this.member_user_id + "</span>" +
-			"</div>"
+			+	"<span><img class='chat_img' src='/resources/Image/Message.png'></span>";
+		if(this.chat_name == null) {
+			html += "<a href='#' class='chat_aname' onclick='getChatRoom(" + this.chat_chat_num + ")'><span id='room_name" + this.chat_chat_num + "' class='chat_name'>채팅방 : " + this.chat_chat_num + " </span></a>";
+		} else {
+			html += "<a href='#' class='chat_aname' onclick='getChatRoom(" + this.chat_chat_num + ")'><span id='room_name" + this.chat_chat_num + "' class='chat_name'>" + this.chat_name + " </span></a>";
+		}
+			html +=
+				"<span>" + this.member_user_id + "</span>" + 
+				"<a href='#' data-toggle='modal' onclick='chatNameModal(${ri.chat_chat_num})'><img class='chat_name' src='/resources/Image/chat_room_name.jpg'></a>" +
+			"</div>";
 	});
 	document.getElementById("roomList").innerHTML = html;
 	//showMessage("NewRoom");
@@ -258,7 +264,7 @@ function showMessage(result) {
 // WebSocket Server connection
 //var host = location.host;
 //var wsUrl = "ws://" + host + "/chat/init";   					// ws://ip:port/chat/init
-var wsUrl = "ws://localhost/chat/init"
+var wsUrl = "ws://localhost:8084/chat/init"
 var ws;
 
 function init() {

@@ -4,6 +4,7 @@ public class Chat_userVO {
 	private int chat_chat_num;
 	private String member_user_id;
 	
+	private String chat_name;		// 채팅방 이름을 뿌리기 위해 DB에 없는 컬럼을 추가
 	private boolean msgNotice;		// 메시지 알림을 위해 DB에 없는 컬럼을 추가
 	
 	public int getChat_chat_num() {
@@ -24,6 +25,11 @@ public class Chat_userVO {
 	public void setMsgNotice(boolean msgNotice) {
 		this.msgNotice = msgNotice;
 	}
-	
+	public String getChat_name() {
+		return chat_name;
+	}
+	public void setChat_name(String chat_name) {
+		this.chat_name = chat_name;
+	}
 	
 }

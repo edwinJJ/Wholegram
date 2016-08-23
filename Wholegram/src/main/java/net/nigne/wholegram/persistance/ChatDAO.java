@@ -19,6 +19,7 @@ public interface ChatDAO {
 	public List<Chat_userVO> getRoomUser(List<Integer> roomlist);
 	public List<Integer> checkReadRoom(List<Integer> roomNumber, String user_id);
 	public void delRoom(int chat_chat_num);
+	public void changeRoom(int chat_chat_num, String chatName);
 	public List<Chat_userVO> userList(int chat_num);
 	public List<Integer> getRoomList(String user_id);
 }

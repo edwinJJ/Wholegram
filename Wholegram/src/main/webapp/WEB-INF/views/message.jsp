@@ -1,6 +1,7 @@
-
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="sql" uri="http://java.sun.com/jstl/sql"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt"%>
 <!DOCTYPE>
 <html>
 <head>
@@ -258,6 +259,37 @@
 			});
 		}
 
+		/* 채팅방 이름 변경 */
+		function changeRoom(roomNumber) {
+			var chatName = document.getElementById("chatName").value;			// 변경하려는 채팅방 이름
+			var roomNumber = document.getElementById("roomNumber").value;		// 채팅방 번호
+			var chgr_url = "/message/changeRoom/" + roomNumber + "/" + chatName;
+			$.ajax({
+				type : 'POST',
+				url : chgr_url,
+				headers : {
+					"Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8",
+					"X-HTTP-Method-Override" : "POST"
+				},
+				dataType:'JSON',
+				data : '',
+				success : function(result) {
+					var dec = decodeURI(result.chatName);
+					$("#room_name" + result.chat_chat_num).html(dec); 
+				}, 
+				error : function(result) {
+					alert("error : " + result);
+				}
+			});
+			
+			$("#chatName").val("");
+		}
+		
+		/* Modal open && 채팅방번호 넘김 */
+		function chatNameModal(idx){
+			$("#myModalChatName").modal("show");
+			$("#roomNumber").val(idx);
+		}
 	</script>
 </head>
 <body>
@@ -269,6 +301,7 @@
 <div style="background: #F8F8F8; height: 90.5%">
 	<div class="container-fluid">
 		<div class="row content">
+		
 			<div class="col-sm-9">
 				<div id="chat_header" class="well">
 					<div style="text-align: center;">
@@ -277,6 +310,7 @@
 						<a id="user_search" class="w3-btn-floating w3-ripple w3-teal2" data-toggle="modal" data-target="#myModal" onclick="followingList()" style="text-decoration:none">+</a>
 					</div>
 				</div>
+				
 				<!-- 채팅방 목록 -->
 				<div id="roomList">
 					<c:forEach items="${roomInfomation}" var="ri">
@@ -290,13 +324,22 @@
 								</c:otherwise>
 							</c:choose>
 							<button type="button" class="close" onclick="delRoom(${ri.chat_chat_num})">&times;</button>
-							<span><img class="chat_img" src="/resources/Image/Penguins.jpg"></span>
-							<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span class="chat_name">채팅방 : ${ri.chat_chat_num } </span></a>
+							<span><img class="chat_img" src="/resources/Image/Message.png"></span>
+							<c:choose>
+								<c:when test="${ri.chat_name == NULL}">
+									<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span id="room_name${ri.chat_chat_num }" class="chat_name" >채팅방 : ${ri.chat_chat_num }</span></a>
+								</c:when>
+								<c:otherwise>
+									<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span id="room_name${ri.chat_chat_num }" class="chat_name" >${ri.chat_name }</span></a>
+								</c:otherwise>
+							</c:choose>
 							<span>${ri.member_user_id}</span>
+							<a href="#" data-toggle="modal" onclick="chatNameModal(${ri.chat_chat_num})"><img class="chat_name" src='/resources/Image/chat_room_name.jpg'></a>
 							<!-- <span><img class="chat_content" src="/resources/Image/Penguins.jpg"></span> -->
 						</div>
 					</c:forEach>
 				</div>
+				
 				<!-- 메시지보낼 친구 찾는 Modal -->
 				<div class="modal fade" id="myModal" role="dialog">
 					<div class="modal-dialog modal-lg">
@@ -312,6 +355,25 @@
 							<div id="followingList"></div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default" data-dismiss="modal" onclick="check_messageform()">채팅방 생성</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- 채팅방 이름 바꾸는 Modal -->
+				<div class="modal fade" id="myModalChatName" role="dialog">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">Modal Header</h4>
+							</div>
+							<div class="modal-body">
+								<input type="text" id="chatName" class="form-control" />
+								<input type="hidden" id="roomNumber" class="form-control" />
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal" onclick="changeRoom();">채팅방 이름 변경</button>
 							</div>
 						</div>
 					</div>

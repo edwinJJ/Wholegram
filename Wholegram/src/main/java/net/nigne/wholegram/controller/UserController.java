@@ -285,7 +285,7 @@ public class UserController {
 	}
 	
 	
-	/* 실시간으로(5초) 알림 확인 */
+	/* 실시간으로(60초) 알림 확인 */
 	@RequestMapping(value = "/checkNotice", method = RequestMethod.POST)
 	public ResponseEntity<List<NoticeVO>> checkNotice(HttpServletRequest request) {
 

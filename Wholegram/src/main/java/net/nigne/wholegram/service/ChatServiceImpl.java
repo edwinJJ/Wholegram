@@ -25,9 +25,9 @@ public class ChatServiceImpl implements ChatService {
 	@Transactional
 	@Override
 	public int chat_room(String id_list) {
-		System.out.println("test2");
+		
 		boolean flag = dao.checkAldyRoom(id_list);	// 중복된 채팅방인지 체크
-		System.out.println("test3");
+		
 		if(flag == true) {
 			dao.chat_room();						//채팅방 생성
 			
@@ -37,7 +37,6 @@ public class ChatServiceImpl implements ChatService {
 			
 			return chat_num;						//새로 생긴 채팅방 번호 리턴
 		} else {
-			System.out.println("test4");
 			return 0;								//채팅방 만들기 실패
 		}
 	}
@@ -88,6 +87,7 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public List<Chat_userVO> setCheckReadRoom(List<Integer> roomList, List<Chat_userVO> roomInfo) {
 		List<Chat_userVO> roomInfomation = new ArrayList<Chat_userVO>();
+		
 		Iterator<Chat_userVO> extract = roomInfo.listIterator();			// roomInfo : 유저가 포함되어있는 각 채팅방의 참여하고 있는 모든 유저 리스트
 		while(extract.hasNext()) {
 			Chat_userVO cv = extract.next();
@@ -127,8 +127,10 @@ public class ChatServiceImpl implements ChatService {
 		return dao.getRoomList(user_id);
 	}
 
-
-
-
+	/*채팅방 이름 변경*/
+	@Override
+	public void changeRoom(int chat_chat_num, String chatName) {
+		dao.changeRoom(chat_chat_num, chatName);
+	}
 
 }

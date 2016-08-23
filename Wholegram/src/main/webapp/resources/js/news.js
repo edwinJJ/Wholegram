@@ -10,8 +10,15 @@ function makeNewsForm(result) {
 		"<div class='w3-ul w3-border2 w3-center w3-hover-shadow' style='overflow:auto;'>" + 
 			"<div class='w3-container'>";
 	$(result).each(function() {
-		html += "<div class='w3-hover-shadow newsef'>" +
-					"<div class='noticeList'>";
+		html += "<div class='w3-hover-shadow newsef'>";
+		if(this.check_notice == n_start) {
+			console.log(this.check_notice);
+			html += "<label id='eachNotice_popup" + this.notice_num + "' class='w3-badge w3-right w3-small w3-red' style='display:none;'>!</label>";
+		} else {
+			console.log(this.check_notice);
+			html += "<label id='eachNotice_popup" + this.notice_num + "' class='w3-badge w3-right w3-small w3-red' style='display:block;'>!</label>";
+		}
+			html +=	"<div class='noticeList'>";
 						if(this.flag == 1) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
@@ -21,6 +28,7 @@ function makeNewsForm(result) {
 								html +=	"<span class='notice_message'>" +
 											this.user_id + "님이 회원님을 팔로우하기 시작했습니다."; +
 										"</span>";
+								html +=	"<span class='notice_message2'>. . . . . .</span>";
 						} else if(this.flag == 2) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
@@ -33,6 +41,7 @@ function makeNewsForm(result) {
 										"<span style='float:right;'>" +
 											"<img class='board_img' src='" + this.media + "' />" +
 										"</span>";
+								html +=	"<span class='notice_message2'>. . . . . .</span>";
 						} else if(this.flag == 3) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
@@ -45,6 +54,7 @@ function makeNewsForm(result) {
 										"<span style='float:right;'>" + 
 											"<img class='board_img' src='" + this.media + "' />" + 
 										"</span>";
+								html +=	"<span class='notice_message2'>. . . . . .</span>";
 						} else if(this.flag == 4) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
@@ -57,6 +67,7 @@ function makeNewsForm(result) {
 										"<span style='float:right;'>" +
 											"<img class='board_img' src='" + this.media + "' />" +
 										"</span>";
+								html +=	"<span class='notice_message2'>. . . . . .</span>";
 						} else if(this.flag == 5) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
@@ -69,6 +80,7 @@ function makeNewsForm(result) {
 										"<span style='float:right;'>" +
 											"<img class='board_img' src='" + this.media + "' />" +
 										"</span>";
+								html +=	"<span class='notice_message2'>. . . . . .</span>";
 						}
 				html += 
 					"</div>" +
@@ -94,6 +106,9 @@ function showNewsForm(result) {
 		},
 		dataType:'JSON',
 		success : function(result) {
+			var test = JSON.stringify(result);
+			console.log("테스트중으ㅡㅡㅡㅡㅡㅡㅡㅡㅡ : " + test);
+			console.log("테스트끄읕트ㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
 			makeNewsForm(result);
 		},
 		error : function(result){
@@ -135,16 +150,15 @@ function closeNewsForm() {
 
 /* 알림 메시지 가져옴(1분마다)  */
 setInterval(function(){
-$.ajax({ 
-	url: "/user/checkNotice",
-	datatype: "json",
-	type:'POST',
-	success: function(result){
-		console.log(result);
-		makeNewsForm(result);
-	},
-	error: function(result) {
-		alert("error : " + result)
-	}
-});
+	$.ajax({ 
+		url: "/user/checkNotice",
+		datatype: "json",
+		type:'POST',
+		success: function(result){
+			makeNewsForm(result);
+		},
+		error: function(result) {
+			alert("error : " + result)
+		}
+	});
 }, 60000);

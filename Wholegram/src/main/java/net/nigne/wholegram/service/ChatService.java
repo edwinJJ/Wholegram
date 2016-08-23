@@ -17,6 +17,7 @@ public interface ChatService {
 	public List<Integer> checkReadRoom(List<Integer> roomNumber, String user_id);
 	public List<Chat_userVO> setCheckReadRoom(List<Integer> roomList, List<Chat_userVO> roomInfo);
 	public void delRoom(int chat_chat_num);
+	public void changeRoom(int chat_chat_num, String chatName);
 	public List<Chat_userVO> userList(int chat_num);
 	public List<Integer> getRoomList(String user_id);
 }

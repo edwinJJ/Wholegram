@@ -30,3 +30,8 @@
 #message_container {
 	background: white;
 }
+.chat_name {
+	width:30px;
+	height:30px;
+	margin-top:-10px;
+}

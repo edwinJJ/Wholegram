@@ -1,5 +1,6 @@
 package net.nigne.wholegram.controller;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import net.nigne.wholegram.domain.Chat_userVO;
 import net.nigne.wholegram.domain.MemberVO;
@@ -75,7 +79,6 @@ public class MessageController {
 		id_list += user_id;													// 채팅방에 참여할 유저 목록
 		ResponseEntity<Integer> entity = null;
 		try{
-			System.out.println("test1");
 			int chat_num = chatservice.chat_room(id_list);			//chat table에 채팅방 번호 생성
 			entity = new ResponseEntity<>(chat_num, HttpStatus.OK);	
 		} catch(Exception e) {
@@ -167,6 +170,25 @@ public class MessageController {
 			entity = new ResponseEntity<>(chatservice.getRoomUsers(user_id), HttpStatus.OK);
 		} catch(Exception e) {
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	/* 채팅방 이름 변경 */
+	@RequestMapping(value = "/changeRoom/{chat_chat_num}/{chatName}", method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> changeRoom(@PathVariable("chat_chat_num") int chat_chat_num, @PathVariable("chatName") String chatName, HttpServletRequest request) {
+
+		ResponseEntity<Map<String, Object>> entity = null;						
+		try{						  
+			chatservice.changeRoom(chat_chat_num, chatName);		// 채팅방 이름 변경
+			String encode = URLEncoder.encode(chatName);			// 한글깨짐 방지
+			
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("chat_chat_num", chat_chat_num);
+			data.put("chatName", encode);
+			entity = new ResponseEntity<Map<String, Object>>(data, HttpStatus.OK);
+		} catch(Exception e) {
+			entity = new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
 		}
 		return entity;
 	}

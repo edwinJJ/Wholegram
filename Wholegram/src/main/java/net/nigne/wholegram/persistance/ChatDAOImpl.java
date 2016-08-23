@@ -31,47 +31,43 @@ public class ChatDAOImpl implements ChatDAO {
 
 	@Override
 	public boolean checkAldyRoom(String id_list) {
-		System.out.println("test5");
-		StringTokenizer stiz = new StringTokenizer(id_list, ",");								// 채팅방 유저 목록중 한명 뽑음
-		int id_list_length = stiz.countTokens();												// 유저 개수(몇명)
+		StringTokenizer stiz = new StringTokenizer(id_list, ",");									// 채팅방 유저 목록중 한명 뽑음
+		int id_list_length = stiz.countTokens();													// 유저 개수(몇명)
 		boolean flag = false;
+
 		String user_id = stiz.nextToken();
-		System.out.println("test6");
-		List<Integer> chatNumList = session.selectList(namespace + ".getRoomList", user_id);	// 유저가 속해있는 채팅방 번호 리스트를 가져온다
-		Iterator<Integer> extract = chatNumList.iterator();										// 방번호 리스트 추출
+		List<Integer> chatNumList = session.selectList(namespace + ".getRoomList", user_id);		// 유저가 속해있는 채팅방 번호 리스트를 가져온다(채팅방에 속해있는 아무 유저 상관없음)
+		Iterator<Integer> extract = chatNumList.iterator();											// 방번호 리스트 추출
+
+		int dist = 0;
 		while(extract.hasNext()) {
-			System.out.println("test7");
-			int chat_num = extract.next();
+			dist++;
+			int chat_num = extract.next(); 
 			List<Chat_userVO> userList = session.selectList(namespace + ".userList", chat_num);		// 채팅방 번호에 해당되는 유저리스트 가져옴
 			Iterator<Chat_userVO> extract2 = userList.iterator();									// 유저 리스트 추출
-			System.out.println(extract2);
-			System.out.println("test8");
-			int count = 0;
-			StringTokenizer stiz2 = new StringTokenizer(id_list, ",");
-			while(extract2.hasNext()) {															// 뽑아온 각 채팅방의 유저리스트와 현재 생성하려는 채팅방 유저리스트와 비교
 
-				System.out.println("test9");
+			int count = 0;
+			while(extract2.hasNext()) {																// 뽑아온 각 채팅방의 유저리스트와 현재 생성하려는 채팅방 유저리스트와 비교
+				StringTokenizer stiz2 = new StringTokenizer(id_list, ",");
 				Chat_userVO cvo = new Chat_userVO();
 				cvo = extract2.next();
-				System.out.println("test9-1");
 				while(stiz2.hasMoreTokens()) {
-					System.out.println(stiz2.nextToken());
-					System.out.println("test10");
-					if(cvo.getMember_user_id().equals(stiz2.nextToken())) {								// 기존에 있던 유저이름, 현재 만드려는 채팅방 유저이름 일치하면 count하여서, 새로만들 채팅방 유저수와 count와 일치하면 flag -> false 리턴 (중복되니까 만들지 말란 의미)
+					if(cvo.getMember_user_id().equals(stiz2.nextToken())) {							// 기존에 있던 유저이름, 현재 만드려는 채팅방 유저이름 일치하면 count하여서, 새로만들 채팅방 유저수와 count와 일치하면 flag -> false 리턴 (중복되니까 만들지 말란 의미)
 						count++;
 					}
 				}
 			}
-			System.out.println("test11");
 			if(count == id_list_length) {
-				flag = false;
+				flag = false;																		// 채팅방 만들어도 됨 (중복 안됨)
 			} else {
-				flag = true;
+				flag = true;																		// 채팅방 만들면 안됨 (중복됨)
 			}
-			System.out.println("count : " + count);
 		}
 		
-		System.out.println("id_list_length : " + id_list_length);
+		if(dist == 0) {
+			flag = true;																			// 채팅방 만들어도 됨 (중복 안됨) -> 유저가 속해있는 채팅방이 아에 없으므로 위의 while 자체가 동작을 안함
+		}
+		
 		return flag;
 	}
 	
@@ -135,13 +131,13 @@ public class ChatDAOImpl implements ChatDAO {
 																										        1    user2
 			// 각 방 번호와, 방 번호에 포함되어있는 유저 list (DB구조상 Query 결과값의 방 번호가 중복됨)	ex) ==>>   	        1    user3 */
 			List<Chat_userVO> each = session.selectList(namespace + ".getRoomUser", room_number);       
-																										/*      2    user2
+			String roomName = session.selectOne(namespace + ".getRoomName", room_number);				/*      2    user2
 																										        2    user4 . . . 이런식, 그래서 아래에 있는 작업을 해주게 됨 */
 			String each_users = "";
 			int result_room_number = 0;
 			Chat_userVO each_room_info = new Chat_userVO();
-																			//  방번호          참여유저
-			// 방번호 1개와, 그 방번호에 해당되는 유저들을 1개의 VO객체로 만들기 위한 과정 ==>  1    user1,user2,user3  이런형태로 만듬 ==> (이렇게 만들어두면 view에서 jstl로 뿌려주기 간편하다) 
+																		 /*  방번호          참여유저
+			방번호 1개와, 그 방번호에 해당되는 유저들을 1개의 VO객체로 만들기 위한 과정 ==>  1    user1/user2/user3  이런형태로 만듬 ==> (이렇게 만들어두면 view에서 jstl로 뿌려주기 간편하다) */ 
 			Iterator<Chat_userVO> eachit = each.iterator();
 			while(eachit.hasNext()) {
 				Chat_userVO users = eachit.next();
@@ -150,11 +146,11 @@ public class ChatDAOImpl implements ChatDAO {
 					result_room_number = users.getChat_chat_num();
 				}
 			}
+			each_room_info.setChat_name(roomName);
 			each_room_info.setChat_chat_num(result_room_number);
 			each_room_info.setMember_user_id(each_users);
 			
-			/*방 1개의 정보(방번호, 참여 유저들) ==  VO객체 1개  를 List에 담는다.*/
-			each_rooms_info.add(each_room_info);
+			each_rooms_info.add(each_room_info);							// 방 1개의 정보(방이름, 방번호, 참여 유저들) ==  VO객체 1개를 List에 담는다.
 
 		}
 		return each_rooms_info;
@@ -224,6 +220,14 @@ public class ChatDAOImpl implements ChatDAO {
 	@Override
 	public List<Integer> getRoomList(String user_id) {
 		return session.selectList(namespace + ".getRoomList", user_id);
+	}
+
+	@Override
+	public void changeRoom(int chat_chat_num, String chatName) {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("chat_chat_num", chat_chat_num);
+		data.put("chatName", chatName);
+		session.update(namespace + ".changeRoom", data);
 	}
 
 

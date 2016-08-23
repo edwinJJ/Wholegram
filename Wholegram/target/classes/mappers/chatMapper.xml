@@ -61,4 +61,14 @@
  	<select id="getRoomList" resultType="int">
  		select chat_chat_num from chat_user where member_user_id = #{user_id}
  	</select>
+ 	<update id="changeRoom">
+ 		update chat 
+ 		<set>
+ 			chat_name = #{chatName}
+ 		</set>
+ 		where chat_num = #{chat_chat_num}
+ 	</update>
+ 	<select id="getRoomName" resultType="String">
+ 		select chat_name from chat where chat_num = #{room_number}
+ 	</select>
  </mapper>

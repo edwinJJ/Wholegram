@@ -4,9 +4,11 @@ import java.util.List;
 
 public class NoticeVO {
 	private List<String> user_id2;
+	
 	private int notice_num;
 	private String user_id;
 	private String other_id;
+	private String check_notice;
 	private String refer_content;
 	private int board_num;
 	private String media;
@@ -38,6 +40,12 @@ public class NoticeVO {
 	}
 	public void setOther_id(String other_id) {
 		this.other_id = other_id;
+	}
+	public String getCheck_notice() {
+		return check_notice;
+	}
+	public void setCheck_notice(String check_notice) {
+		this.check_notice = check_notice;
 	}
 	public String getRefer_content() {
 		return refer_content;
