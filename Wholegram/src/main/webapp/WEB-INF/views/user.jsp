@@ -21,8 +21,146 @@
 	<link href="/resources/css/jquery.modal.css" type="text/css" rel="stylesheet" />
 <!-- 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> -->
 	<script type="text/javascript" src="/resources/js/jquery.modal.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 
     <style type="text/css">
+   		input[id^=content]{
+    		width:80% !important;
+    		margin-left:2%;
+    		margin-right:7%;
+    	}
+    	#content,#li{
+    		margin:10px;
+    	}
+    	#userfollow{
+    		margin-top: 10px;
+		    background: #fff;
+		    width: 110px;
+		    height: 26px;
+		    border-radius: 3px;
+		    border: 1px solid #86E57F;
+		    color: #FFFFFF;
+		    background-color:#86E57F;
+		    font-weight: bold;
+		    position: absolute;
+		    left: 20%;
+		    top: 5%
+    	}
+    	#notuserfollow{
+   			margin-top: 10px;
+		    background: #fff;
+		    width: 110px;
+		    height: 26px;
+		    border-radius: 3px;
+		    border: 1px solid #3897f0;
+		    color: #3897f0;
+		    font-weight: bold;
+		    position: absolute;
+		    left: 20%;
+		    top: 5%
+    	}
+    	.following{
+    		margin-top: 10px !important;
+		    background: #fff !important;
+		    width: 110px !important;
+		    height: 26px !important;
+		    border-radius: 3px !important;
+		    border: 1px solid #86E57F !important;
+		    color: #FFFFFF !important;
+		    background-color:#86E57F !important;
+		    font-weight: bold !important;
+		    position: absolute;
+		    left: 80%;
+		    top: 5%
+    	}
+    	.follow{
+    		margin-top: 10px !important;
+		    background: #fff !important;
+		    width: 110px !important;
+		    height: 26px !important;
+		    border-radius: 3px !important;
+		    border: 1px solid #3897f0 !important;
+		    color: #3897f0 !important;
+		    font-weight: bold !important;
+		    position: absolute;
+		    left: 80%;
+		    top: 5%
+    	}
+		.f_list{
+		   	margin-top:10px;
+		   	margin-bottom:20px;
+		   	position:relative;
+		   	height:10%;
+		}
+		.f_text{
+			position:absolute;
+			left:10%;
+			top: 20%;
+		}
+		.fradio{
+			position:absolute;
+			left:80%;
+			top: 20%;
+		}
+		#thumbnail{
+		   	width:40px;
+		   	height:40px;
+		   	border-radius:10px;
+		   	position:absolute;
+		   	left:3%;
+		   	top: -8%;
+		}    	
+		/* option �뙘�뾽 */
+		#popup_wrapper {
+			width: 100%;
+		}
+		#profile_all{
+			height: 100px;
+		}
+		.popupLayer {
+			display: none;
+		}
+		#popupContents {
+			z-index: 19999;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			width: 514px;
+			height: 205px;
+			margin: -102.5px 0 0 -257px;
+		}
+		
+		#popupContents  li {
+			border: 1px solid #efefef;
+			background: #fff;
+			width: 478px;
+			height: 50px;
+			padding: 0px 16px;
+			text-align: center;
+			line-height: 50px;
+		}
+		
+		
+		#popupContents  li:hover {
+			background: #efefef;
+			font-weight: 600;
+		}
+		
+		#popupContents li:nth-child(1), #popupContents li:nth-child(2),
+			#popupContents li:nth-child(3) {
+			border-bottom: none;
+		}
+	    .popupLayer .bg {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #000;
+			opacity: 0.7;
+			z-index:9999;
+		}
 		#profile_container{
 			margin-left: 25%;
 			width: 1000px;
@@ -44,12 +182,24 @@
 			float: left;
 			cursor: pointer;
 		}
+		#profile_notice_img {
+			float: left;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+		}
+		#board_img {
+			width: 40px;
+			height: 40px;
+		}
 		#profile_all {
 			margin-left: 30%;
+			position: relative;
 		}
 		#user_id {
 			font-size: 35px;
 			float: left;
+			position: absolute;
 		}
 		#user_id2 {
 			font-size: 20px;
@@ -57,6 +207,9 @@
 		}
 		#profile_btn {
 			margin-left: 1%;
+			position: absolute;
+		    left: 18%;
+		    top: 7%;
 		}
 		#profile_btn2 {
 			margin-top: 1%;
@@ -94,9 +247,11 @@
 		}
 		#profile_info {
 			font-size: 20px;
+			width: 100%;
 		}
 		#follower_count {
 			margin-left: 5%;
+			cursor:pointer;
 		}
 		#following_count {
 			margin-left: 5%;
@@ -107,7 +262,23 @@
 		#board_count {
 			text-align: center;
 		}
-    </style> <style type="text/css">
+		input[type="button"], input[type="text"] {
+			outline-style: none; /* �룷而ㅼ뒪�떆 諛쒖깮�븯�뒗 �슚怨� �젣嫄� */
+			-webkit-appearance: none; /* 釉뚮씪�슦��蹂� 湲곕낯 �뒪���씪留� �젣嫄� */
+			-moz-appearance: none;
+			appearance: none;
+			border-style: none;
+		}
+		input[type="button"] {
+			background: #fff;
+			color:  #b3b3b3;
+		}
+		.test {
+			color: #bfbfbf;
+		}
+    </style> 
+    
+    <style type="text/css">
       #profile_container{
          margin-left: 25%;
          width: 1000px;
@@ -120,13 +291,13 @@
       #modalCarousel >#image> img{
          max-width: 600px;
       }
+      #profile_layout {
+         margin-left: 5%;
+      }
       #profile{
          height: 30%;
          width: 100%;
          float:left;
-      }
-      #profile_layout {
-         margin-left: 5%;
       }
       #profile_img {
          float: left;
@@ -154,7 +325,9 @@
          margin-left: 1.5%;
       }
       #profile_btn2-1 {
-         margin-left: -20%;
+         position: absolute;
+		 left: 11.5%;
+		 top: 66%;
       }
       .logout {
          margin-top: 0.8%;
@@ -250,6 +423,14 @@
             position: absolute;
          cursor:pointer;
       }
+      #profile_name{
+		position: absolute;
+		top: 50%;
+      }
+      #profile_info{
+      	position: absolute;
+   		top: 100%;
+      }
       #gender_img {
       	width:25px;
       	height:25px;
@@ -293,8 +474,23 @@
          #follower_count{display: none;}
          #following_count{display: none;}
          .board_items {
-            width: 60%;
-            height: 60%;
+                width: 200px;
+                
+   				height: 150px;
+         }
+         /* 사이즈 조절시 추가 */
+         .modal-dialog{
+         	width: 100%;
+         }
+         .modal-content{
+         	width:95%;
+         }
+         #modalCarousel >#image> img {
+            width: 90%;
+         }
+         input[id^="content"]{
+         	width:80% !important;
+         	margin-left: 10px;
          }
          #gender_img {
          	display:none;
@@ -493,8 +689,8 @@
 			<button id="profile_btn2-1" type="button" class="btn btn-default" onclick="profile_edit()">프로필 편집</button>
 			<span id="profile_info">
 				<span id="board_count">게시물 ${numberOfBoard }개</span>&nbsp;
-				<span id="follower_count">팔로워 ${numberOfFollow.follower }명</span>&nbsp;
-				<span id="following_count">팔로잉 ${numberOfFollow.following }명</span>
+				<span id="follower_count" onclick="followerShow()">팔로워 ${numberOfFollow.follower }명</span>&nbsp;
+				<span id="following_count" onclick="followingShow()">팔로잉 ${numberOfFollow.following }명</span>
 			</span>	
 		</div><br/><br/>
 	</div>
@@ -509,10 +705,10 @@
 				<span id="board_count2">게시물 ${numberOfBoard }개</span>
 			</div>
 			<div class="w3-third w3-container w3-margin-bottom">
-				<span id="follower_count2">팔로워 ${numberOfFollow.follower }명</span>
+				<span id="follower_count2" onclick="followerShow()">팔로워 ${numberOfFollow.follower }명</span>
 			</div>
 			<div class="w3-third w3-container">
-				<span id="following_count2">팔로잉 ${numberOfFollow.following }명</span>
+				<span id="following_count2" onclick="followingShow()">팔로잉 ${numberOfFollow.following }명</span>
 			</div>			
 		</div>
 		<div class="container bootstrap snippet">

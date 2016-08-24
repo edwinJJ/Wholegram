@@ -11,4 +11,9 @@ public interface FollowService {
 	public void followDelete( int follow_num, String following );
 	public List<FollowVO> getfwList();
 	public Map<String, Integer> getFollowNumberof(String user_id);
+	public List<FollowVO> getMyFollwingList(String user_id);
+	public List<FollowVO> getMyFollwerList(String user_id);
+	public boolean followCheck(String user_id,String other_id);
+	public void userfollowDelete(FollowVO vo);
+	public void statusUpdate(String follower,String following,int flag);
 }

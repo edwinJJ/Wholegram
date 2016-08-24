@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -23,6 +24,8 @@ import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Rotation;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +35,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.nigne.wholegram.domain.BoardVO;
+import net.nigne.wholegram.domain.FollowVO;
 import net.nigne.wholegram.domain.NoticeVO;
 import net.nigne.wholegram.service.BoardService;
+import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.NoticeService;
 
 
@@ -41,7 +46,7 @@ import net.nigne.wholegram.service.NoticeService;
 @RestController
 @RequestMapping("/")
 public class UploadController {
-	public static String PATH = "C:\\item\\";
+	public static String PATH = "E:\\item\\";
 	public static String URLPATH = "/resources/upload/";
 	public static String destination="";
 	private static String OS = System.getProperty("os.name").toLowerCase();
@@ -52,18 +57,20 @@ public class UploadController {
 	private BoardService bs;
 	@Inject
 	private NoticeService ns;
+	@Inject
+	private FollowService fs;
 	
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
-	public ModelAndView signUp(Locale locale, Model model, HttpServletRequest request) {
+	public ModelAndView signUp(Locale locale, Model model,HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		String user_id = (String)session.getAttribute("user_id");
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("sessionId", user_id);
-		mav.setViewName("upload");
-		return mav;
+	      String user_id = (String)session.getAttribute("user_id");
+	      ModelAndView mav = new ModelAndView();
+	      mav.addObject("sessionId", user_id);
+	      mav.setViewName("upload");
+	      return mav;
 	}
 	
-	//TODO formdata濡� �뾽濡쒕뱶 援ъ꽦�삁�젙
+	//TODO formdata업로드 처리 예정
 	@ResponseBody
 	@RequestMapping(value = "/uploadw", method = RequestMethod.POST)
 	public ModelAndView uploadAjax2(Locale locale, Model model) {
@@ -71,40 +78,44 @@ public class UploadController {
 		return new ModelAndView("upload");
 	}
 	
-	//Ajax濡� �뙆�씪 諛� �깭洹� �뾽濡쒕뱶 
+	//Ajax로 파일 업로드 처리 
 	@ResponseBody
 	@RequestMapping(value = "/uploads", method = RequestMethod.POST)
 	public String uploadAjax(@RequestBody Map<String,Object> param,HttpServletRequest request) throws Exception{
+		System.out.println("get");
 		HttpSession session = request.getSession();	
 		String uploadPath = "";
 		String test =param.get("content").toString();
 		String temp=test;
 		List<String> ls = new ArrayList<String>();
 		List<String> compare = new ArrayList<String>();
-		osSetting(OS);
+		osSetting(OS);												//OS를 불러와서 OS에 맞게 경로 셋팅및 폴더가 없을 경우 생성
+		String user_id = (String)session.getAttribute("user_id");
 		try{
-			String rsq = param.get("dataurl").toString(); // json�쓽 dataurl瑜� String���엯�쑝濡� 蹂��솚
-			String type = rsq.substring(rsq.indexOf("/")+1,rsq.indexOf(";")); // dataurl�쓽 �솗�옣�옄 ���엯�쓣 遺꾨━
+			String rsq = param.get("dataurl").toString(); // json에서 dataurl값을 String으로 불러옴
+			String type = rsq.substring(rsq.indexOf("/")+1,rsq.indexOf(";")); // dataurl에서 타입을 따로 불러옴
 			uploadPath = createUploadPath(type);
 			System.out.println(uploadPath);
-			byte[] imagedata = DatatypeConverter.parseBase64Binary(rsq.substring(rsq.indexOf(",") + 1)); // dataurl�쓽 data�쁺�뿭�쓣 byte���엯�쑝濡� 蹂��솚
-			UUID uid = UUID.randomUUID(); // �엫�쓽�쓽 ID瑜� 遺��뿬
-			Path path = Paths.get(PATH+uploadPath+uid+"."+type); // �뙆�씪�쓣 ���옣 �븷 �쐞移� 諛� �뙆�씪 �씠由꾩쓣 吏��젙
+			byte[] imagedata = DatatypeConverter.parseBase64Binary(rsq.substring(rsq.indexOf(",") + 1)); // dataurl에서 data부분을 byte로 변환
+			UUID uid = UUID.randomUUID(); // 랜덤으로 파일이름 생성
+			Path path = Paths.get(PATH+uploadPath+uid+"."+type); // 저장경로 지정
 			
-			if(param.get("content").toString().indexOf("@")!=-1 || param.get("content").toString().indexOf("#")!=-1){
+			if(param.get("content").toString().indexOf("@")!=-1 || param.get("content").toString().indexOf("#")!=-1){ //@와 #가 있을시 알맞게 처리
 				test =param.get("content").toString();
 				test = test.replaceAll("@", " @").replaceAll("#"," #").replaceFirst(" ","");
 				String[] test2 = test.split(" ");
 				temp=test;
  				for(String s:test2){
 					if(s.indexOf("@")!=-1 || s.indexOf("#")!=-1){
-						if(!find(compare,s)){
+						if(!find(compare,s)){ // 같은 단어가 있을시 처리 방지 
 							System.out.println(s);
 							System.out.println(find(compare,s));
 							if(s.indexOf("@")!=-1 ){
-								temp = temp.replaceAll(s, "<a href=/"+s.substring(1)+">"+s+" </a>");
-								ls.add(s.substring(1));
-								compare.add(s);
+									temp = temp.replaceAll(s, "<a href=/"+s.substring(1)+">"+s+" </a>");
+									if(!user_id.equals(s)){
+									ls.add(s.substring(1));
+									compare.add(s);
+									}
 							}else
 								temp = temp.replaceAll(s,"<a href=/hash/"+URLEncoder.encode(s,"UTF-8")+">"+s+" </a>");
 								compare.add(s);
@@ -115,9 +126,9 @@ public class UploadController {
 			
 
 			BoardVO vo =new BoardVO();
-			vo.setUser_id((String) session.getAttribute("user_id")); // 濡쒓렇�씤 �맂 �븘�씠�뵒濡� 湲� �옉�꽦
-			vo.setContent(temp); // 湲� �궡�슜�쓣 ���옣
-			vo.setMedia(URLPATH+uploadPath+uid+"."+type); // �뙆�씪�씠 ���옣�맂 �쐞移� ���옣
+			vo.setUser_id((String) session.getAttribute("user_id")); // 로그인 된 아이디를 받아옴
+			vo.setContent(temp); // 변환된 내용을 입력
+			vo.setMedia(URLPATH+uploadPath+uid+"."+type); // 경로 저장
 			vo.setMedia_type(param.get("type").toString());
 			vo.setMedia_thumnail(URLPATH+"video_thumnail//"+uid+".png");
 			if(param.get("atag")!= EMPTY){
@@ -139,14 +150,28 @@ public class UploadController {
 				ImageIO.write(resizeImage(buf,200,200,type), "png",new File(destination+uid+".png"));
 			}
 			int board_num = bs.getBoardNum(vo);
-			if(param.get("content").toString().indexOf("@")!=-1){
+			if(param.get("content").toString().indexOf("@")!=-1){ // 게시물에 작성된 내용중에 유저를 언급하였을 경우 notice테이블에 입력됨
 				NoticeVO nvo = new NoticeVO();
 				nvo.setMedia(URLPATH+"video_thumnail//"+uid+".png");
 				nvo.setBoard_num(board_num);
-				nvo.setOther_id((String) session.getAttribute("user_id"));
+				nvo.setOther_id(user_id);
 				nvo.setFlag(4);
 				nvo.setRefer_content(temp);
 				nvo.setUser_id2(ls);
+				ns.insertFromUpload(nvo);
+			}
+			if(param.get("atag").toString()!="" && param.get("atag").toString()!=null){
+				System.out.println(param.get("atag").toString().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", ""));
+				String atagTemp = param.get("atag").toString().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", " ");
+				String[] tagArr =  atagTemp.split(" ");
+				List<String> list = putNotice(tagArr,user_id,6);
+				NoticeVO nvo = new NoticeVO();
+				nvo.setMedia(URLPATH+"video_thumnail//"+uid+".png");
+				nvo.setBoard_num(board_num);
+				nvo.setOther_id(user_id);
+				nvo.setFlag(6);
+				nvo.setRefer_content(temp);
+				nvo.setUser_id2(list);
 				ns.insertFromUpload(nvo);
 			}
 			return "true";
@@ -154,6 +179,25 @@ public class UploadController {
 			e.printStackTrace();
 			return e.toString();
 		}
+	}
+
+	// 팔로잉한 유저 목록 가져오기
+	@RequestMapping(value = "/getFollowingUser", method = RequestMethod.POST)
+	public ResponseEntity<Map<String,Object>> GetFollowingAjax(HttpServletRequest request) throws Exception{
+		HttpSession session = request.getSession();	
+		ResponseEntity<Map<String,Object>> entity = null;
+		String user_id = (String)session.getAttribute("user_id");
+		List<FollowVO> ls = fs.getMyFollwerList(user_id);
+		Map<String,Object> map = new HashMap<>();
+		map.put("list", ls);
+		
+		try{
+			entity = new ResponseEntity<>(map,HttpStatus.OK);
+		}catch(Exception e){
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			e.toString();
+		}
+		return entity;
 	}
 	public static boolean find(List<String> buf,String idx){
 		boolean flag = false;
@@ -165,10 +209,10 @@ public class UploadController {
 		
 		return flag;
 	}
-	public static void osSetting(String OS){ // OS 踰꾩졏蹂꾨줈 寃쎈줈 蹂�寃� 諛� �뵒�젆�넗由ш� �뾾�쓣寃쎌슦 �뵒�젆�넗由ъ깮�꽦
+	public static void osSetting(String OS){ // OS 에 따라 경로를 설정해줌
 		if(OS.indexOf("win") >= 0){
-			PATH = "C:\\item\\"; 
-			destination="C:\\item\\video_thumnail\\";
+			PATH = "E:\\item\\"; 
+			destination="E:\\item\\video_thumnail\\";
 			File video = new File(PATH+"video");
 			File image = new File(PATH+"image");
 			File videoThumnail = new File(PATH+"video_thumnail");
@@ -193,7 +237,7 @@ public class UploadController {
 			}
 		}
 	}
-	public static String createUploadPath(String type){ // upload�뤃�뜑 �궡遺��뿉 ���옣�맆 �쐞移� 寃곗젙
+	public static String createUploadPath(String type){ // upload 경로를 변경해줌
 		String path = "image/";
 		for (String d : VIDEOTYPE){
 			if(type.toLowerCase().equals(d))
@@ -201,8 +245,19 @@ public class UploadController {
 		}
 		return path;
 	}
-	
-	public static boolean compareToDataType(String type){ // �쁽�옱 �뾽濡쒕뱶 �릺怨� �엳�뒗 �뜲�씠�꽣媛� �룞�쁺�긽�씤吏� �븘�땶吏� 援щ퀎 �룞�쁺�긽�씠 �뱾�뼱�삤硫� true �븘�땲硫� false瑜� 由ы꽩
+	public List<String> putNotice(String[] idx,String user_id,int flag){ // 리스트에다가 notice될 아이디값을 입력받고 리턴
+		List<String> ls = new ArrayList<String>();
+		for(String s:idx){
+			if(!"".equals(s)){
+				if(!user_id.equals(s)){
+					ls.add(s);
+				}
+					
+			}
+		}
+		return ls;
+	}
+	public static boolean compareToDataType(String type){ // 들어온 타입이 비디오일 경우 true 아니면 false로 처리
 		boolean flag = false;
 		
 		for (String d : VIDEOTYPE){
@@ -212,7 +267,7 @@ public class UploadController {
 		return flag;
 	}
 	
-	// �룞�쁺�긽�뿉�꽌 �씫�뼱�삩 �씠誘몄�瑜� resizing
+	// 이미지를 resizing
 	public static BufferedImage resizeImage(BufferedImage image, int width, int height, String type) {
 		float w = new Float(width) ;
 		float h = new Float(height) ;

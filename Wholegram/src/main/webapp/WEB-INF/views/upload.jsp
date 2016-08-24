@@ -22,6 +22,30 @@
    
 </head>
 <style>
+	.f_list{
+	   	margin-top:10px;
+	   	margin-bottom:20px;
+	   	position:relative;
+	   	height:10%;
+	}
+	.f_text{
+		position:absolute;
+		left:10%;
+		top: 20%;
+	}
+	.fradio{
+		position:absolute;
+		left:90%;
+		top: 20%;
+	}
+	#thumbnail{
+	   	width:40px;
+	   	height:40px;
+	   	border-radius:10px;
+	   	position:absolute;
+	   	left:3%;
+	   	top: -8%;
+	}
    .nav-tabs>li>a{
       color: #337ab7;
    }

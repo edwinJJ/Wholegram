@@ -30,7 +30,7 @@
 				  }else{
 					  reader.readAsDataURL(file);
 					  reader.onload = function  () {  
-						  if(VIDEOTYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){
+						  if(VIDEOTYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){  //파일 타입이 비디오일 경우
 							  cvs.style.display = "none";
 							  vss.style.display = "block";
 							  document.getElementById("videotype").src=reader.result;
@@ -42,7 +42,7 @@
 							  $("#filter").css("display","none");
 							  $("#direct").css("display","block");
 							  type = "m";
-							  } else if(IMAGETYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){
+							  } else if(IMAGETYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){ // 파일타입이 이미지일 경우
 								  img.src = reader.result;
 								  dataurl = reader.result;
 								  $("#delete").css("display","block");
@@ -66,12 +66,14 @@
 	        $.browser.msie=true;jQuery.browser.version=RegExp.$1;}
 	    })();
 	    
-	    function deleteButtonShow(){
+	    function deleteButtonShow(){ //삭제 버튼을 누를 시 업로드 창 상태를 초기화면으로 되돌림
 	    	var width = 300;
 	    	var height = 300;
 	    	document.getElementById("videotype").src= NULL;
 	    	img.src = NULL;
 			dataurl = NULL;
+			panel.style.display="none";
+			atag = NULL;
 			if ($.browser.msie) {
 				// ie 일때 input[type=file] init.
 				$("#file").replaceWith( $("#filename").clone(true) );
@@ -86,7 +88,7 @@
 		    set_init_size(ini,canvas,context,panel);
 	    }
 	    
-	    function canvasEvent(){
+	    function canvasEvent(){ // 파일 업로드시 체크
 	    	if(dataurl==NULL){
 	    		file.click();
 	    	}else{
@@ -94,7 +96,7 @@
 	    	}
 	    }
 	    
-	    panel.addEventListener('click', function(e) {
+	    panel.addEventListener('click', function(e) { // 사람 태그를 누르고 검은 화면을 누를시 마우스의 좌표를 불러옴
 	        var pos = getMousePos(canvas, e),
 	            x = pos.x,
 	            y = pos.y;
@@ -102,7 +104,6 @@
 	    }, false);
 	    
 
-		//입력한 파일이 변할시 이미지변경 하도록함.
 		
 		// 이미지가 로딩이 완료된 이후 캔버스에다가 이미지를 삽입	
 		document.getElementById("img").onload = function() {
@@ -110,15 +111,17 @@
 			//dataurl = canvas.toDataURL();
 		}; 
 		
-		function replaceAll(str, searchStr, replaceStr) {
+		function replaceAll(str, searchStr, replaceStr) { //java replaceAll처럼 정의
 
 		    return str.split(searchStr).join(replaceStr);
 		}
-		function allTrim(str) {
+		
+		function allTrim(str) { // 공백 전체를 없어지게함...
 
 		    return str.split(" ").join("");
 		}
-		function convertTohashTag(){
+		
+		function convertTohashTag(){ // @와 #를 각각 타입에 맞게 변환함..
 		   var tx = document.getElementById("content").value;
 		   tx = replaceAll(tx,"#"," #");
 		   tx = replaceAll(tx,"@"," @");
@@ -129,10 +132,10 @@
 		   for(var tm in temp){
 			    if(temp[tm].indexOf("#")!=-1 || temp[tm].indexOf("@")!=-1){
 			    	 temp2 =temp[tm].split("#");
-				     if(temp2[0].indexOf("@")!=-1){
+				     if(temp2[0].indexOf("@")!=-1){ // @일경우 해당 유저 페이지로 이동하도록 처리
 				    	 tx =tx.replace(temp2[0], " <a href='/"+temp2[0].substring(1)+"'>"+temp2[0]+" </a>");
 				     }
-				     for(var i =1;i<temp2.length;i++){
+				     for(var i =1;i<temp2.length;i++){ // #일경우 해시태그 검색결과창으로 갈수 있도록 처리
 				    	 tx =tx.replace("#"+temp2[i], " <a href='/hash/%23"+temp2[i]+"'>#"+temp2[i]+" </a>");
 				     } 
 			    }
@@ -140,7 +143,7 @@
 		   content = tx;
 		  }
 		
-		//test예정
+		//Formdata로 처리 예정
 		function uploads(){
 			var nStart = new Date().getTime();
 			var form = new FormData();
@@ -169,7 +172,7 @@
 	        
 		}
 		
-		function dataURItoBlob(dataURI,type) {
+		function dataURItoBlob(dataURI,type) { //dataurl을 blob로 변환
 		    var binary = atob(dataURI.split(',')[1]);
 		    var array = [];
 		    for(var i = 0; i < binary.length; i++) {
@@ -178,7 +181,7 @@
 		    return new Blob([new Uint8Array(array)], {type: 'image/'+type});
 		}
 		
-	    function upload(){
+	    function upload(){ // 이미지 or 동영상 및 텍스트들을 올림
 	    	var nStart = new Date().getTime();
 	    	if(type=="i"){
 				dataurl = canvas.toDataURL(); // 이미지 타입일 경우 캔버스에서 데이터를 뽑아옴
@@ -221,7 +224,7 @@
 	    	    	
 	 	} 
 	    
-	    function panelInit(){
+	    function panelInit(){ // 사람태그버튼을 누를시 클릭하는 패널을 현재 이미지의 크기에 맞게 조절
 			$("#panel").css("width",canvas.width + "px").css("height",canvas.height + "px").css("margin-left",-1*canvas.width/2+ "px");
 			$("#canvas").css("height",canvas.height+ "px");
 		}
@@ -232,7 +235,7 @@
 	    	$(a).attr('href',"/"+$("#tag").val()+"/").attr("text",$("#tag").val()).attr("title",$("#tag").val()).attr("class",".btn-primary");
 	    	a.innerHTML = $("#tag").val();
 	    	$(a).css("position","absolute").css("top",(($("#gety").val()/canvas.height)*100)+"%");
-	    	$(a).css("left",(($("#getx").val()/canvas.width)*100)+"%").css("color","white");
+	    	$(a).css("left",(($("#getx").val()/canvas.width)*100)+"%").css("color","white").css("z-index","333");
 	    	atag += a.outerHTML;
 	    	$(a).attr("onclick","return false;");
 	    	$("#panel").append(a);
@@ -251,10 +254,36 @@
 	    	if($("#file").val()==NULL){
 	    		alert("사진을 불러오세요");
 	    		file.click();
-	    	}else	    		
+	    	}else{	    		
 				$("#panel").toggle();
+				console.log("test");
+				$.ajax({ 
+		    		type: 'POST',
+	                url: '/getFollowingUser',
+	                dataType: 'json',
+	                contentType : 'application/json; charset=utf-8',
+		    	    success: function(result) {
+		    	    	console.log(result.list);
+		    	    	setFollowingList(result);
+		    	    },
+		    	    error:function(request,status,error){
+		    	    	console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		    	    }
+		    	});
+	    	}
 		}
-	    
+		
+		function followingclick(data){  // 팔로워 클릭시 입력
+			$("#tag").val(data);
+		} 
+		
+	    function setFollowingList(result){ // 팔로워데이터 목록을 받아와 정렬
+	    	var temp = "";
+	    	$(result.list).each(function(){
+	    		temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'>"+this.follower+"</span><input type='radio' name='fradio' class='fradio' id='fradio' onclick='followingclick(\""+this.follower+"\")' value='"+this.follower+"'></div>"
+	    	});
+	    	document.getElementById("follower_list").innerHTML= temp;
+	    }
 	    // 사진에 달려있는 태그 전체를 삭제
 	    function deleteTag(){
 	    	if($("#file").val()==NULL){
@@ -273,7 +302,7 @@
 	        return {x: e.clientX - rect.left, y: e.clientY - rect.top};
 	    }
 		
-		function clickTag(){
+		function clickTag(){ 
 			$(".tag").show();
 			$("#filter").hide();
 			$("#direct").hide();
@@ -433,9 +462,9 @@
 			 	context.putImageData(imgData, 0, 0);
 		}
 		
-		function sepia(){
+		function sepia(){ // 사진을 누렇게
 			 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-			    // invert colors
+			    
 			 var i;
 			 for (i = 0; i < imgData.data.length; i += 4) {
 				 imgData.data[i] = imgData.data[i] +25; // R

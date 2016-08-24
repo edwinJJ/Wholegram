@@ -1,4 +1,3 @@
-var authstr = "";	// 이메일 인증 문자
 
 	//	function is_hangul_char(event) {
 	//		var ch = event.keycode||event.which;
@@ -18,8 +17,7 @@ var authstr = "";	// 이메일 인증 문자
 				html += '<input type="text" id="user_id" name="user_id" class="mg5" placeholder="아이디 : 6자 이상 입력하세요" onblur="id_check()" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);" ><div id="check_id" class="check"></div>'
 				html += '<input type="password" id="passwd" name="passwd"  class="mg5" placeholder="비밀번호 : 6자 이상 입력하세요" onblur="pw_check()" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);"><div id="check_pw" class="check"></div>';
 				html += '<input type="text" id="user_name" name="user_name" class="mg5" maxlength="20" placeholder="이름" onblur="name_check()" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);">';
-				html += '<div><input type="text" id="email" name="email" class="mg5" placeholder="이메일" onblur="email_check()" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);"><div id="check_email" class="check"></div><input type="button" class="btn btn-info" onclick="sendMail();" value="이메일 인증"></div>';
-				html += '<input type="text" id="auth" name="auth" style="margin-left:15px; margin-top:5px; display:none;" class="mg5" maxlength="11" placeholder="Email 인증번호" onblur="auth_check()" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);"><div id="check_auth" class="check"></div>';
+				html += '<input type="text" id="email" name="email" class="mg5" placeholder="이메일" onblur="email_check()" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);"><div id="check_email" class="check"></div>';
 				html += '<input type="text" id="phone" name="phone" class="mg5" maxlength="11" placeholder="전화번호 ex)0000000000" onkeypress="noSpaceForm(this);" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);">';
 				html += '<input type="button" class="btn btn-info" onclick="checkSignUp()" value="가입">';
 				html += '</form>';
@@ -46,7 +44,7 @@ var authstr = "";	// 이메일 인증 문자
 			$('#join_box').html(change_signup);
 		}
 		function checkSignUp(){
-			if(id_check()&&email_check()&&pw_check()&&name_check()&&phone_check()&&auth_check()){
+			if(id_check()&&email_check()&&pw_check()&&name_check()&&phone_check()){
 				alert("가입완료");
 				document.getElementById("login_form").submit();
 			}else{
@@ -58,8 +56,6 @@ var authstr = "";	// 이메일 인증 문자
 					alert("비밀번호 6자리 이상 입력 하세요!");
 				}else if(!name_check()){
 					alert("이름을 올바르게 작성하세요");
-				}else if(!auth_check()) {
-					alert("메일 인증번호가 틀렸습니다.");
 				}else{
 					alert("전화번호를 올바르게 입력하세요");
 				}
@@ -96,6 +92,8 @@ var authstr = "";	// 이메일 인증 문자
 				});
 			}else{
 				flag=false;
+				check.style.color = "red";
+				check.innerHTML = "X"
 			}
 			return flag;
 		}
@@ -172,46 +170,6 @@ var authstr = "";	// 이메일 인증 문자
 				flag=false;
 			}else{
 				flag=true;
-			}
-			return flag;
-		}
-		
-		function sendMail() {
-			var text = document.getElementById("email").value;
-			var index = text.indexOf('.');
-			var text_sub = text.substring(0,index);
-			var text_sub2 = text.substring(index+1);
-			var emailSend_url = "/sendMail/" + text_sub + "/" + text_sub2;
-			alert("인증문자를 발송했습니다.");
-			$.ajax({
-				type:'GET',
-				url: emailSend_url,
-				headers:{
-					"Content-Type" : "application/json",
-					"X-HTTP-Method-Override":"GET",
-				},
-				dataType:'text',
-				success : function(result){	
-					authstr = result;											// 메일 인증번호 담기
-					document.getElementById("auth").style.display = "block";	// 인증번호 입력칸 보여주기
-				},
-				error : function(result){
-					alert("error : " + result);
-				}
-			});
-		}
-		
-		function auth_check() {
-			var auth = document.getElementById("auth").value;
-			var check = document.getElementById("check_auth");
-			var flag = false;
-			if(authstr == auth) {									// 인증번호 일치할경우
-				check.style.color="green";
-				check.innerHTML = "V";
-				flag = true;
-			} else {												// 인증번호 불일치
-				check.style.color="red";
-				check.innerHTML = "V";
 			}
 			return flag;
 		}

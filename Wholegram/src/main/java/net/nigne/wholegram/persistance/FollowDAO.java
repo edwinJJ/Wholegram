@@ -12,4 +12,9 @@ public interface FollowDAO {
 	public void followDelete( int follow_num, String following );
 	public List<FollowVO> getfwList();
 	public Map<String, Integer> getFollowNumberof(String user_id);
+	public List<FollowVO> getMyFollowingList(String user_id);
+	public boolean followCheck(Map<String,String> map);
+	public List<FollowVO> getMyFollowerList(String user_id);
+	public void userfollowDelete(FollowVO vo);
+	public void statusUpdate(Map<String, Object> map);
 }

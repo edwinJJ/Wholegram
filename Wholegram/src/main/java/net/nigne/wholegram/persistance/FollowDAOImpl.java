@@ -56,4 +56,32 @@ public class FollowDAOImpl implements FollowDAO {
 		data.put("follower", follower);
 		return data;
 	}
+	
+	@Override
+	public List<FollowVO> getMyFollowingList(String user_id) {
+		return session.selectList(namespace + ".getMyFollowingList", user_id);
+	}
+
+	@Override
+	public List<FollowVO> getMyFollowerList(String user_id) {
+		return session.selectList(namespace + ".getMyFollowerList", user_id);
+	}
+
+	@Override
+	public boolean followCheck(Map<String, String> map) {
+		
+		return ("1".equals(session.selectOne(namespace + ".followCheck", map).toString())?true:false);
+	}
+	@Transactional
+	@Override
+	public void userfollowDelete(FollowVO vo) {
+		session.delete(namespace+".userfollowDelete", vo);
+		
+	}
+	@Transactional
+	@Override
+	public void statusUpdate(Map<String, Object> map) {
+		session.update(namespace+".statusUpdate", map);
+		
+	}
 }

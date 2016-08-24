@@ -23,4 +23,19 @@
 	<select id="getFollowerNumberof" resultType="int">
 		select count(*) from follow where follower = #{user_id}
 	</select>
+	<select id="getMyFollowingList" resultType="net.nigne.wholegram.domain.FollowVO">
+		select * from follow where follower = #{user_id}
+	</select>
+	<select id="getMyFollowerList" resultType="net.nigne.wholegram.domain.FollowVO">
+		select * from follow where following = #{user_id}
+	</select>
+	<select id="followCheck" resultType="int">
+		select count(*) from follow where following = #{user_id} and follower = #{other_id}
+	</select>
+	<delete id="userfollowDelete">
+		delete from follow where follower = #{follower} and following = #{following}
+	</delete>
+	<update id="statusUpdate">
+		update follow set flag = #{flag} where (follower = #{follower} and following = #{following}) or (follower = #{following} and following = #{follower})
+	</update>
 </mapper>
