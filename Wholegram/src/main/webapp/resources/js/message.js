@@ -5,22 +5,26 @@ var fail = "false";									// fail  - Message창 닫기
 
 /* Message창 display 여부 확인 */
 function check_messageform() {
-	
+	var param;
 	var ids = document.getElementById("receive_user").value;			// 채팅방에 참여되는 유저들 목록
 	if(ids != "") {
 		token = localStorage.getItem("chat");
+		if(token == start) {											// param == 다른 채팅방 메시지창이 열려있을경우 새로운 토큰 표시(채팅방 중복생성 방지시 필요함)
+			param = "on";
+		}
 		if(token == fail || token == null) {
 			localStorage.setItem("chat", "true");
 			token = localStorage.getItem("chat");
+			param = "off";
 		}
-		set_chatroom(token, ids);
+		set_chatroom(token, ids, param);
 	} else {
 		alert("대화 상대를 선택해주세요.");
 	}
 }
 
 /* 채팅방 생성 */
-function set_chatroom(token, ids) {
+function set_chatroom(token, ids, param) {
 	var cr_url = "/message/chatroom/" + ids;
 	$.ajax({
 		type: 'POST',
@@ -40,7 +44,7 @@ function set_chatroom(token, ids) {
 				
 				ws.send("Notic : " + sessionId + " : " + result);			// WebSocket서버를 통해 채팅방에 참여되는 유저들의 채팅방리스트를 갱신한다
 			} else {
-				if(token != start) {
+				if(param == "off") {
 					localStorage.setItem("chat", "false");					// 채팅방 생성 안됫으니, 메시지창을 열어주지 않는다.
 					token = localStorage.getItem("chat");
 				}
@@ -100,7 +104,6 @@ function showRoomList(roomList) {
 			"</div>";
 	});
 	document.getElementById("roomList").innerHTML = html;
-	//showMessage("NewRoom");
 }
 
 /* 유저가 속한 채팅방 상태 확인(헤더의 알림 메시지 띄우는 용도) */
@@ -180,7 +183,6 @@ function getChatRoom(chat_chat_num) {
 
 /* 메시지 보내기 */ 
 function send_message(chat_num) {
-	console.log("메시지보내기11 chat_num : " + chat_num);
 	var msg1 = "{num : " + chat_num + "}";						// 방 번호 추가
 	var msg2 = "[write : " + sessionId + "]";					// 작성자 ID
 	if(chat_num != 0) {
@@ -268,7 +270,7 @@ function showMessage(result) {
 // WebSocket Server connection
 //var host = location.host;
 //var wsUrl = "ws://" + host + "/chat/init";   					// ws://ip:port/chat/init
-var wsUrl = "ws://localhost/chat/init"
+var wsUrl = "ws://localhost:8084/chat/init"
 var ws;
 
 function init() {
@@ -301,16 +303,10 @@ function onOpen(evt) {
 function onMessage(evt) {
 	var impl = evt.data.substring(0,7);
 	if(impl == "NewRoom") {															// 새로 방 만들어졌다는걸 알릴 때
-		var stringArray = evt.data.split(":");
-		//chat_num = stringArray[2].trim();											// 새로 만들어진 채팅방 번호
-		//var madeOfUser = stringArray[1].trim();									// 채팅방을 만든 유저
-		//console.log("sessionId : " + sessionId);
-		//console.log("madeOfUser : " + madeOfUser);
 		getRoomList(null);
 	} else if(impl == "Message") {													// 방금 접속하거나 다른 페이지에 있는데, 그동안 새로운 메시지가 와서 헤더에 메시지 알림 띄울 때
 		document.getElementById("header_popup").style.display = "block";
 	} else {																		// 메시지 채팅 주고받을 때
-		//console.log(evt.data);
 		showMessage(evt.data);
 	}
 }
@@ -335,8 +331,8 @@ function close_message() {
 init();
 
 /*
-페이지간 이동시 메시지창이 열린상태에서 이동하면 token == "ture" == start 이다    (=> getChatRoom을 통해 메시지창을 계속 열어준다.)
+페이지간 이동시 메시지창이 열린상태에서 이동하면 token == "true" == start 이다    (=> getChatRoom을 통해 메시지창을 계속 열어준다.)
 페이지간 이동시 메시지창이 닫힌상태에서 이동했으면 token == "false" == fail      (=> 메시지창이 열리지 않는다.)*/
 if(token == start) {
-	getChatRoom(chat_num)
+	getChatRoom(chat_num);
 }

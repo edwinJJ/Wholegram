@@ -1,5 +1,6 @@
 package net.nigne.wholegram.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import net.nigne.wholegram.common.RepCriteria;
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.domain.NoticeVO;
+import net.nigne.wholegram.domain.ReplyVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.MemberService;
@@ -50,9 +52,6 @@ public class UserController {
 	
 	@Inject
 	private ReplyService rService;
-	
-	@Inject
-	private FollowService fservice;
 	
 	@Inject
 	private Encrypt encrypt;
@@ -141,6 +140,7 @@ public class UserController {
 		session.setAttribute("user_id", vo.getUser_id());
 		return new ModelAndView("redirect:/user/update_form");
 	}
+	
 	/*유저 페이지에서 게시물당 댓글 스크롤링 처리*/
 	@RequestMapping(value = "/getNum/{no}/{rep_idx}", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> getNum(@PathVariable("no") int board_num,@PathVariable("rep_idx") int rep_idx) {
@@ -300,4 +300,20 @@ public class UserController {
 		}
 		return entity;
 	}
+	
+	/* 알림 표시 제거 */
+	@RequestMapping(value = "/check_Notice_indicate/{notice_num}", method = RequestMethod.POST)
+	public ResponseEntity<String> check_Notice_indicate(@PathVariable ("notice_num") int notice_num) {
+
+		ResponseEntity<String> entity = null;
+		try{
+			nservice.RemoveNotice(notice_num);
+			entity = new ResponseEntity<String>("SUCCESS!!", HttpStatus.OK);
+		}catch (Exception e) {
+			entity = new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	
 }

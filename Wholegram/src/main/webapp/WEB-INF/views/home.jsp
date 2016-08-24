@@ -20,7 +20,6 @@
 	<script src="resources/js/jquery.lazyloadxt.js" type="text/javascript"></script>
   	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 	<script type="text/javascript" src="/resources/js/search.js"></script>
 
 
@@ -47,16 +46,16 @@
 			top: 91%;
 			left: 2%;
 		}
-		
 		video{
 			height: 600px;
-			
-			
 		}
 		a[class^='.btn-primary']{
 			background-color: #253bd3;
     		padding: 3px;
     		border-radius: 20px;
+		}
+		i[id^='heart_full'] {
+			color: red;
 		}
 	</style>
 </head>
@@ -175,7 +174,7 @@
 									<c:choose>
 										<c:when test="${bd.aldy_heart}">
 											<!-- 게시물에 좋아요가 눌러져있는 경우 -->
-											<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num})"></i>
+											<i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" style="color:red;" onclick="heartCount(${bd.board_num})" ></i>
 											<i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num} )"></i>
 										</c:when>
 										<c:otherwise>

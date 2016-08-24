@@ -16,7 +16,6 @@
    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
    <link rel="stylesheet" href="/resources/css/header.css"> 
    <link rel="stylesheet" href="/resources/css/message.css"> 
-   <script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
    <script type="text/javascript" src="/resources/js/search.js"></script>
    <link rel="stylesheet" href="/resources/css/w3.css">
  
@@ -213,7 +212,7 @@
    }
 </style>
 <body>
-<%@ include file="header.jsp" %>
+<%@ include file="./header.jsp" %>
 
 <!-- 뉴스(소식)  -->
 <div id="news_box" style="display: none;"></div>

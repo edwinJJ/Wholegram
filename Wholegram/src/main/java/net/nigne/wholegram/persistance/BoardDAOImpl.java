@@ -143,4 +143,8 @@ public class BoardDAOImpl implements BoardDAO {
 		return session.selectOne(namespace+".getBoardNum", vo);
 	}
 
+	@Override
+    public List<BoardVO> boardList(int board_num) {
+       return session.selectList( namespace + ".boardList", board_num );
+    }
 }

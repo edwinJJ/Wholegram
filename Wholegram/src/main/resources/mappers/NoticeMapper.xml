@@ -29,4 +29,11 @@
 	<insert id="insertFollow">
 		insert into notice(user_id, other_id, flag) values(#{vo.following}, #{vo.follower}, #{flag});
 	</insert>
+	<update id="RemoveNotice">
+		update notice
+		<set>
+			check_notice = "true"
+		</set>
+		where notice_num = #{notice_num}
+	</update>
 </mapper>

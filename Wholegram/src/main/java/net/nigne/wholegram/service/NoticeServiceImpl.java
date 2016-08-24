@@ -59,4 +59,10 @@ public class NoticeServiceImpl implements NoticeService {
 		dao.insertFollow(vo, flag);
 	}
 
+	//알림 표시 제거
+	@Override
+	public void RemoveNotice(int notice_num) {
+		dao.RemoveNotice(notice_num);
+	}
+
 }

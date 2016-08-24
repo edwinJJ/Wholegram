@@ -164,4 +164,8 @@ public class BoardServiceImpl implements BoardService {
 		return dao.getBoardNum(vo);
 	}
 
+	@Override
+    public List<BoardVO> boardList(int board_num) {
+       return dao.boardList(board_num);
+    }
 }

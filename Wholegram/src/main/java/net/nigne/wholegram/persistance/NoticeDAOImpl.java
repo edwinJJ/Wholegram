@@ -106,12 +106,14 @@ public class NoticeDAOImpl implements NoticeDAO {
 
 	@Override
 	public void insertFollow(FollowVO vo, int flag) {
-		System.out.println("abc1-2");
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("vo", vo);
 		data.put("flag", flag);
-		System.out.println("abc1-3");
 		session.insert(namespace + ".insertFollow", data);
-		System.out.println("abc1-4");
+	}
+
+	@Override
+	public void RemoveNotice(int notice_num) {
+		session.update(namespace + ".RemoveNotice", notice_num);
 	}
 }

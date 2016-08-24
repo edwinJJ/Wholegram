@@ -84,4 +84,8 @@
 	<select id="getThunmnail" resultType="String">
 		select media_thumnail from board where board_num = #{board_num}
 	</select>
+	
+	<select id="boardList" resultType="net.nigne.wholegram.domain.BoardVO">
+      select * from board where board_num = #{board_num}
+    </select>
 </mapper>

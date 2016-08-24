@@ -25,4 +25,5 @@ public interface BoardDAO {
 	public BoardVO getOne(BoardVO vo);
 	public String getThunmnail(int board_num);
 	public int getBoardNum(BoardVO vo);
+	public List<BoardVO> boardList( int board_num );
 }

@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +49,7 @@ public class BoardController {
 	private HeartTableService htService;
 	@Inject
 	private NoticeServiceImpl nService;
-
+	
 	/* 처음 게시물 리스트 보여줄 때*/ 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ModelAndView Board_List(Locale locale, Model model, HttpServletRequest request) {
@@ -348,6 +347,36 @@ public class BoardController {
 		}
 		return entity;
 	}
+	
+	
+	/* 알림에 나온 내용 상세보기 */
+	@RequestMapping(value = "/{board_num}", method = RequestMethod.GET)
+	public ModelAndView detailPage(@PathVariable("board_num") int board_num, HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		String user_id = (String) session.getAttribute("user_id");
+		ModelAndView mav = new ModelAndView();
+
+		model.addAttribute("sessionId", user_id);
+
+		if (user_id != null) {
+			List<BoardVO> bdList = bService.boardList(board_num);
+			mav.addObject("bdList", bdList);
+
+			// 해당 게시물의 댓글 리스트
+			Iterator<BoardVO> biterator = bdList.iterator();
+			List<ReplyVO> rList = new ArrayList<ReplyVO>();
+			while (biterator.hasNext()) {
+				BoardVO bv = new BoardVO();
+				bv = biterator.next();
+				rList = rService.getList(bv.getBoard_num()); 	// 각 번호에 해당되는 게시글의 댓글리스트를 가져옴
+			}
+			mav.addObject("replyResult", rList);
+			mav.setViewName("detail");
+		} else {
+			mav.setViewName("login");
+		}
+		return mav;
+	}
 
 	public static boolean find(List<String> buf,String idx){
         boolean flag = false;
@@ -356,7 +385,6 @@ public class BoardController {
            if(s.equals(idx))
               flag = true;
         }
-        
         return flag;
      }
 }

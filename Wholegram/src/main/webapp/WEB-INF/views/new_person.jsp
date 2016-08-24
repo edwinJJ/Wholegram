@@ -19,7 +19,6 @@
  	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 	<link rel="stylesheet" href="/resources/css/header.css"> 
-	<script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 	<script type="text/javascript" src="/resources/js/search.js"></script>
 	<script src="resources/js/jquery.lazyloadxt.js" type="text/javascript"></script>
 	<style>
