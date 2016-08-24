@@ -234,10 +234,10 @@
    <div id="login_box">
       <form id="login_form" action="/login" method="post">
          <h1>Wholegram</h1>
-         <input type="text" id="user_id" name="user_id" class="mg5" placeholder=" 사용자 이름" /><br />
+         <input type="text" id="user_id" name="user_id" class="mg5" placeholder=" 사용자 이름" onkeydown="javascript:if( event.keyCode == 13 ) doLogin()" /><br />
          <div id="pw_box">
-               <input type="password" id="passwd" name="passwd" class="mg5" placeholder=" 비밀번호" />
-               <a class="passfg" href="#" onclick="passwdLoseForm()">비밀번호를 잊으셨나요?</a> <br />
+               <input type="password" id="passwd" name="passwd" class="mg5" placeholder=" 비밀번호" onkeydown="javascript:if( event.keyCode == 13 ) doLogin()" />
+               <a class="passfg" href="">비밀번호를 잊으셨나요?</a> <br />
          </div>
          <input type="button" id="btn_login" value="로그인" onclick="doLogin()" />
       </form>   

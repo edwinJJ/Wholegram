@@ -13,5 +13,6 @@ public interface NoticeService {
 	public void rnInsert( String user_id, int board_num, String content, int flag, int reply_num );
 	public void rnDelete( int reply_num );
 	public void insertFollow(FollowVO vo, int flag);
+	public void followDelete(NoticeVO vo);
 	public void RemoveNotice(int notice_num);
 }

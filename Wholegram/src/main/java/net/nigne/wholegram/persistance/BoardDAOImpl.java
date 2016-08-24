@@ -22,7 +22,11 @@ public class BoardDAOImpl implements BoardDAO {
 	@Inject
 	private SqlSession session;
 	private static final String namespace="net.nigne.wholegram.mappers.boardMapper";
-	private static final String namespace2 = "net.nigne.wholegram.mapper.UploadMapper";
+	private static final String namespace2 = "net.nigne.wholegram.mappers.UploadMapper";
+	private static final String namespace3 = "net.nigne.wholegram.mappers.replyMapper";
+	private static final String namespace4 = "net.nigne.wholegram.mappers.NoticeMapper";
+	private static final String namespace5 = "net.nigne.wholegram.mappers.heartMapper";
+	private static final String namespace6 = "net.nigne.wholegram.mappers.AdminMapper";
 
 	
 	@Override
@@ -118,7 +122,6 @@ public class BoardDAOImpl implements BoardDAO {
 
 	@Override
 	public List<BoardVO> searchIterate(List<String> list) {
-		// TODO Auto-generated method stub
 		return session.selectList(namespace+".SearchIterate",list);
 	}
 
@@ -147,4 +150,41 @@ public class BoardDAOImpl implements BoardDAO {
     public List<BoardVO> boardList(int board_num) {
        return session.selectList( namespace + ".boardList", board_num );
     }
+	
+	@Override
+   public void report(String user_id, int board_num) {
+      
+      BoardVO vo = session.selectOne(namespace + ".getOne", board_num);
+      
+      Map<String, Object> map = new HashMap<String, Object>();
+      map.put( "user_id", user_id );
+      map.put( "other_id", vo.getUser_id() );
+      map.put( "board_num", board_num );
+      session.insert( namespace + ".report", map );
+   }
+
+   @Override
+   public List<BoardVO> getReportList() {
+      return session.selectList( namespace + ".getReportList");
+   }
+
+   @Override
+   public void reportCount(int board_num) {
+      session.selectOne( namespace + ".reportCount", board_num );
+   }
+   
+   @Transactional
+   @Override
+	public void deleteAll(int board_num) {
+	   System.out.println("a");
+		session.delete( namespace4 + ".notice_delete", board_num ); // Notice
+		System.out.println("b");
+		session.delete( namespace5 + ".delete", board_num ); // Heart
+		System.out.println("b");
+		session.delete( namespace6 + ".delete", board_num ); // Report
+		System.out.println("b");
+		session.delete( namespace3 + ".replyDelete", board_num ); // Reply
+		System.out.println("b");
+		session.delete( namespace + ".delete", board_num ); // Board
+	}
 }

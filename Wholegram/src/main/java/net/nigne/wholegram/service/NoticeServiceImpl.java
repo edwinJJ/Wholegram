@@ -65,4 +65,9 @@ public class NoticeServiceImpl implements NoticeService {
 		dao.RemoveNotice(notice_num);
 	}
 
+	/*팔로우 취소했을 때*/
+	@Override
+	public void followDelete(NoticeVO vo) {
+		dao.followDelete(vo);
+	}
 }

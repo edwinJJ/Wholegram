@@ -46,7 +46,7 @@ import net.nigne.wholegram.service.NoticeService;
 @RestController
 @RequestMapping("/")
 public class UploadController {
-	public static String PATH = "E:\\item\\";
+	public static String PATH = "C:\\item\\";
 	public static String URLPATH = "/resources/upload/";
 	public static String destination="";
 	private static String OS = System.getProperty("os.name").toLowerCase();
@@ -211,8 +211,8 @@ public class UploadController {
 	}
 	public static void osSetting(String OS){ // OS 에 따라 경로를 설정해줌
 		if(OS.indexOf("win") >= 0){
-			PATH = "E:\\item\\"; 
-			destination="E:\\item\\video_thumnail\\";
+			PATH = "C:\\item\\"; 
+			destination="C:\\item\\video_thumnail\\";
 			File video = new File(PATH+"video");
 			File image = new File(PATH+"image");
 			File videoThumnail = new File(PATH+"video_thumnail");

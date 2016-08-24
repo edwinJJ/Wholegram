@@ -22,8 +22,6 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 	<script type="text/javascript" src="/resources/js/search.js"></script>
 
-
-
 	<style>
 		.lazy{
 			display: none;
@@ -77,16 +75,16 @@
 
 					<c:forEach items="${bList}" var="bd">
 						<div id="cnt_header">
-							<a id="cnt_user_img" class="fl" href=""> 
-							<img src="/user/getByteImage/">
+							<a id="cnt_user_img" class="fl" href="/${bd.user_id}"> 
+							<img src="/user/getByteImage/${bd.user_id}">
 							</a>
 							<div id="cnt_header_user" class="fl">
 								<c:if test="${bd.place eq null}">
-									<a class="user" style="padding-top: 10px;" href="#">
+									<a class="user" style="padding-top: 10px;" href="/${bd.user_id}">
 										${bd.user_id}</a>
 								</c:if>
 								<c:if test="${bd.place ne null}">
-									<a class="user" href="#"> ${bd.user_id}</a>
+									<a class="user" href="/${bd.user_id}"> ${bd.user_id}</a>
 									<a class="bd_place" href="#">${bd.place}</a>
 								</c:if>
 							</div>
@@ -197,11 +195,10 @@
 							<div id="popupLayer${bd.board_num}" class="popupLayer">
 								<div class="bg"></div>
 								<ul id="popupContents">
-									<li><a href="#" id="">부적절한 콘텐츠 신고${bd.board_num}</a></li>
-									<li><a href="#" id="">퍼가기</a></li>
-									<li><a href="#" id="">다운로드</a></li>
-									<li><a href="#self" onclick="closePopup(${bd.board_num})">취소</a></li>
-								</ul>
+		                           <li><a href="#self" onclick="insertReport(${bd.board_num})">부적절한 콘텐츠 신고</a></li>
+		                           <li><a href="${bd.media}" download>다운로드</a></li>
+		                           <li><a href="#self" onclick="closePopup(${bd.board_num})">취소</a></li>
+		                        </ul>
 							</div>
 						</div>
 					</c:forEach>
@@ -376,6 +373,28 @@
 	function viewClick(no){
 		$("#tag"+no).toggle();
 	}
+	
+	
+	// 신고관련
+	function insertReport( board_num ) {
+	      $.ajax({
+	         type : 'GET',
+	         url : "/board/report/" + board_num,
+	         headers : {
+	            "Content-Type" : "application/json",
+	         },
+	         data : '',
+	         dataType : 'json',
+	         success : function(value){
+	            alert("게시물 신고 완료가 완료되었습니다.");
+	            var popup = document.getElementById("popupLayer" + board_num);
+	            $(popup).fadeOut();
+	         },
+	         error:function(request,status,error){
+	              alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	          }
+	      });
+	   }
 	
 
 </script>

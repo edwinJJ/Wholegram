@@ -17,4 +17,5 @@ public interface MemberDAO {
 	public List<MemberVO> getNewPerson( String user_id );
 	public List<MemberVO> getKnowablePerson( String user_id );
 	public void setDefaultProfileImage(String user_id);
+	public List<MemberVO> getRandomUser( String user_id );
 }

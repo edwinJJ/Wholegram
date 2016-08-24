@@ -24,4 +24,8 @@
 	<select id="checkHeart" resultType="int">
 		select count(*) from heart where user_id = #{user_id} and board_num = #{board_num}
 	</select>
+	
+	<delete id="delete">
+      delete from heart where board_num = #{board_num}
+   </delete>
 </mapper>

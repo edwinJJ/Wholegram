@@ -20,4 +20,5 @@ public interface MemberService {
 	public List<MemberVO> getKnowablePerson( String user_id );
 	public byte[] reSizeProfileImg(MultipartFile mpf);
 	public void setDefaultProfileImage(String user_id);
+	public List<MemberVO> getRandomUser( String user_id );
 }

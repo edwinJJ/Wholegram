@@ -25,6 +25,10 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 
     <style type="text/css">
+		* {
+		   padding: 0;
+		   margin: 0;
+		}
    		input[id^=content]{
     		width:80% !important;
     		margin-left:2%;
@@ -424,11 +428,9 @@
          cursor:pointer;
       }
       #profile_name{
-		position: absolute;
 		top: 50%;
       }
       #profile_info{
-      	position: absolute;
    		top: 100%;
       }
       #gender_img {
@@ -440,6 +442,25 @@
       	width:15px;
       	height:15px;
       }
+      input[type="button"], input[type="text"] {
+	   outline-style: none; /* 포커스시 발생하는 효과 제거 */
+	   -webkit-appearance: none; /* 브라우저별 기본 스타일링 제거 */
+	   -moz-appearance: none;
+	   appearance: none;
+	   border-style: none;
+	}
+	
+	input[type="button"] {
+	   background: #fff;
+	   color:  #b3b3b3;
+	}
+	.fr {
+	   float: right;
+	}
+	
+	.fl {
+	   float: left;
+	}
     </style>
 
    <style>
@@ -623,77 +644,105 @@
 </head>
 <body>
 <!-- 상단의 head 부분 -->
-<%@include file="./header.jsp" %>
+<c:choose>
+<c:when test="${sessionId eq 'admin' }">
+	<%@include file="./admin_header.jsp" %>
+</c:when>
+<c:otherwise>
+	<%@include file="./header.jsp" %>
+</c:otherwise>
+</c:choose>
 
 <!-- 뉴스(소식)  -->
 <div id="news_box" style="display: none;"></div>
 
 <!-- 게시물 사진 나오기 전까지의 프로필정보 / Browser창 size 768전후로 나뉘어짐-->
 <div id="profile_container">
-	<div id="profile"><br/><br/>
-		<div id="profile_layout">
-			<form id="FILE_FORM" method="post" enctype="multipart/form-data" action="">
-				<input type="file" id="upload" name="upload" style="display:none;">
-				<c:choose>
-					<c:when test="${vo.default_profile != 1 }">
-						<img id="profile_img" src="/user/getByteImage" onclick="profile_menu();"/>
-						<div id="menu_list" class="w3-dropdown-content w3-card-4">
-						    <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
-						    <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
-						    <a href="#" onclick="profile_menu('cancel');">취소</a>
-						</div>
-					</c:when>
-					<c:otherwise>				   
-						<img id="profile_img" src="/resources/upload/user/Default.png" onclick="profile_menu();"/>
-						<div id="menu_list" class="w3-dropdown-content w3-card-4">
-						    <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
-						    <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
-						    <a href="#" onclick="profile_menu('cancel');">취소</a>
-						</div>
-					</c:otherwise>
-				</c:choose>
-			</form>
-		</div>
-		<div id="profile_all">
-			<span id="user_id">${vo.user_id }</span>
-			<span id="user_id2">${vo.user_id }</span>
-			<a href="#" id="confirm" class="btn btn-default logout2" >. . .</a>
-			<span id="profile_btn">
-				<button id="profile_btn2" type="button" class="btn btn-default" onclick="profile_edit()">프로필 편집</button> 
-				<a href="#" id="confirm" class="btn btn-default logout" >. . .</a>
-			</span><br/><br/>
-			<span id="profile_name">${vo.user_name }</span>
-			<c:choose>
-				<c:when test="${vo.gender == 'm'}">
-					<img id="gender_img" src="/resources/upload/user/man.jpg"/><br/>
-				</c:when>
-				<c:when test="${vo.gender == 'w'}">
-					<img id="gender_img" src="/resources/upload/user/woman.jpg"/><br/>
-				</c:when>
-			</c:choose>
-			<div id="profile_intro_scope">
-				<span id="profile_intro">${vo.info }</span>
-			</div>
-			<span id="profile_name2">${vo.user_name }</span>
-			<c:choose>
-				<c:when test="${vo.gender == 'm'}">
-					<img id="gender_img2" src="/resources/upload/user/man.jpg"/><br/>
-				</c:when>
-				<c:when test="${vo.gender == 'w'}">
-					<img id="gender_img2" src="/resources/upload/user/woman.jpg"/><br/>
-				</c:when>
-			</c:choose>
-			<div id="profile_intro_scope2">
-				<span id="profile_intro2">${vo.info }</span><br/>
-			</div>
-			<button id="profile_btn2-1" type="button" class="btn btn-default" onclick="profile_edit()">프로필 편집</button>
-			<span id="profile_info">
-				<span id="board_count">게시물 ${numberOfBoard }개</span>&nbsp;
-				<span id="follower_count" onclick="followerShow()">팔로워 ${numberOfFollow.follower }명</span>&nbsp;
-				<span id="following_count" onclick="followingShow()">팔로잉 ${numberOfFollow.following }명</span>
-			</span>	
-		</div><br/><br/>
-	</div>
+   <div id="profile"><br/><br/>
+      <div id="profile_layout">
+         <c:choose>
+            <c:when test="${sessionId == vo.user_id}">
+               <form id="FILE_FORM" method="post" enctype="multipart/form-data" action="">
+                  <input type="file" id="file1" name="file1" style="display:none;"> 
+                  <c:choose>
+                        <c:when test="${vo.default_profile != 1 }">
+                           <img id="profile_img" src="/user/getByteImage" onclick="profile_menu();"/>
+                           <div id="menu_list" class="w3-dropdown-content w3-card-4">
+                               <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
+                               <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
+                               <a href="#" onclick="profile_menu('cancel');">취소</a>
+                           </div>
+                        </c:when>
+                        <c:otherwise>               
+                           <img id="profile_img" src="/resources/upload/user/Default.png" onclick="profile_menu();"/>
+                           <div id="menu_list" class="w3-dropdown-content w3-card-4">
+                               <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변</a>
+                               <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
+                               <a href="#" onclick="profile_menu('cancel');">취소</a>
+                           </div>
+                        </c:otherwise>
+                     </c:choose>
+                  </form>
+            </c:when>
+            <c:otherwise>
+                  <img id="profile_img" src="/user/getByteImage/${vo.user_id}"/>
+            </c:otherwise>
+         </c:choose>
+      </div>
+      <div id="profile_all">
+         <span id="user_id">${vo.user_id }</span>
+         <span id="user_id2">${vo.user_id }</span>
+         <c:choose>
+            <c:when test="${sessionId == vo.user_id}">
+               <a href="#" id="confirm" class="btn btn-default logout2" >. . .</a>
+               <span id="profile_btn">
+                  <button id="profile_btn2" type="button" class="btn btn-default" onclick="profile_edit()">프로필 편집</button> 
+                  <a href="#" id="confirm" class="btn btn-default logout" >. . .</a>
+               </span><br/><br/>
+            </c:when>
+            <c:otherwise>      
+               <c:choose>
+                  <c:when test="${followCheck}">
+                     <input type='button' id='userfollow' onclick='unfollowClick("${vo.user_id }","${sessionId}")' value='팔로잉'>
+                  </c:when>
+                  <c:otherwise>
+                     <input type='button' id='notuserfollow' onclick='followClick("${vo.user_id }")' value='팔로우'>
+                  </c:otherwise>
+               </c:choose>
+            </c:otherwise>
+         </c:choose>
+         <span id="profile_name">${vo.user_name }</span><br/>
+         <c:choose>
+            <c:when test="${vo.gender == 'm'}">
+               <img id="gender_img" src="/resources/upload/user/man.jpg"/><br/>
+            </c:when>
+            <c:when test="${vo.gender == 'w'}">
+               <img id="gender_img" src="/resources/upload/user/woman.jpg"/><br/>
+            </c:when>
+         </c:choose>
+         <div id="profile_intro_scope">
+            <span id="profile_intro">${vo.info }</span>
+         </div>
+         <span id="profile_name2">${vo.user_name }</span><br/>
+         <c:choose>
+            <c:when test="${vo.gender == 'm'}">
+               <img id="gender_img2" src="/resources/upload/user/man.jpg"/><br/>
+            </c:when>
+            <c:when test="${vo.gender == 'w'}">
+               <img id="gender_img2" src="/resources/upload/user/woman.jpg"/><br/>
+            </c:when>
+         </c:choose>
+         <div id="profile_intro_scope2">
+            <span id="profile_intro2">${vo.info }</span><br/>
+         </div>
+         <button id="profile_btn2-1" type="button" class="btn btn-default" onclick="profile_edit()">프로필 편집2</button>
+         <span id="profile_info">
+            <span id="board_count">게시물 ${numberOfBoard }개</span>&nbsp;
+            <span id="follower_count" onclick="followerShow()">팔로워 ${numberOfFollow.follower }명</span>&nbsp;
+            <span id="following_count" onclick="followingShow()">팔로잉 ${numberOfFollow.following }명</span>
+         </span>
+      </div><br/><br/>
+   </div>
 </div>
 
 <!-- 게시물 사진들 -->
@@ -728,11 +777,12 @@
 								<input type="hidden" id="bn" name="bn" value="${list.board_num}">
 							</a>
 						</div>
-					</c:forEach>
+					</c:forEach><!--  -->
 				</form>
+				
 			</div>
 			
-			<!-- 게시물 Modal 생성 -->
+			<!-- Modal 생성 -->
 			<div class="modal" id="myModal" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -746,7 +796,10 @@
 								<a id = "prev" class="carousel-control left" href="#modalCarousel" data-slide="prev" onclick=""> <i class="glyphicon glyphicon-chevron-left"></i></a> 
 								<a id = "next" class="carousel-control right" href="#modalCarousel" data-slide="next" onclick=""> <i class="glyphicon glyphicon-chevron-right"></i></a>
 							</div>
-							<div id="content"></div>
+							<div id="content">
+							<div id="cnt_board_heart"></div>
+							<div id="text"></div>
+							</div>
 							<div id="li">
 							<ul id="cnt_reply"></ul>
 							</div>
@@ -758,6 +811,42 @@
 					</div>
 				</div>
 			</div>
+			
+			<!-- Modal 생성 -->
+			<div class="modal" id="myModal2" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button class="close" type="button" data-dismiss="modal">×</button>
+							<h3 id="headerText" class="modal-title"></h3>
+						</div>
+						<div class="modal-body">
+							<div id="body-container" style="height:400px;overflow:auto">
+							</div>
+						</div>			
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="popup_wrap"> 
+				<div id="popupLayer" class="popupLayer">
+					<div class="bg"></div>
+					<ul id="popupContents">
+						<li><a href="#" id="">부적절한 콘텐츠 신고</a></li>
+						<c:choose>
+							<c:when test="${sessionId == vo.user_id}">
+								<li><a id="delete" href="#" id="">삭제</a></li>
+							</c:when>
+						</c:choose>
+						<li><a href="#" id="">다운로드</a></li>
+						<li><a href="#self" onclick="closePopup()">취소</a></li>
+					</ul>
+				</div>
+			</div>
+			
 		</div>
 	</div>
 </div>
@@ -765,13 +854,180 @@
 
 	
 	<script>
-	var sessionId = "${user_id }";		// 접속자 ID
+	var sessionId = "${sessionId}";		// 접속자 ID
+	var currentId = "${vo.user_id}"
 	var thisPage = false;					// 메시지 페이지가 아니라는 의미
 	var VIDEO = "m";
 	var IMAGE = "i";
 	var FLAG = true;
+		
+		function followClick(idx){
+			if(sessionId != ""){
+				 $.ajax({
+					type : 'GET',
+					url : '/user/' + idx,
+					headers : {
+						"Content-Type" : "application/json",
+					},
+					data : '',
+					dataType : 'json',
+					success : function(result){
+						$("#notuserfollow").attr("id","userfollow").attr("value","팔로잉").attr("onclick","unfollowClick('"+currentId+"','"+sessionId+"')");
+					},
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					}
+				}); 
+			}
+		}
+		function unfollowClick(idx1,idx2){
+			if(sessionId != ""){
+				 $.ajax({
+					type : 'GET',
+					url : '/user/' + idx1 + '/'+idx2,
+					headers : {
+						"Content-Type" : "application/json",
+					},
+					data : '',
+					dataType : 'json',
+					success : function(result){
+						$("#userfollow").attr("id","notuserfollow").attr("value","팔로우").attr("onclick","followClick('"+currentId+"')");
+					},
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					}
+				}); 
+			}
+		}
+	    function setFollowList(result){ // 팔로우show에서 받아온 데이터를 알맞게 정렬함
+	    	var temp = "";
+	    	$(result.list).each(function(){
+	    		if(this.following != sessionId){
+	    			if( this.follower == sessionId && this.flag == 1)
+	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='following' id='following"+this.following+"' onclick='unfollowingClick(\""+this.following+"\")' value='팔로잉'></div>";
+    				else
+	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='follow' id='follow"+this.following+"' onclick='followingClick(\""+this.following+"\")' value='팔로우'></div>";
+	    		}else{
+    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span></div>";
+	    		}
+    		});
+	    	document.getElementById("body-container").innerHTML= temp;
+	    }
+	    function unfollowingClick(follower,idx2){ // 언팔로우 할때 처리
+	    	 $.ajax({
+					type : 'GET',
+					url : '/user/' + follower + '/'+idx2,
+					headers : {
+						"Content-Type" : "application/json",
+					},
+					data : '',
+					dataType : 'json',
+					success : function(result){
+						$("#following"+follower).attr("class","follow").attr("id","follow"+follower).attr("value","팔로우").attr("onclick","followingClick('"+follower+"')");
+					},
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					}
+				}); 
+	    }
+	    function followingClick(follower){ // 팔로잉 할떄 처리
+	    	 $.ajax({
+					type : 'GET',
+					url : '/user/' + follower,
+					headers : {
+						"Content-Type" : "application/json",
+					},
+					data : '',
+					dataType : 'json',
+					success : function(result){
+						$("#follow"+follower).attr("class","following").attr("id","following"+follower).attr("value","팔로잉").attr("onclick","unfollowingClick('"+follower+"')")
+					},
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					}
+				});  
+	    }
+	    function setFollowingList(result){ // 팔로잉show에서 받아온 데이터를 알맞게 정렬함
+	    	var temp = "";
+	    	$(result.list).each(function(){
+	    		if(this.follower != sessionId)
+	    			if( this.following == sessionId){
+	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='following' id='following"+this.follower+"' onclick='unfollowingClick(\""+this.follower+"\")' value='팔로잉'></div>";
+	    			}else{
+	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='follow' id='follow"+this.follower+"' onclick='followingClick(\""+this.follower+"\")' value='팔로우'></div>";
+	    			}
+	    		else
+	    			temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span></div>";
+	    	});
+	    	document.getElementById("body-container").innerHTML= temp;
+	    }
+		function followerShow(){ // 팔로워 목록을 불러옴
+			$('#myModal2').modal('show'); // show the modal
+			$('#headerText').text("Follower");
+			$.ajax({ 
+	    		type: 'GET',
+                url: '/user/getFollowing/'+ currentId,
+                dataType: 'json',
+                contentType : 'application/json; charset=utf-8',
+	    	    success: function(result) {
+	    	    	console.log(result.list);
+	    	    	setFollowList(result);
+	    	    },
+	    	    error:function(request,status,error){
+	    	    	console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	    	    }
+	    	});
+		}
+
+		function followingShow(){ // 팔로잉유저의 목록을 불러옴
+			$('#myModal2').modal('show'); // show the modal
+			$('#headerText').text("Following");
+			$.ajax({ 
+	    		type: 'GET',
+                url: '/user/getFollower/'+ currentId,
+                dataType: 'json',
+                contentType : 'application/json; charset=utf-8',
+	    	    success: function(result) {
+	    	    	console.log(result.list);
+	    	    	setFollowingList(result);
+	    	    },
+	    	    error:function(request,status,error){
+	    	    	console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	    	    }
+	    	});
+		}
 		function getBoardCount(){
 			return frm.bn.length;
+		}
+		function ondelete(bno){
+			$.ajax({
+				type : 'delete',
+				url : '/board/'+ bno,
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "DELETE",
+				},
+				data : '',
+				dataType : 'json',
+				success : function( result ) {
+					alert("삭제되었습니다.");
+					location.reload(true);
+				},
+				error : function( result ) {
+					alert("fail");
+					console.log(result)
+				}	
+			});
+		}
+		function openPopup( bno ) {
+			var popup = document.getElementById("popupLayer"); 
+			$("#delete").attr("onclick","javascript:ondelete("+bno+")");
+			$(popup).fadeIn();
+		}
+		function closePopup() {
+			var popup = document.getElementById("popupLayer");     
+			$(popup).fadeOut();
+			      
 		}
 		function deleteReply( bno, rno ) {
 			$.ajax({
@@ -798,23 +1054,25 @@
 		function insertReply( bno, uid ) {
 			var reply_content = $("#content"+bno).val();
 			var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
-			
-			$.ajax({
-				type : 'GET',
-				url : url,
-				headers : {
-					"Content-Type" : "application/json",
-				},
-				data : 
-					JSON.stringify({content:reply_content}),
-				dataType : 'json',
-				success : function(result){
-					setReplyList(result.result, bno);
-				},
-				error : function(result) {
-					alert("fail");
-				}
-			});
+			if(reply_content.trim() != ""){
+				$.ajax({
+					type : 'GET',
+					url : url,
+					headers : {
+						"Content-Type" : "application/json",
+					},
+					data : 
+						JSON.stringify({content:reply_content}),
+					dataType : 'json',
+					success : function(result){
+						setReplyList(result.result, bno);
+						$("#content"+bno).val("");
+					},
+					error : function(result) {
+						alert("fail");
+					}
+				});
+			}
 		}
 
 		function heartCount(board_num ) {
@@ -849,7 +1107,7 @@
 			      $(hef).show();
 			  }
 			
-			var cbh = document.getElementById("cnt_board_heart" + board_num);
+			var cbh = document.getElementById("cnt_board_heart");
 			cbh.innerHTML = "좋아요 " + result + "개";
 		}
 		
@@ -857,9 +1115,9 @@
 			var	result	= "";
 
 			$(data).each(function() {	
-				result += "<li id='rep'><a class='user_id' href='#'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
+				result += "<li id='rep'><a class='user_id' href='/"+this.user_id+"'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
 				if( sessionId == this.user_id ) {
-					result += "<input type='button' class='deleteBtn' value='삭제' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
+					result += "<input type='button' class='deleteBtn fr' value='X' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
 				}
 			});
 			document.getElementById( "cnt_reply" ).innerHTML = result;
@@ -869,9 +1127,9 @@
 			var	result	= "";
 
 			$(data).each(function() {	
-				result += "<li id='rep'><a class='user_id' href='#'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
+				result += "<li id='rep'><a class='user_id' href='/"+this.user_id+"'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
 				if( sessionId == this.user_id ) {
-					result += "<input type='button' class='deleteBtn' value='삭제' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
+					result += "<input type='button' class='deleteBtn fr' value='X' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
 				}
 			});
 			document.getElementById( "cnt_reply" ).innerHTML += result;
@@ -888,7 +1146,7 @@
 		
 		function checkBoard(no){  // modal을 띄운후 현재게시물을 기준으로 이전게시물과 다음게시물의 target을 설정
 			var page=function(){var prev; var next;};	
-			
+
 			for(var i=0;i<frm.bn.length;i++){
 				if(no == frm.bn[i].value){
 					if(i == 0){ // 현재게시물이 첫번째인 경우 이전 페이지 이동은 없음
@@ -906,9 +1164,7 @@
 			return page;
 		}
 		
-		/* when clicking a thumbnail */
-		function read(no,idx) {
-			
+		function read(no,idx) { // Grid Layer 이미지중 하나를 클릭하였을시 해당되는 내용을 불러옴
 			$('#myModal').modal('show'); // show the modal
 			$.ajax({ 
 	    		type: 'GET',
@@ -917,19 +1173,44 @@
                 contentType : 'application/json; charset=utf-8',
 	    	    success: function(result) {
 	    	    	var prevNext = checkBoard(no);
-	    	    	console.log(prevNext);
 	    	    	if(result.bd.media_type == IMAGE)
 	    	    		$("#image").html('<img src="'+result.bd.media+'">'+'<i id ="viewpeople" class="fa fa-info-circle fa-2x" onclick="viewclick()"></i>');
 	    	    	else
 	    	    		$("#image").html('<video src="'+result.bd.media+'" controls>');
-		    	    	$("#content").html(result.bd.user_id+" "+result.bd.content);
+	    	    		$("#cnt_board_heart").html("좋아요 " + result.bd.heart + "개");
+		    	    	$("#text").html(result.bd.user_id+" "+result.bd.content);
 		    	    	$("#tag").html(result.bd.tag).css("display","none");
-		    	    	$("#prev").attr("onclick","read("+prevNext.prev+",0)");
-		    	    	$("#next").attr("onclick","read("+prevNext.next+",0)");
+		    	    	if(no != prevNext.prev){
+		    	    		$("#prev").attr("onclick","read("+prevNext.prev+",0)");
+		    	    	}else{
+		    	    		$("#prev").attr("onclick","");
+		    	    	}
+		    	    	if(no != prevNext.next){
+		    	    		$("#next").attr("onclick","read("+prevNext.next+",0)");
+		    	    	}else{
+		    	    		$("#next").attr("onclick","");
+		    	    	}
+		    	    	if(typeof prevNext.next == "undefined"){
+		    	    		$("#prev").attr("onclick","");
+		    	    	}
+
+		    	    	if(typeof prevNext.prev == "undefined"){
+		    	    		$("#next").attr("onclick","");
+		    	    	}
 		    	    	setReplyList(result.rp, no);
-		    	    	$("#rep_inp").html('<input type="hidden" id="board_num" name="board_num" value="'+result.bd.board_num+'" /> ');
+		    	    	$("#rep_inp").html("<a class='heart' href='#self'> <br />");
+		    	    	if(result.ht == "1"){
+		    	    		$("#rep_inp").html($("#rep_inp").html()+"<i id='heart_full"+result.bd.board_num+"' class='test fa fa-heart fa-2x' aria-hidden='true' onclick='heartCount("+result.bd.board_num+")'></i>");
+		    	    		$("#rep_inp").html($("#rep_inp").html()+"<i id='heart_empty"+result.bd.board_num+"' class='test fa fa-heart-o fa-2x' aria-hidden='true' style='display: none;' onclick='heartCount("+result.bd.board_num+")'></i>")
+		    	    	}else{
+		    	    		$("#rep_inp").html($("#rep_inp").html()+"<i id='heart_full"+result.bd.board_num+"' class='test fa fa-heart fa-2x' aria-hidden='true' style='display: none;' onclick='heartCount("+result.bd.board_num+")'></i>");
+		    	    		$("#rep_inp").html($("#rep_inp").html()+"<i id='heart_empty"+result.bd.board_num+"' class='test fa fa-heart-o fa-2x' aria-hidden='true'  onclick='heartCount("+result.bd.board_num+")'></i>")
+		    	    	}
+		    	    	$("#rep_inp").html($("#rep_inp").html()+"</a>");
+		    	    	$("#rep_inp").html($("#rep_inp").html()+'<input type="hidden" id="board_num" name="board_num" value="'+result.bd.board_num+'" /> ');
 		    	    	$("#rep_inp").html($("#rep_inp").html()+"<input type=\"text\" id=\"content" + result.bd.board_num+"\" name=\"content"+result.bd.board_num+"\" style=\"width: 450px; outline-style: none;\" onkeydown=\"javascript:if( event.keyCode == 13 ) insertReply('" + result.bd.board_num +"' , '"+result.bd.user_id+"')\" placeholder=\"댓글달기...\" />");						
-	    	    	
+		    	    	$("#rep_inp").html($("#rep_inp").html()+"<i class='fa fa-ellipsis-h fa-2x fr' onclick='openPopup("+result.bd.board_num+")' style='color: #bfbfbf;' aria-hidden='true'></i>");
+
 	    	    },
 	    	    error:function(request,status,error){
     	    	    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
@@ -937,7 +1218,7 @@
 	    	});
 		}
 		
-		function readReply(data){
+		function readReply(data){ // 받아온 댓글을 정렬
 			var result ="";
 			for(var d in data){
 				result += "<li id='rep'><a href='/"+data[d].user_id+"'>"+data[d].user_id+"</a> "+data[d].content+"</li>";
@@ -945,7 +1226,7 @@
 			return result;
 		}
 	
-		function setScrollBoard(data){
+		function setScrollBoard(data){ // 스크롤바 끝까지 스크롤시 받아온 데이터를 정렬
 			for(var d in data){
 				if(data[d].media_type == IMAGE)
 					var input='<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><a title="Image 1" href="#"><img class="thumbnail img-responsive board_items" src="'+data[d].media+'" onclick="read('+data[d].board_num+',0)"><input type="hidden" id="bn" name="bn" value="'+data[d].board_num+'"></a></div>';

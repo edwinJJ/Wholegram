@@ -88,9 +88,13 @@ function makeNewsForm(result) {
 	html +=
 		"</div>" +
 	"</div>";
-	document.getElementById("news_box").innerHTML = html;
+
+	if(document.getElementById("news_box") != null) {
+		document.getElementById("news_box").innerHTML = html;
+	}
 	
 	if(count != 0) {	// 확인하지 않은 알림이 있을경우
+		if(document.getElementById("news_popup") != null)
 		document.getElementById("news_popup").style.display = "block";	
 	}
 }

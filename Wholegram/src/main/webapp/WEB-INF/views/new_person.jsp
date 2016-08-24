@@ -95,10 +95,10 @@
 								
 								<div id="cnt_header_user" class="fl">
 									<c:if test="${ mb.info eq ''}">
-										<a class="user" href="#" style="margin-top: 10px;">${mb.user_id}</a>
+										<a class="user" href="${mb.user_id}" style="margin-top: 10px;">${mb.user_id}</a>
 									</c:if>
 									<c:if test="${ mb.info ne ''}">
-										<a class="user" href="#"> ${mb.user_id}</a>
+										<a class="user" href="${mb.user_id}"> ${mb.user_id}</a>
 										<p class="info" style="text-align: left;">${mb.info}</p>
 									</c:if>
 								</div>

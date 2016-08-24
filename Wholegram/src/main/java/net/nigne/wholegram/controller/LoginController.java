@@ -88,24 +88,30 @@ public class LoginController {
 		/* 로그인 성공 */
 		if (loginStatus.isSuccess()) {
 			HttpSession session = request.getSession();
-			session.setAttribute("user_id", vo_chk.getUser_id());
+			session.setAttribute("user_id", vo_chk.getUser_id());	
 			String user_id = (String) session.getAttribute("user_id");
+			model.addAttribute("sessionId", user_id);
 			
-			MemberVO vo = service.MemInfo(user_id);
-			List<BoardVO> list = bdservice.getUserLimitList(vo);
+			// 관리자 아이디로 접속하면 admin page로 이동
+			if( user_id == "admin" || "admin".equals(user_id) ){
+				response.sendRedirect("/admin");
 			
-			Criteria cr = new Criteria();
-			cr.setItem(user_id);
-			int numberOfBoard = bdservice.getUserCount(cr);
-			Map<String, Integer> numberOfFollow= fservice.getFollowNumberof(user_id);
-			
-			// 이동할 페이지, 사용자 정보 설정
-			mav.addObject("vo", vo);
-			mav.addObject("list", list);
-			mav.addObject("numberOfBoard", numberOfBoard);			// 유저가 올린 게시물 개수
-			mav.addObject("numberOfFollow", numberOfFollow);		// 유저가 팔로잉 / 유저를 팔로우 있는 수
-			model.addAttribute("sessionId",user_id);
-			mav.setViewName("user");
+			} else {
+				MemberVO vo = service.MemInfo(user_id);
+				List<BoardVO> list = bdservice.getUserLimitList(vo);
+				Criteria cr = new Criteria();
+				cr.setItem(user_id);
+				int numberOfBoard = bdservice.getUserCount(cr);
+				Map<String, Integer> numberOfFollow= fservice.getFollowNumberof(user_id);
+				
+				// 이동할 페이지, 사용자 정보 설정
+				
+				mav.addObject("vo", vo);
+				mav.addObject("list", list);
+				mav.addObject("numberOfBoard", numberOfBoard);			// 유저가 올린 게시물 개수
+				mav.addObject("numberOfFollow", numberOfFollow);		// 유저가 팔로잉 / 유저를 팔로우 있는 수
+				mav.setViewName("user");
+			}
 		} else { 
 			/* 로그인 실패 */
 			response.setCharacterEncoding("utf-8");

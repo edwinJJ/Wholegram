@@ -116,4 +116,9 @@ public class NoticeDAOImpl implements NoticeDAO {
 	public void RemoveNotice(int notice_num) {
 		session.update(namespace + ".RemoveNotice", notice_num);
 	}
+	
+	@Override
+	public void followDelete(NoticeVO vo) {
+		session.delete(namespace+ ".followDelete",vo);
+	}
 }

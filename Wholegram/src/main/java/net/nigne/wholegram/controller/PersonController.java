@@ -42,35 +42,43 @@ public class PersonController {
 	@Inject
 	private NoticeService nService;
 	
-	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ModelAndView Person(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession();
-		String user_id = (String)session.getAttribute("user_id");
-		ModelAndView mav = new ModelAndView();		
-		
-		if(user_id != null) {
-			model.addAttribute( "sessionId", user_id );
-			
-			// 사용자가 following하지 않은 다른 user들의 게시물 랜덤으로 출력 
-			List<MemberVO> mList = mService.getNewPerson( user_id );
-			List<BoardVO> bList = bService.get( mList );
-			mav.addObject( "bList", bList );
-			
-			// 사용자가 following한 user의 following user들의 게시물 랜덤으로 출력
-			List<MemberVO> mbList = new ArrayList<MemberVO>(); 
-			mbList = mService.getKnowablePerson( user_id );
-			mav.addObject( "mbList", mbList );
-			
-			List<List<BoardVO>> bdList = new ArrayList<List<BoardVO>>();
-			bdList = bService.getbdList( mbList );
-			mav.addObject( "bdList", bdList );
-			
-			mav.setViewName("new_person");
-		} else {
-			mav.setViewName("login");
-		}
-		return mav;
-	}
+	   @RequestMapping(value = "", method = RequestMethod.GET)
+	   public ModelAndView Person(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
+	      HttpSession session = request.getSession();
+	      String user_id = (String)session.getAttribute("user_id");
+	      ModelAndView mav = new ModelAndView();      
+	      
+	      if(user_id != null) {
+	         model.addAttribute( "sessionId", user_id );
+	         if( user_id == "admin" || "admin".equals(user_id) ){
+	            List<MemberVO> memberList = mService.getRandomUser(user_id); 
+	            List<BoardVO> boardList = bService.get( memberList );
+	            mav.addObject( "boardList", boardList );
+	            mav.setViewName("person");
+	         } else {
+	         
+	         // 사용자가 following하지 않은 다른 user들의 게시물 랜덤으로 출력 
+	         List<MemberVO> mList = mService.getNewPerson( user_id );
+	         List<BoardVO> bList = bService.get( mList );
+	         mav.addObject( "bList", bList );
+	         
+	         // 사용자가 following한 user의 following user들의 게시물 랜덤으로 출력
+	         List<MemberVO> mbList = new ArrayList<MemberVO>(); 
+	         mbList = mService.getKnowablePerson( user_id );
+	         mav.addObject( "mbList", mbList );
+	         
+	         List<List<BoardVO>> bdList = new ArrayList<List<BoardVO>>();
+	         bdList = bService.getbdList( mbList );
+	         mav.addObject( "bdList", bdList );
+	         
+	         mav.setViewName("new_person");
+	         }
+	      } else {
+	         mav.setViewName("login");
+	      }
+	      return mav;
+	   }
+	   
 	
 	// 다른 user following 기능 
 	@RequestMapping( value = "/{uid}", method = RequestMethod.GET )

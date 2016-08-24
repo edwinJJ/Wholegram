@@ -97,4 +97,8 @@ public class MemberDAOImpl implements MemberDAO {
 		session.update(namespace + ".setDefaultProfileImage", user_id);
 	}
 
+	@Override
+   public List<MemberVO> getRandomUser(String user_id) {
+      return session.selectList( namespace + ".getRandomUser", user_id );
+   }
 }

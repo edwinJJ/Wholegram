@@ -279,7 +279,15 @@
 <title>Insert title here</title>
 </head>
 <body>
-<%@include file="./header.jsp" %>
+<!-- Header -->
+<c:choose>
+<c:when test="${sessionId eq 'admin' }">
+	<%@include file="./admin_header.jsp" %>
+</c:when>
+<c:otherwise>
+	<%@include file="./header.jsp" %>
+</c:otherwise>
+</c:choose>
 
 <!-- 뉴스(소식)  -->
 <div id="news_box" style="display: none;"></div>

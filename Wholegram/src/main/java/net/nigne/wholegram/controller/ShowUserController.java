@@ -29,6 +29,7 @@ import net.nigne.wholegram.common.HashTagScrollCriteria;
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.service.BoardService;
+import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.MemberService;
 
 @RestController
@@ -39,21 +40,39 @@ public class ShowUserController {
 	private MemberService service;
 	@Inject 
 	private BoardService bdservice;
+	@Inject
+	private FollowService fservice;
+	
 	private static final String NULL = "";
 	
 	//검색창에서 아이디를 입력시에 동작
-	@RequestMapping(value = "{idx}", method = RequestMethod.GET)
-	   public ModelAndView searchText(@PathVariable("idx")String idx,Locale locale, Model model,HttpServletRequest request) {
-	      HttpSession session = request.getSession();
-	      String user_id = (String)session.getAttribute("user_id");
-	      MemberVO vo = service.MemInfo(idx);
+	@RequestMapping(value = "{user_id}", method = RequestMethod.GET)
+	   public ModelAndView searchText(@PathVariable("user_id")String idx,Locale locale, Model model,HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		MemberVO vo = new MemberVO();
+		vo = service.MemInfo(idx);  
+		if(!"favicon".equals(idx) && vo != null){
+	      System.out.println(vo);
 	      List<BoardVO> list = bdservice.getUserLimitList(vo);
-	      ModelAndView mav = new ModelAndView();      
+	      ModelAndView mav = new ModelAndView();
+	      Criteria cr = new Criteria();
+	      cr.setItem(idx);
+	      int numberOfBoard = bdservice.getUserCount(cr);
+	      Map<String, Integer> numberOfFollow= fservice.getFollowNumberof(idx);;  
 	      mav.setViewName("user");
-	      mav.addObject("user_id",user_id);
+	      mav.addObject("followCheck", fservice.followCheck(user_id, vo.getUser_id()));
+	      mav.addObject("sessionId",user_id);
 	      mav.addObject("vo", vo);
 	      mav.addObject("list", list);
+	      mav.addObject("numberOfBoard", numberOfBoard);			// 유저가 올린 게시물 개수
+		  mav.addObject("numberOfFollow", numberOfFollow);		// 유저가 팔로잉 / 유저를 팔로우 있는 수
 	      return mav;
+	      }else if(!"favicon".equals(idx) && vo == null){
+	    	  return null;
+	      }else{
+	    	  return null;
+	      }
 	   }
 	
 	//해시태그 검색후 스크롤링과 관련

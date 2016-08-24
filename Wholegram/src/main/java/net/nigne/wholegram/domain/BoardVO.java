@@ -12,6 +12,8 @@ public class BoardVO {
 	private String tag;
 	private boolean aldy_heart;
 	private String media_thumnail;
+	private int report;
+	
 	
 	public int getBoard_num() {
 		return board_num;
@@ -78,5 +80,11 @@ public class BoardVO {
 	}
 	public void setMedia_thumnail(String media_thumnail) {
 		this.media_thumnail = media_thumnail;
+	}
+	public int getReport() {
+		return report;
+	}
+	public void setReport(int report) {
+		this.report = report;
 	}
 }

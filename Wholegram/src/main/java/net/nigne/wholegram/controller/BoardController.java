@@ -377,6 +377,24 @@ public class BoardController {
 		}
 		return mav;
 	}
+	
+	/* 게시물 신고 카운트 증가 */
+	   @RequestMapping( value = "/report/{board_num}", method = RequestMethod.GET )
+	   public void insertReport(@PathVariable( "board_num" ) int board_num, HttpServletResponse response, HttpServletRequest request) {
+	      HttpSession session = request.getSession();
+	      String user_id = (String) session.getAttribute("user_id");
+	
+	      if (user_id != null) {
+	         bService.report(user_id, board_num);
+	         bService.reportCount(board_num);
+	      } else {
+	         try {
+	            response.sendRedirect( "login" );
+	         } catch (IOException e) {
+	            e.printStackTrace();
+	         }
+	      }
+	   }
 
 	public static boolean find(List<String> buf,String idx){
         boolean flag = false;

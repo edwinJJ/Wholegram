@@ -168,4 +168,25 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardVO> boardList(int board_num) {
        return dao.boardList(board_num);
     }
+	
+	// 게시물 신고 카운트 증가 
+    @Override
+    public void report(String user_id, int board_num) {
+       dao.report(user_id, board_num);
+    }
+
+    @Override
+    public List<BoardVO> getReportList() {
+       return dao.getReportList();
+    }
+
+    @Override
+    public void reportCount(int board_num) {
+       dao.reportCount(board_num);
+    }
+    
+    @Override
+	public void deleteAll(int board_num) {
+		dao.deleteAll(board_num);
+	}
 }

@@ -5,53 +5,56 @@
 <script src="resources/js/jquery.lazyloadxt.js" type="text/javascript"></script>
 <c:forEach items="${bList}" var="bd">
 	<div id="cnt_header">
-		<a id="cnt_user_img" class="fl" herf=""> 
-			<img src="/user/getByteImage/">
-		</a>
-		<div id="cnt_header_user" class="fl">
-			<c:if test="${bd.place eq null}"> 
-				<a class="user" style="padding-top: 10px;" href="#"> ${bd.user_id}</a>
-			</c:if>	
-			<c:if test="${bd.place ne null}"> 
-				<a class="user" href="#"> ${bd.user_id}</a>
-				<a class="bd_place" href="#">${bd.place}</a>
-			</c:if>
-		</div>
-		
-		<!-- 현재일에서 등록일간의 차이 구하기 7일이후면 등록일 표기 -->
-		<span id="reg_date" name="reg_date" class="fr reg_date" herf="" value="${bd.board_num}">
-			<a href="#" style="display:none;">
-				<c:set var="toDay" value="<%=new java.util.Date() %>" />
-				<fmt:parseDate var="regDate" value="${bd.reg_date }" pattern="yyyy-MM-dd HH:mm:ss" />
-				<fmt:formatDate value="${regDate}" pattern="yyyyMMddHHmmss" />
-				<fmt:parseNumber value="${toDay.time}" integerOnly="true" var="nowDays" scope="request" />
-				<fmt:parseNumber value="${regDate.time}" integerOnly="true" var="oldDays" scope="request" />
+			<a id="cnt_user_img" class="fl" href="/${bd.user_id}"> 
+			<img src="/user/getByteImage/${bd.user_id}">
 			</a>
-			<c:if test="${(nowDays-oldDays)/1000 < 60}"> 
-				<fmt:parseNumber var="sec" value="${(nowDays-oldDays)/1000}" integerOnly="true" />
-				${sec}초 전
-			</c:if>
-			
-			<c:if test="${(nowDays-oldDays)/1000 > 60 && (nowDays-oldDays)/1000 < 3600 }">
-				<fmt:parseNumber var="min" value="${((nowDays-oldDays)/(1000 * 60))}" integerOnly="true" /> 
-				${min}분 전
-			</c:if>
-			
-			<c:if test="${(nowDays-oldDays)/1000 > 3600 && (nowDays-oldDays)/1000 < 86400 }"> 
-				<fmt:parseNumber var="hour" value="${(nowDays-oldDays)/(1000 * 60 * 60)}" integerOnly="true" />
-				${hour}시간 전
-			</c:if>
-			
-			<c:if test="${(nowDays-oldDays)/1000 > 86400 && (nowDays-oldDays)/1000 < 604800 }"> 
-				<fmt:parseNumber var="day" value="${(nowDays-oldDays)/(1000* 60 * 60 * 24)}" integerOnly="true" />
-				${day}일 전
-			</c:if>
-			
-			<c:if test="${(nowDays-oldDays)/1000 > 604800 }"> 
-				<fmt:formatDate value="${regDate}" pattern="yyyy년 MM월 dd일" />
-			</c:if>
-		</span>
-	</div>
+			<div id="cnt_header_user" class="fl">
+				<c:if test="${bd.place eq null}">
+					<a class="user" style="padding-top: 10px;" href="/${bd.user_id}">
+						${bd.user_id}</a>
+				</c:if>
+				<c:if test="${bd.place ne null}">
+					<a class="user" href="/${bd.user_id}"> ${bd.user_id}</a>
+					<a class="bd_place" href="#">${bd.place}</a>
+				</c:if>
+			</div>
+
+			<!-- 현재일에서 등록일간의 차이 구하기 7일이후면 등록일 표기 -->
+			<span id="reg_date" class="fr reg_date" value="${bd.board_num}">
+				<a href="#" style="display: none;"> <c:set var="toDay"
+						value="<%=new java.util.Date() %>" /> <fmt:parseDate
+						var="regDate" value="${bd.reg_date }"
+						pattern="yyyy-MM-dd HH:mm:ss" /> <fmt:formatDate
+						value="${regDate }" pattern="yyyyMMddHHmmss" /> <fmt:parseNumber
+						value="${toDay.time}" integerOnly="true" var="nowDays"
+						scope="request" /> <fmt:parseNumber value="${regDate.time}"
+						integerOnly="true" var="oldDays" scope="request" />
+			</a> <c:if test="${(nowDays-oldDays)/1000 < 60}">
+					<fmt:parseNumber var="sec" value="${(nowDays-oldDays)/1000}"
+						integerOnly="true" />
+							${sec}초 전
+						</c:if> <c:if
+					test="${(nowDays-oldDays)/1000 > 60 && (nowDays-oldDays)/1000 < 3600 }">
+					<fmt:parseNumber var="min"
+						value="${((nowDays-oldDays)/(1000 * 60))}" integerOnly="true" /> 
+							${min}분 전
+						</c:if> <c:if
+					test="${(nowDays-oldDays)/1000 > 3600 && (nowDays-oldDays)/1000 < 86400 }">
+					<fmt:parseNumber var="hour"
+						value="${(nowDays-oldDays)/(1000 * 60 * 60)}"
+						integerOnly="true" />
+							${hour}시간 전
+						</c:if> <c:if
+					test="${(nowDays-oldDays)/1000 > 86400 && (nowDays-oldDays)/1000 < 604800 }">
+					<fmt:parseNumber var="day"
+						value="${(nowDays-oldDays)/(1000* 60 * 60 * 24)}"
+						integerOnly="true" />
+							${day}일 전
+						</c:if> <c:if test="${(nowDays-oldDays)/1000 > 604800 }">
+					<fmt:formatDate value="${regDate}" pattern="yyyy년 MM월 dd일" />
+				</c:if>
+			</span>
+		</div>
 	<!-- 변경-->
 	<div id="cnt_board_img">
 		<div id="panel">
@@ -118,11 +121,10 @@
 		<div id="popupLayer${bd.board_num}" class="popupLayer">
 			<div class="bg"></div>
 			<ul id="popupContents">
-				<li><a href="#" id="">부적절한 콘텐츠 신고${bd.board_num}</a></li>
-				<li><a href="#" id="">퍼가기</a></li>
-				<li><a href="#" id="">다운로드</a></li>
-				<li><a href="#self" onclick="closePopup(${bd.board_num})">취소</a></li>
-			</ul>
+	            <li><a href="#self" onclick="insertReport(${bd.board_num})">부적절한 콘텐츠 신고</a></li>
+	            <li><a href="${bd.media}" download>다운로드</a></li>
+	            <li><a href="#self" onclick="closePopup(${bd.board_num})">취소</a></li>
+	        </ul>
 		</div>
 	</div>
 </c:forEach>

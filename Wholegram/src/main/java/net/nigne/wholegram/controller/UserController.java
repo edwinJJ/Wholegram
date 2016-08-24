@@ -1,6 +1,5 @@
 package net.nigne.wholegram.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,9 +28,9 @@ import net.nigne.wholegram.common.DebugStream;
 import net.nigne.wholegram.common.Encrypt;
 import net.nigne.wholegram.common.RepCriteria;
 import net.nigne.wholegram.domain.BoardVO;
+import net.nigne.wholegram.domain.FollowVO;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.domain.NoticeVO;
-import net.nigne.wholegram.domain.ReplyVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.FollowService;
 import net.nigne.wholegram.service.MemberService;
@@ -62,6 +61,9 @@ public class UserController {
 	@Inject
 	private NoticeService nservice;
 	
+	@Inject
+	private FollowService fservice;
+	
 	/*로그아웃*/
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public ModelAndView logout(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -72,7 +74,89 @@ public class UserController {
 		return mav;
 	}
 	
+	// 팔로우 등록
+	@RequestMapping( value = "/{uid}", method = RequestMethod.GET )
+	public ResponseEntity<Boolean> followInsert( @PathVariable("uid") String uid, HttpServletRequest request, Model model, HttpServletResponse response ) {
+		ResponseEntity<Boolean> entity = null;
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		try {
 
+			FollowVO vo = new FollowVO();
+			vo.setFollower( uid );
+			vo.setFollowing( user_id );
+			vo.setFlag(0);							// follow 테이블에 입력
+			if(fservice.followCheck(uid, user_id)){
+				fservice.followInsert(vo);	
+				fservice.statusUpdate(uid , user_id,1);
+			}else{
+				fservice.followInsert(vo);	
+			}
+			nservice.insertFollow(vo, 1);								// notice 테이블에 입력
+			entity = new ResponseEntity<>( true, HttpStatus.OK);
+		} catch( Exception e ) {
+			entity = new ResponseEntity<>(false, HttpStatus.BAD_REQUEST );
+			System.out.println(e.toString());
+			}
+		return entity;
+	}
+	// 팔로우 삭제
+		@RequestMapping( value = "/{uid}/{uid2}", method = RequestMethod.GET )
+		public ResponseEntity<Boolean> followDelete( @PathVariable("uid") String uid,@PathVariable("uid2") String uid2, HttpServletRequest request, Model model, HttpServletResponse response ) {
+			ResponseEntity<Boolean> entity = null;
+			HttpSession session = request.getSession();
+			String user_id = (String)session.getAttribute("user_id");
+			try {
+				FollowVO vo = new FollowVO();
+				vo.setFollower( uid );
+				vo.setFollowing( user_id );
+				fservice.userfollowDelete(vo);
+				if(fservice.followCheck(uid, user_id)){
+					fservice.statusUpdate(uid , user_id,0);
+				}
+				NoticeVO nvo = new NoticeVO();
+				nvo.setUser_id(user_id);
+				nvo.setOther_id(uid);
+				nvo.setFlag(1);
+				nservice.followDelete(nvo);
+				entity = new ResponseEntity<>( true, HttpStatus.OK);
+			} catch( Exception e ) {
+				entity = new ResponseEntity<>( false,HttpStatus.BAD_REQUEST );
+				System.out.println(e.toString());
+			}
+			return entity;
+		}
+	// 팔로워 목록 보여주기
+	@RequestMapping(value = "/getFollower/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> getFollower(@PathVariable("id") String id,Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		ResponseEntity<Map<String, Object>> entity = null;
+		List<FollowVO> ls = fservice.getMyFollwerList(id);
+		Map<String,Object> map = new HashMap<>();
+		map.put("list", ls);
+		try{
+			entity = new ResponseEntity<>(map,HttpStatus.OK);
+		}catch(Exception e){
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	//팔로잉 목록 보여주기
+	@RequestMapping(value = "/getFollowing/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> getFollowing(@PathVariable("id") String id,Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		ResponseEntity<Map<String, Object>> entity = null;
+		List<FollowVO> ls = fservice.getMyFollwingList(id);
+		Map<String,Object> map = new HashMap<>();
+		map.put("list", ls);
+		try{
+			entity = new ResponseEntity<>(map,HttpStatus.OK);
+		}catch(Exception e){
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
 	
 	/*프로필 편집 페이지*/
 	@RequestMapping(value = "/update_form", method = RequestMethod.GET)

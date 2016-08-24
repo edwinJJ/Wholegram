@@ -286,5 +286,8 @@ public class MemberServiceImpl implements MemberService {
 		dao.setDefaultProfileImage(user_id);
 	}
 
-
+	@Override
+	public List<MemberVO> getRandomUser(String user_id) {
+		return dao.getRandomUser(user_id);
+	}
 }

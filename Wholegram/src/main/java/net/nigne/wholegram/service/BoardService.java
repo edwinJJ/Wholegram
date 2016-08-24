@@ -33,4 +33,8 @@ public interface BoardService {
 	public List<BoardVO> SearchScrollIterate(HashTagScrollCriteria list);
 	public String getThunmnail(int board_num);
 	public List<BoardVO> boardList( int board_num );
+	public void report( String user_id, int board_num );
+	public void reportCount( int board_num );
+	public List<BoardVO> getReportList();
+	public void deleteAll( int board_num );
 }

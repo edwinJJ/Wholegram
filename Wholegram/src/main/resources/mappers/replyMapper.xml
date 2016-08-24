@@ -21,4 +21,8 @@
 	<select id="getReplynum" resultType="int">
 		select reply_num from reply order by reg_date desc limit 1;
 	</select>
+	
+	<delete id="replyDelete">
+      delete from reply where board_num = #{board_num}
+   </delete>
 </mapper>

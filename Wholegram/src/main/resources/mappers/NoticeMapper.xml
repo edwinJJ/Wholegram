@@ -26,6 +26,12 @@
 	<delete id="rnDelete">
 		delete from notice where reply_num = #{reply_num}
 	</delete>
+	<delete id="followDelete">
+		delete from notice where user_id = #{user_id} and other_id = #{other_id} and flag = #{flag}
+	</delete>
+	<delete id="deleteAllNotice">
+		delete from notice where board_num = #{board_num}
+	</delete>
 	<insert id="insertFollow">
 		insert into notice(user_id, other_id, flag) values(#{vo.following}, #{vo.follower}, #{flag});
 	</insert>
@@ -36,4 +42,7 @@
 		</set>
 		where notice_num = #{notice_num}
 	</update>
+	<delete id="notice_delete">
+      delete from notice where board_num = #{board_num}
+   </delete>
 </mapper>

@@ -184,11 +184,22 @@ li {
    top: 93%;
    left: 3%;
 }
+video{
+   height: 598px;
+   background: #fff;
+}
 </style>
 </head>
 <body>
 <!-- Header -->
-<%@include file="./header.jsp" %>
+<c:choose>
+<c:when test="${sessionId eq 'admin' }">
+	<%@include file="./admin_header.jsp" %>
+</c:when>
+<c:otherwise>
+	<%@include file="./header.jsp" %>
+</c:otherwise>
+</c:choose>
 
 <!-- 뉴스(소식)  -->
 <div id="news_box" style="display: none;"></div>
@@ -197,7 +208,7 @@ li {
       <c:forEach items="${bdList}" var="bd">
          <c:choose>
             <c:when test="${bd.media_type == 'm'}">
-               <video class="lazy fl img" data-src="${bd.media}" preload="metadata" controls></video>
+               <video class="lazy fl img" src="${bd.media}" preload="metadata" controls></video>
             </c:when>
             <c:otherwise>
                <img class="lazy fl img" id="image${bd.board_num}" src="${bd.media}">
@@ -209,7 +220,10 @@ li {
          <div id="contents" class="fr">
             <div id="user">
                <img id="user_img" src="/user/getByteImage/${bd.user_id}">
-               <a href="/${bd.user_id}">${bd.user_id}</a>   
+               <a href="/${bd.user_id}">${bd.user_id}</a>
+               <c:if test="${sessionId eq 'admin' }">
+               		<input class="fr" type="button" id="deleteBtn" onclick="deleteAll(${bd.board_num})" value="게시물삭제" />
+               </c:if>
             </div>
                <ul id="cnt">
                   <li id="cnt_board_heart${bd.board_num}" class="fl fwb">좋아요 ${bd.heart}개</li>
@@ -441,6 +455,25 @@ li {
       function viewClick(no){
          $("#tag"+no).toggle();
       }
+      
+      function deleteAll( bno ) {
+			$.ajax({
+				type : 'delete',
+				url : '/admin/delete/'+ bno,
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "DELETE",
+				},
+				data : '',
+				dataType : 'json',
+				success : function( result ) {
+					location.href="/admin";
+				},
+				error : function(request,status,error) {
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}	
+			});
+		}
 </script>
 
 <div id="chat_box"></div>
