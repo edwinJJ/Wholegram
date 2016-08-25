@@ -78,4 +78,7 @@
 	<select id="getRandomUser" resultType="net.nigne.wholegram.domain.MemberVO">
        select distinct user_id from board where user_id != #{user_id}  order by rand()
     </select> 
+    <select id="getUserprofileInfo" resultType="int">
+    	select default_profile from member where user_id = #{user_id}
+    </select>
 </mapper>

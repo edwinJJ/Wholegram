@@ -1,9 +1,7 @@
 package net.nigne.wholegram.persistance;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -11,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
 
 @Repository
@@ -101,4 +100,10 @@ public class MemberDAOImpl implements MemberDAO {
    public List<MemberVO> getRandomUser(String user_id) {
       return session.selectList( namespace + ".getRandomUser", user_id );
    }
+
+	@Override
+	public int getUserprofileInfo(BoardVO vo) {
+		String user_id = vo.getUser_id();
+		return session.selectOne(namespace + ".getUserprofileInfo", user_id);
+	}
 }

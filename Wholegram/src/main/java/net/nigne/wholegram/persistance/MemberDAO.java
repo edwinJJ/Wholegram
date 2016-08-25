@@ -2,6 +2,7 @@ package net.nigne.wholegram.persistance;
 
 import java.util.List;
 
+import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
 
 public interface MemberDAO {
@@ -18,4 +19,5 @@ public interface MemberDAO {
 	public List<MemberVO> getKnowablePerson( String user_id );
 	public void setDefaultProfileImage(String user_id);
 	public List<MemberVO> getRandomUser( String user_id );
+	public int getUserprofileInfo(BoardVO vo);
 }

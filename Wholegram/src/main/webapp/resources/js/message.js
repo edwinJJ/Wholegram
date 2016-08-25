@@ -270,7 +270,11 @@ function showMessage(result) {
 // WebSocket Server connection
 //var host = location.host;
 //var wsUrl = "ws://" + host + "/chat/init";   					// ws://ip:port/chat/init
-var wsUrl = "ws://localhost/chat/init"
+//var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+
+var hostname = location.hostname;							// ip
+var port = location.port;									// port
+var wsUrl = "ws://" + hostname + ":" + port + "/chat/init";	// full url
 var ws;
 
 function init() {

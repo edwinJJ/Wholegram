@@ -33,6 +33,7 @@ import net.nigne.wholegram.domain.ReplyVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.HeartService;
 import net.nigne.wholegram.service.HeartTableService;
+import net.nigne.wholegram.service.MemberService;
 import net.nigne.wholegram.service.NoticeServiceImpl;
 import net.nigne.wholegram.service.ReplyService;
 
@@ -49,6 +50,8 @@ public class BoardController {
 	private HeartTableService htService;
 	@Inject
 	private NoticeServiceImpl nService;
+	@Inject
+	private MemberService mService;
 	
 	/* 처음 게시물 리스트 보여줄 때*/ 
 	@RequestMapping(value = "", method = RequestMethod.GET)
@@ -70,29 +73,31 @@ public class BoardController {
 			//int endNum = page * 5; 
 			int startNum = ( page - 1 ) * pagePerBlock;
 			
-			// 게시글에 이미 좋아요를 누른 게시물 목록 추출 (DB -> Heart table)
-			List<HeartVO> hList = hService.getaldyList(user_id);
 			
-			// home 게시글 리스트 -> 좋아요 누른/누르지않은 게시물을 구분해서 리스트를 가져옴 (BoardVO에 좋아요 '누른/안누른'을 구분하는 변수가 존재함)
-			List<BoardVO> bList = bService.getList( hList, user_id, startNum, pagePerBlock );
-			mav.addObject("bList", bList);
+			List<HeartVO> hList = hService.getaldyList(user_id); 								// 게시글에 이미 좋아요를 누른 게시물 목록 추출 (DB -> Heart table)
+			
+			
+			List<BoardVO> bList = bService.getList( hList, user_id, startNum, pagePerBlock ); 	// home 게시글 리스트 -> 좋아요 누른/누르지않은 게시물을 구분해서 리스트를 가져옴 (BoardVO에 좋아요 '누른/안누른'을 구분하는 변수가 존재함)
+			
 
-			// home 게시글 댓글 리스트 (각 게시글에 해당되는 댓글들)
+			/* home 게시글 댓글 리스트 (각 게시글에 해당되는 댓글들) */
 			Iterator<BoardVO> biterator = bList.iterator();
 			List<ReplyVO> rList = new ArrayList<ReplyVO>();
 			List<ReplyVO> replyResult = new ArrayList<ReplyVO>();
 			while (biterator.hasNext()) {
 				BoardVO bv = new BoardVO();
 				bv = biterator.next();
-				rList = rService.getList(bv.getBoard_num()); // 각 번호에 해당되는 게시글의 댓글리스트를 가져옴
+				rList = rService.getList(bv.getBoard_num()); 									// 각 번호에 해당되는 게시글의 댓글리스트를 가져옴
 
 				Iterator<ReplyVO> riterator = rList.iterator();
 				while (riterator.hasNext()) {
 					ReplyVO rv = new ReplyVO();
 					rv = riterator.next();
-					replyResult.add(rv); // 각 번호에 해당되는 게시글의 목록을 차례로 add시킴. 
+					replyResult.add(rv); 														// 각 번호에 해당되는 게시글의 목록을 차례로 add시킴. 
 				}
 			}
+			
+			mav.addObject("bList", bList);
 			mav.addObject("replyResult", replyResult);
 			mav.setViewName("home");
 		} else {
@@ -379,23 +384,47 @@ public class BoardController {
 	}
 	
 	/* 게시물 신고 카운트 증가 */
-	   @RequestMapping( value = "/report/{board_num}", method = RequestMethod.GET )
-	   public void insertReport(@PathVariable( "board_num" ) int board_num, HttpServletResponse response, HttpServletRequest request) {
-	      HttpSession session = request.getSession();
-	      String user_id = (String) session.getAttribute("user_id");
-	
-	      if (user_id != null) {
-	         bService.report(user_id, board_num);
-	         bService.reportCount(board_num);
-	      } else {
-	         try {
-	            response.sendRedirect( "login" );
-	         } catch (IOException e) {
-	            e.printStackTrace();
-	         }
-	      }
-	   }
+	@RequestMapping(value = "/report/{board_num}", method = RequestMethod.GET)
+	public void insertReport(@PathVariable("board_num") int board_num, HttpServletResponse response,
+			HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String user_id = (String) session.getAttribute("user_id");
 
+		if (user_id != null) {
+			bService.report(user_id, board_num);
+			bService.reportCount(board_num);
+		} else {
+			try {
+				response.sendRedirect("login");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/* 게시물 삭제 */
+	@RequestMapping(value = "/{board_num}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> Board_delete(@PathVariable("board_num") Integer board_num,
+			HttpServletResponse response, HttpServletRequest request) {
+		ResponseEntity<String> entity = null;
+		HttpSession session = request.getSession();
+		if ((session.getAttribute("user_id")) != null && !(session.getAttribute("user_id").equals(""))) {
+			try {
+				bService.deleteAll(board_num);
+				entity = new ResponseEntity<>("1", HttpStatus.OK);
+			} catch (Exception e) {
+				entity = new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			try {
+				response.sendRedirect("login");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return entity;
+	}
+	   
 	public static boolean find(List<String> buf,String idx){
         boolean flag = false;
         

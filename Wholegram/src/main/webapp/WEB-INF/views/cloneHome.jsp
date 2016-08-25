@@ -6,8 +6,15 @@
 <c:forEach items="${bList}" var="bd">
 	<div id="cnt_header">
 			<a id="cnt_user_img" class="fl" href="/${bd.user_id}"> 
-			<img src="/user/getByteImage/${bd.user_id}">
-			</a>
+				<c:choose>
+					<c:when test="${bd.default_profile != 1 }">
+						<img src="/user/getByteImage/${bd.user_id}">	
+					</c:when>
+					<c:otherwise>
+						<img src="/resources/upload/user/Default.png">
+					</c:otherwise>
+				</c:choose>
+				</a>
 			<div id="cnt_header_user" class="fl">
 				<c:if test="${bd.place eq null}">
 					<a class="user" style="padding-top: 10px;" href="/${bd.user_id}">

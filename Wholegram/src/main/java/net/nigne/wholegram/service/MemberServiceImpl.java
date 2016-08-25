@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.persistance.MemberDAO;
 
@@ -141,7 +142,7 @@ public class MemberServiceImpl implements MemberService {
 		return resizeFile;
 	}
 	
-	/* 파일 용량(크기) 조절 */
+	/* 파일 용량(사이즈 크기) 조절 */
     private static BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT){
     	
 		if(IMG_WIDTH > IMG_HEIGHT) {						// 가로가 더 클 때
@@ -290,4 +291,5 @@ public class MemberServiceImpl implements MemberService {
 	public List<MemberVO> getRandomUser(String user_id) {
 		return dao.getRandomUser(user_id);
 	}
+
 }

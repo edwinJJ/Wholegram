@@ -14,6 +14,7 @@ public class BoardVO {
 	private String media_thumnail;
 	private int report;
 	
+	private int default_profile;		// 게시물 보여줄때, 유저 프로필사진이 있는지 없는지 구분하기위해 추가 (DB member테이블에 있는 컬럼)
 	
 	public int getBoard_num() {
 		return board_num;
@@ -87,4 +88,11 @@ public class BoardVO {
 	public void setReport(int report) {
 		this.report = report;
 	}
+	public int getDefault_profile() {
+		return default_profile;
+	}
+	public void setDefault_profile(int default_profile) {
+		this.default_profile = default_profile;
+	}
+	
 }
