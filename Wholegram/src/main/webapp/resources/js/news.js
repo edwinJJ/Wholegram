@@ -81,6 +81,19 @@ function makeNewsForm(result) {
 											"<img class='board_img' src='" + this.media + "' />" +
 										"</span>";
 								html +=	"<span class='notice_message2'>. . . . . .</span>";
+						} else if(this.flag == 6) {
+							if(this.default_profile == 0) {
+								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
+							} else {
+								html += "<img class='profile_notice_img' src='/resources/upload/user/Default.png' /> ";
+							}
+								html +=	"<span class='notice_message'>" + 
+											this.user_id + "님이 게시물에 회원님을 태그했습니다." + 
+										"</span>" +
+										"<span style='float:right;'>" +
+											"<img class='board_img' src='" + this.media + "' />" +
+										"</span>";
+								html +=	"<span class='notice_message2'>. . . . . .</span>";
 						}
 			html += "</div>" +
 				"</div>";

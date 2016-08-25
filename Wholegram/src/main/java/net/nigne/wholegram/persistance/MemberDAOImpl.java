@@ -97,13 +97,12 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-   public List<MemberVO> getRandomUser(String user_id) {
-      return session.selectList( namespace + ".getRandomUser", user_id );
-   }
-
+    public List<MemberVO> getRandomUser(String user_id) {
+       return session.selectList( namespace + ".getRandomUser", user_id );
+    } 
+	
 	@Override
-	public int getUserprofileInfo(BoardVO vo) {
-		String user_id = vo.getUser_id();
+	public int getUserprofileInfo(String user_id) {
 		return session.selectOne(namespace + ".getUserprofileInfo", user_id);
 	}
 }

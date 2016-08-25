@@ -35,7 +35,7 @@ public class BoardServiceImpl implements BoardService {
 		while(it_bList.hasNext()) {
 			BoardVO bv = it_bList.next();
 			
-			int default_profile = mdao.getUserprofileInfo(bv);		// 게시글 올린 유저의 프로필사진 정보 가져옴
+			int default_profile = mdao.getUserprofileInfo(bv.getUser_id());		// 게시글 올린 유저의 프로필사진 정보 가져옴
 			bv.setDefault_profile(default_profile);
 			
 			Iterator<HeartVO> it_hList = hList.iterator();
@@ -170,9 +170,14 @@ public class BoardServiceImpl implements BoardService {
 		return dao.getBoardNum(vo);
 	}
 
+	// 번호에 해당되는 게시물에 대한 정보를 가져옴
 	@Override
-    public List<BoardVO> boardList(int board_num) {
-       return dao.boardList(board_num);
+    public BoardVO boardList(int board_num) {
+       BoardVO vo =  dao.boardList(board_num);
+       
+       int default_profile = mdao.getUserprofileInfo(vo.getUser_id());	// 게시물 주인의 프로필사진 정보
+       vo.setDefault_profile(default_profile);
+       return vo;
     }
 	
 	// 게시물 신고 카운트 증가 

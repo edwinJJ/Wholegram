@@ -280,7 +280,13 @@
 	    function setFollowingList(result){ // 팔로워데이터 목록을 받아와 정렬
 	    	var temp = "";
 	    	$(result.list).each(function(){
-	    		temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'>"+this.follower+"</span><input type='radio' name='fradio' class='fradio' id='fradio' onclick='followingclick(\""+this.follower+"\")' value='"+this.follower+"'></div>"
+	    		temp += "<div class='f_list'>";
+	    		if(this.default_profile == 0) {
+	    			temp +=	"<img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/>";
+	    		} else {
+	    			temp +=	"<img id='thumbnail' src='/resources/upload/user/Default.png'/>";
+	    		}
+	    		temp += "<span class='f_text'>"+this.follower+"</span><input type='radio' name='fradio' class='fradio' id='fradio' onclick='followingclick(\""+this.follower+"\")' value='"+this.follower+"'></div>";
 	    	});
 	    	document.getElementById("follower_list").innerHTML= temp;
 	    }

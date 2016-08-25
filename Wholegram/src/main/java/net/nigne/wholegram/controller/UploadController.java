@@ -184,7 +184,9 @@ public class UploadController {
 	// 팔로잉한 유저 목록 가져오기
 	@RequestMapping(value = "/getFollowingUser", method = RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> GetFollowingAjax(HttpServletRequest request) throws Exception{
+		
 		HttpSession session = request.getSession();	
+		
 		ResponseEntity<Map<String,Object>> entity = null;
 		String user_id = (String)session.getAttribute("user_id");
 		List<FollowVO> ls = fs.getMyFollwerList(user_id);

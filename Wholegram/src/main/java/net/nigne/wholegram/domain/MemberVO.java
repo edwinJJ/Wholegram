@@ -11,6 +11,7 @@ public class MemberVO {
 	private String email;
 	private String phone;
 	private String gender;
+	private int recommend;
 	private MultipartFile user_profile;
 	private int default_profile;
 	private int follow;
@@ -70,6 +71,14 @@ public class MemberVO {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+	
+	public int getRecommend() {
+		return recommend;
+	}
+	public void setRecommend(int recommend) {
+		this.recommend = recommend;
+	}
+	
 	public MultipartFile getUser_profile() {
 		return user_profile;
 	}

@@ -268,15 +268,19 @@
          <i class="fa fa-refresh fa-3x" aria-hidden="true" id ="delete2" style="display:none" onclick="deleteButtonShow()"></i> <!-- 파일 업로드시 나타남 -->
          <video id="videotype" width="600" height="400" src="" controls>   </video>
       </div>
+      
       <!-- Modal -->
       <div class="modal fade" id="myModal" role="dialog"> <!-- Panel부분을 클릭시 나타날 사용자 입력 장소 -->
             <div class="modal-dialog modal-lg">
                <div class="modal-content">
                  <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                      <h4 class="modal-title">태그할 사용자를 입력하세요!</h4>
+                      <button type="button" class="close" data-dismiss=   "modal">&times;</button>
                  </div>
                  <div class="modal-body">
+                 <form>
+                  <div style="width:100%;height:300px;overflow:auto;border-bottom:1px solid#cfcfcf;" id="follower_list">textarea</div>
+                  </form>
+                  <h4 class="modal-title">태그할 사용자를 입력하세요!</h4>
                   <input type="hidden" id="getx">
                   <input type="hidden" id="gety">
                   <input type="text" id="tag">

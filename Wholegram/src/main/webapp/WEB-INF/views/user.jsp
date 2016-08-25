@@ -663,7 +663,7 @@
          <c:choose>
             <c:when test="${sessionId == vo.user_id}">
                <form id="FILE_FORM" method="post" enctype="multipart/form-data" action="">
-                  <input type="file" id="file1" name="file1" style="display:none;"> 
+                  <input type="file" id="upload" name="upload" style="display:none;"> 
                   <c:choose>
                         <c:when test="${vo.default_profile != 1 }">
                            <img id="profile_img" src="/user/getByteImage" onclick="profile_menu();"/>
@@ -676,7 +676,7 @@
                         <c:otherwise>               
                            <img id="profile_img" src="/resources/upload/user/Default.png" onclick="profile_menu();"/>
                            <div id="menu_list" class="w3-dropdown-content w3-card-4">
-                               <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변</a>
+                               <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
                                <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
                                <a href="#" onclick="profile_menu('cancel');">취소</a>
                            </div>

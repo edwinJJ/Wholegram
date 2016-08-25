@@ -205,32 +205,38 @@ video{
 <div id="news_box" style="display: none;"></div>
 <div id="wrapper">
    <div id="wrap">
-      <c:forEach items="${bdList}" var="bd">
          <c:choose>
-            <c:when test="${bd.media_type == 'm'}">
-               <video class="lazy fl img" src="${bd.media}" preload="metadata" controls></video>
+            <c:when test="${bdList.media_type == 'm'}">
+               <video class="lazy fl img" src="${bdList.media}" preload="metadata" controls></video>
             </c:when>
             <c:otherwise>
-               <img class="lazy fl img" id="image${bd.board_num}" src="${bd.media}">
-               <div id="tag${bd.board_num}" style="display: none">${bd.tag}</div>
-               <i id="viewpeople" class="fa fa-info-circle fa-2x" onclick="viewClick('${bd.board_num}')"></i>
+               <img class="lazy fl img" id="image${bdList.board_num}" src="${bdList.media}">
+               <div id="tag${bdList.board_num}" style="display: none">${bdList.tag}</div>
+               <i id="viewpeople" class="fa fa-info-circle fa-2x" onclick="viewClick('${bdList.board_num}')"></i>
             </c:otherwise>
          </c:choose>
                         
          <div id="contents" class="fr">
             <div id="user">
-               <img id="user_img" src="/user/getByteImage/${bd.user_id}">
-               <a href="/${bd.user_id}">${bd.user_id}</a>
+            	<c:choose>
+	            	<c:when test="${bdList.default_profile != 1 }">
+	               		<img id="user_img" src="/user/getByteImage/${bdList.user_id}">
+	               </c:when>
+					<c:otherwise>
+						<img id="user_img" src="/resources/upload/user/Default.png">
+					</c:otherwise>
+               </c:choose>
+               <a href="/${bdList.user_id}">${bdList.user_id}</a>
                <c:if test="${sessionId eq 'admin' }">
-               		<input class="fr" type="button" id="deleteBtn" onclick="deleteAll(${bd.board_num})" value="게시물삭제" />
+               		<input class="fr" type="button" id="deleteBtn" onclick="deleteAll(${bdList.board_num})" value="게시물삭제" />
                </c:if>
             </div>
                <ul id="cnt">
-                  <li id="cnt_board_heart${bd.board_num}" class="fl fwb">좋아요 ${bd.heart}개</li>
+                  <li id="cnt_board_heart${bdList.board_num}" class="fl fwb">좋아요 ${bdList.heart}개</li>
                   <li class="fr fc999">
                      <a href="#" style="display: none;"> 
                         <c:set var="toDay" value="<%=new java.util.Date() %>" /> 
-                        <fmt:parseDate var="regDate" value="${bd.reg_date}" pattern="yyyy-MM-dd HH:mm:ss" /> 
+                        <fmt:parseDate var="regDate" value="${bdList.reg_date}" pattern="yyyy-MM-dd HH:mm:ss" /> 
                         <fmt:formatDate value="${regDate}" pattern="yyyyMMddHHmmss" />
                         <fmt:parseNumber value="${toDay.time}" integerOnly="true" var="nowDays" scope="request" /> 
                         <fmt:parseNumber value="${regDate.time}" integerOnly="true" var="oldDays" scope="request" />
@@ -259,17 +265,17 @@ video{
                <ul id="cnt_board_list">
                   <li>
                      <h1 class="title">
-                        <a class="user_id fwb" href="/${bd.user_id}">${bd.user_id}</a>
-                        <span> ${bd.content}</span>
+                        <a class="user_id fwb" href="/${bdList.user_id}">${bdList.user_id}</a>
+                        <span> ${bdList.content}</span>
                      </h1>
                   </li>
-                  <li id="reply_list${bd.board_num }" class="reply_list">
+                  <li id="reply_list${bdList.board_num }" class="reply_list">
                      <c:forEach items="${replyResult}" var="rp">
-                        <c:if test="${bd.board_num == rp.board_num}">
+                        <c:if test="${bdList.board_num == rp.board_num}">
                            <a class="user_id fwb" href="/${rp.user_id }">${rp.user_id }</a>
                            <span>${rp.content}</span>
                            <c:if test="${sessionId == rp.user_id}">
-                              <input type="button" class="deleteBtn fr" value="X" onclick="deleteReply(${bd.board_num},${rp.reply_num})" />                              
+                              <input type="button" class="deleteBtn fr" value="X" onclick="deleteReply(${bdList.board_num},${rp.reply_num})" />                              
                            </c:if>
                            <br />
                         </c:if>
@@ -280,21 +286,21 @@ video{
                <div id="cnt_reply">
                   <a class="heart" href="#self"> <br /> 
                      <c:choose>
-                        <c:when test="${bd.aldy_heart}">
+                        <c:when test="${bdList.aldy_heart}">
                            <!-- 게시물에 좋아요가 눌러져있는 경우 -->
-                           <i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num})"></i>
-                           <i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num} )"></i>
+                           <i id="heart_full${bdList.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" onclick="heartCount(${bdList.board_num})"></i>
+                           <i id="heart_empty${bdList.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bdList.board_num} )"></i>
                         </c:when>
                         <c:otherwise>
                            <!-- 게시물에 좋아요가 안 눌러져있는 경우 -->
-                           <i id="heart_full${bd.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bd.board_num} )"></i>
-                           <i id="heart_empty${bd.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" onclick="heartCount(${bd.board_num} )"></i>
+                           <i id="heart_full${bdList.board_num}" class="test fa fa-heart fa-2x" aria-hidden="true" style="display: none;" onclick="heartCount(${bdList.board_num} )"></i>
+                           <i id="heart_empty${bdList.board_num}" class="test fa fa-heart-o fa-2x" aria-hidden="true" onclick="heartCount(${bdList.board_num} )"></i>
                         </c:otherwise>
                      </c:choose>
                   </a> 
-                  <input type="hidden" id="board_num" name="board_num" value="${bd.board_num}" /> 
-                  <input type="text" id="content${bd.board_num}" name="content${bd.board_num}" style="width: 214px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('${bd.board_num}', '${bd.user_id}')" placeholder="댓글달기..." /> 
-                  <a href="#self" onclick="openPopup(${bd.board_num})"> 
+                  <input type="hidden" id="board_num" name="board_num" value="${bdList.board_num}" /> 
+                  <input type="text" id="content${bdList.board_num}" name="content${bdList.board_num}" style="width: 214px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('${bdList.board_num}', '${bdList.user_id}')" placeholder="댓글달기..." /> 
+                  <a href="#self" onclick="openPopup(${bdList.board_num})"> 
                      <i class="fa fa-ellipsis-h fa-2x fr" style="color: #bfbfbf;" aria-hidden="true"></i>
                   </a>
                </div>
@@ -302,15 +308,14 @@ video{
             
             <!-- option 메뉴 팝업 -->
                   <div id="popup_wrap">
-                     <div id="popupLayer${bd.board_num}" class="popupLayer">
+                     <div id="popupLayer${bdList.board_num}" class="popupLayer">
                         <div class="bg"></div>
                         <ul id="popupContents">
-                           <li><a href="#self">다운로드${bd.board_num}</a></li>
-                           <li><a href="#self" onclick="closePopup(${bd.board_num})">취소</a></li>
+                           <li><a href="#self">다운로드${bdList.board_num}</a></li>
+                           <li><a href="#self" onclick="closePopup(${bdList.board_num})">취소</a></li>
                         </ul>
                      </div>
                   </div>
-      </c:forEach>
    </div>
 </div>
 

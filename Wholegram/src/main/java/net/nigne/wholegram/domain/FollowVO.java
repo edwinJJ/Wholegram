@@ -1,11 +1,13 @@
 package net.nigne.wholegram.domain;
 
 public class FollowVO {
-	int follow_num;
-	String following;
-	String follower;
-	int flag;
-	String reg_date;
+	private int follow_num;
+	private String following;
+	private String follower;
+	private int flag;
+	private String reg_date;
+	
+	private int default_profile; 
 	
 	public int getFollow_num() {
 		return follow_num;
@@ -36,6 +38,12 @@ public class FollowVO {
 	}
 	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
+	}
+	public int getDefault_profile() {
+		return default_profile;
+	}
+	public void setDefault_profile(int default_profile) {
+		this.default_profile = default_profile;
 	}
 	
 }

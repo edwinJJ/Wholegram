@@ -93,7 +93,6 @@ public class BoardDAOImpl implements BoardDAO {
 	@Override
 	public void BoardUP(BoardVO vo) {
 		session.insert(namespace2 +".Boardup", vo);
-		
 	}
 
 	@Override
@@ -147,8 +146,8 @@ public class BoardDAOImpl implements BoardDAO {
 	}
 
 	@Override
-    public List<BoardVO> boardList(int board_num) {
-       return session.selectList( namespace + ".boardList", board_num );
+    public BoardVO boardList(int board_num) {
+       return session.selectOne( namespace + ".boardList", board_num );
     }
 	
 	@Override

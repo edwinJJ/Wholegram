@@ -114,18 +114,12 @@ public class AdminController {
 		model.addAttribute( "sessionId", user_id );
 
 		if(user_id != null) {
-			List<BoardVO> bdList = bService.boardList(board_num);
-			mav.addObject("bdList", bdList);
+			BoardVO bdList = bService.boardList(board_num);		// 번호에 해당되는 게시물에대한 정보
 			
-			// 해당 게시물의 댓글 리스트
-			Iterator<BoardVO> biterator = bdList.iterator();
 			List<ReplyVO> rList = new ArrayList<ReplyVO>();
-			while (biterator.hasNext()) {
-				BoardVO bv = new BoardVO();
-				bv = biterator.next();
-				rList = rpService.getList(bv.getBoard_num()); // 각 번호에 해당되는 게시글의 댓글리스트를 가져옴
-				
-			}
+			rList = rpService.getList(bdList.getBoard_num());	// 게시물에대한 댓글리스트를 가져옴
+			
+			mav.addObject("bdList", bdList);
 			mav.addObject("replyResult", rList);
 			mav.setViewName("detail");	
 		} else {

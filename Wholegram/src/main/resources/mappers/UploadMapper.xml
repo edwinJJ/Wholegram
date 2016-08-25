@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="net.nigne.wholegram.mapper.UploadMapper">
+<mapper namespace="net.nigne.wholegram.mappers.UploadMapper">
 	
 	<insert id="Boardup" >
 		insert into board(user_id,content,media,place,media_type,tag,media_thumnail) values(#{user_id},#{content},#{media},#{place},#{media_type},#{tag},#{media_thumnail})
