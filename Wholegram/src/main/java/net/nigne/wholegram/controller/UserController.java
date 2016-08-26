@@ -331,7 +331,7 @@ public class UserController {
 		if (itr.hasNext()) {
 			
 			MultipartFile mpf = request.getFile(itr.next());						// 파일 추출
-			if(mpf.getSize() > 10000000) {											// 10M 이상일 경우 업로드 거부
+			if(mpf.getSize() > 5000000) {											// 10M 이상일 경우 업로드 거부
 				return null;
 			}
 			resizeFile = service.reSizeProfileImg(mpf);

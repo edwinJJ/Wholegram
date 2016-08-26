@@ -17,7 +17,7 @@
 		select count(*) from member where email = #{email}
 	</select>
 	<update id="updateUser">
-		update Member
+		update member
 		<set>
 			<if test="user_id != null">
 				user_id = #{user_id},
@@ -35,7 +35,7 @@
 		select passwd from member where mem_no = #{mem_no}
 	</select>
 	<update id="updatePasswd">
-		update Member
+		update member
 		<set>
 			passwd = #{passwd}
 		</set>

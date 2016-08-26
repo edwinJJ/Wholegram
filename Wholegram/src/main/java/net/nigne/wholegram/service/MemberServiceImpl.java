@@ -103,31 +103,33 @@ public class MemberServiceImpl implements MemberService {
 		byte[] resizeFile = null;
 		
 		/* 1. How to convert MultipartFile to File */
-		File convFile = convert(mpf);
+		//File convFile = convert(mpf);
 		
 		/* 2. How to convert MultipartFile to File */
 		//File convFile = multipartToFile(mpf);
 		
 		try{
-			BufferedImage originalImage = ImageIO.read(convFile);
+			//BufferedImage originalImage = ImageIO.read(convFile); --> MartipartFile을 File로 변환시킨후, ImageIO.read()로 읽어들여서 BufferedImage에 넣는 방법.
+			BufferedImage originalImage = ImageIO.read(mpf.getInputStream()); // --> MartipartFile에서 File로 변환하는 과정없이 진행하는 방법.
+
 			int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 			
 	    	int IMG_WIDTH = originalImage.getWidth();
 	    	int IMG_HEIGHT = originalImage.getHeight();
 			
-			if((IMG_WIDTH > 1000) && (IMG_HEIGHT > 1000) && (convFile.length() > 500000)) {	// 용량이 500KB이상일 경우 resize 해준다.
-
+			//if((IMG_WIDTH > 1000) && (IMG_HEIGHT > 1000) && (convFile.length() > 500000)) {	// 용량이 500KB이상일 경우 resize 해준다. (파일로 변환 시켜서 BufferedImage에 넣었을 경우)
+			if((IMG_WIDTH > 1000) && (IMG_HEIGHT > 1000) && (mpf.getSize() > 500000)) {			// 용량이 500KB이상일 경우 resize 해준다. (파일로 변환없이 BufferedImage 넣었을경우)
 				BufferedImage resizeImageJpg = resizeImage(originalImage, type, IMG_WIDTH, IMG_HEIGHT);
-				ImageIO.write(resizeImageJpg, "jpg", convFile); 
+				//ImageIO.write(resizeImageJpg, "jpg", convFile); 
 					
 				BufferedImage resizeImagePng = resizeImage(originalImage, type, IMG_WIDTH, IMG_HEIGHT);
-				ImageIO.write(resizeImagePng, "png", convFile); 
+				//ImageIO.write(resizeImagePng, "png", convFile); 
 					
 				BufferedImage resizeImageHintJpg = resizeImageWithHint(originalImage, type, IMG_WIDTH, IMG_HEIGHT);
-				ImageIO.write(resizeImageHintJpg, "jpg", convFile); 
+				//ImageIO.write(resizeImageHintJpg, "jpg", convFile); 
 					
 				BufferedImage resizeImageHintPng = resizeImageWithHint(originalImage, type, IMG_WIDTH, IMG_HEIGHT);
-				ImageIO.write(resizeImageHintPng, "png", convFile); 
+				//ImageIO.write(resizeImageHintPng, "png", convFile); 
 				
 				System.out.println("수정 가로 : " + resizeImageJpg.getWidth());
 				System.out.println("수정 높이 : " + resizeImageJpg.getHeight());
