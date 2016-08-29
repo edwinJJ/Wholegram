@@ -609,7 +609,7 @@
 		});
  
  		/* 프로필 이미지 클릭 메뉴 */
-	 	function profile_menu(flag) {
+	 	function profile_menu(flag, flag2) {
 		    var x = document.getElementById("menu_list");
 		    if (x.className.indexOf("w3-show") == -1) {
 		        x.className += " w3-show";
@@ -617,6 +617,11 @@
 		    	x.className = x.className.replace(" w3-show", "");
 		    } else {
 		        x.className = x.className.replace(" w3-show", "");
+		    }
+		    
+		    if(flag2 != undefined) {
+		    	var upload = document.getElementById("upload");
+		    	upload.click();
 		    }
 		}
 	 	
@@ -668,7 +673,7 @@
                         <c:when test="${vo.default_profile != 1 }">
                            <img id="profile_img" src="/user/getByteImage" onclick="profile_menu();"/>
                            <div id="menu_list" class="w3-dropdown-content w3-card-4">
-                               <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
+                               <a href="#" onclick="profile_menu('cancel', 'click');">프로필 사진 변경</a>
                                <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
                                <a href="#" onclick="profile_menu('cancel');">취소</a>
                            </div>
@@ -676,7 +681,7 @@
                         <c:otherwise>               
                            <img id="profile_img" src="/resources/upload/user/Default.png" onclick="profile_menu();"/>
                            <div id="menu_list" class="w3-dropdown-content w3-card-4">
-                               <a href="#" onclick="profile_menu('cancel'); upload.click();">프로필 사진 변경</a>
+                               <a href="#" onclick="profile_menu('cancel', 'click');">프로필 사진 변경</a>
                                <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
                                <a href="#" onclick="profile_menu('cancel');">취소</a>
                            </div>
@@ -685,7 +690,14 @@
                   </form>
             </c:when>
             <c:otherwise>
-                  <img id="profile_img" src="/user/getByteImage/${vo.user_id}"/>
+            	<c:choose>
+	            	<c:when test="${vo.default_profile != 1 }">
+	            		<img id="profile_img" src="/user/getByteImage"/>
+	            	</c:when>
+	            	<c:otherwise>
+		            	<img id="profile_img" src="/resources/upload/user/Default.png"/>
+	            	</c:otherwise>
+            	</c:choose>
             </c:otherwise>
          </c:choose>
       </div>
@@ -835,7 +847,6 @@
 				<div id="popupLayer" class="popupLayer">
 					<div class="bg"></div>
 					<ul id="popupContents">
-						<li><a href="#" id="">부적절한 콘텐츠 신고</a></li>
 						<c:choose>
 							<c:when test="${sessionId == vo.user_id}">
 								<li><a id="delete" href="#" id="">삭제</a></li>

@@ -226,9 +226,9 @@ public class UploadController {
 		}
 		
 		if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 ){
-			PATH ="/home/pi/upload/";
+			PATH ="/home/test/upload/";
 			URLPATH="/resources/upload/";
-			destination="/home/pi/upload/video_thumnail/";
+			destination="/home/test/upload/video_thumnail/";
 			File video = new File(PATH+"video");
 			File image = new File(PATH+"image");
 			File videoThumnail = new File(PATH+"video_thumnail");
