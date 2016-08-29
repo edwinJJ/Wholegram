@@ -381,13 +381,16 @@ public class BoardController {
 	/* 게시물 신고 카운트 증가 */
 	@RequestMapping(value = "/report/{board_num}", method = RequestMethod.GET)
 	public void insertReport(@PathVariable("board_num") int board_num, HttpServletResponse response,
-			HttpServletRequest request) {
+		HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
 
 		if (user_id != null) {
-			bService.report(user_id, board_num);
-			bService.reportCount(board_num);
+			
+			//bService.checkReport(); 게시물 신고 등록or삭제 여부 결정
+			
+			bService.report(user_id, board_num);	// 게시물 신고 Notice테이블에 등록
+			bService.reportCount(board_num);		// 게시물 신고 카운트 증가
 		} else {
 			try {
 				response.sendRedirect("login");

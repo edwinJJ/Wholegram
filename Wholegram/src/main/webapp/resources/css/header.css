@@ -13,6 +13,10 @@
 	margin-top: -5px;
 	float: left;
 }
+.header-logo_img{
+	width:180px;
+	height:40px;
+}
 #header-search {
 	padding-left: 11%;
 }
