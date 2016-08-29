@@ -89,16 +89,16 @@ public class UploadController {
 		String temp=test;
 		List<String> ls = new ArrayList<String>();
 		List<String> compare = new ArrayList<String>();
-		osSetting(OS);												//OS를 불러와서 OS에 맞게 경로 셋팅및 폴더가 없을 경우 생성
+		osSetting(OS);														  //OS를 불러와서 OS에 맞게 경로 셋팅및 폴더가 없을 경우 생성
 		String user_id = (String)session.getAttribute("user_id");
 		try{
-			String rsq = param.get("dataurl").toString(); // json에서 dataurl값을 String으로 불러옴
+			String rsq = param.get("dataurl").toString(); 					  // json에서 dataurl값을 String으로 불러옴
 			String type = rsq.substring(rsq.indexOf("/")+1,rsq.indexOf(";")); // dataurl에서 타입을 따로 불러옴
 			uploadPath = createUploadPath(type);
 			System.out.println(uploadPath);
 			byte[] imagedata = DatatypeConverter.parseBase64Binary(rsq.substring(rsq.indexOf(",") + 1)); // dataurl에서 data부분을 byte로 변환
-			UUID uid = UUID.randomUUID(); // 랜덤으로 파일이름 생성
-			Path path = Paths.get(PATH+uploadPath+uid+"."+type); // 저장경로 지정
+			UUID uid = UUID.randomUUID(); 									  // 랜덤으로 파일이름 생성
+			Path path = Paths.get(PATH+uploadPath+uid+"."+type); 			  // 저장경로 지정
 			
 			if(param.get("content").toString().indexOf("@")!=-1 || param.get("content").toString().indexOf("#")!=-1){ //@와 #가 있을시 알맞게 처리
 				test =param.get("content").toString();
@@ -107,7 +107,7 @@ public class UploadController {
 				temp=test;
  				for(String s:test2){
 					if(s.indexOf("@")!=-1 || s.indexOf("#")!=-1){
-						if(!find(compare,s)){ // 같은 단어가 있을시 처리 방지 
+						if(!find(compare,s)){ 								  // 같은 단어가 있을시 처리 방지 
 							System.out.println(s);
 							System.out.println(find(compare,s));
 							if(s.indexOf("@")!=-1 ){
