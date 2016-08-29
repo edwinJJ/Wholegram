@@ -461,9 +461,10 @@
 	.fl {
 	   float: left;
 	}
-    </style>
+	i[id^='heart_full'] {
+		color: red;
+	}
 
-   <style>
       @media all and (max-width: 575px) {
          #profile_intro_scope2{ width: 300px;}
       }
@@ -516,6 +517,7 @@
          #gender_img {
          	display:none;
          }
+         
       }
       @media all and (min-width: 769px) and (max-width: 1200px){
          #container{
@@ -638,7 +640,7 @@
 				dataType:'text',
 				success : function(result) {
 					alert("프로필 사진을 기본으로 변경하였습니다.")
-					document.getElementById("profile_img").src = "/resources/upload/user/Default.png";		// 프로필 이미지를 Default로 변경
+					document.getElementById("profile_img").src = "/resources/Image/Default.png";		// 프로필 이미지를 Default로 변경
 				},
 				error : function(result){
 					alert("error : " + result);
@@ -679,7 +681,7 @@
                            </div>
                         </c:when>
                         <c:otherwise>               
-                           <img id="profile_img" src="/resources/upload/user/Default.png" onclick="profile_menu();"/>
+                           <img id="profile_img" src="/resources/Image/Default.png" onclick="profile_menu();"/>
                            <div id="menu_list" class="w3-dropdown-content w3-card-4">
                                <a href="#" onclick="profile_menu('cancel', 'click');">프로필 사진 변경</a>
                                <a href="#" onclick="profile_menu('cancel'); defaultSet();">기본 이미지</a>
@@ -692,10 +694,10 @@
             <c:otherwise>
             	<c:choose>
 	            	<c:when test="${vo.default_profile != 1 }">
-	            		<img id="profile_img" src="/user/getByteImage"/>
+	            		<img id="profile_img" src="/user/getByteImage/${vo.user_id }"/>
 	            	</c:when>
 	            	<c:otherwise>
-		            	<img id="profile_img" src="/resources/upload/user/Default.png"/>
+		            	<img id="profile_img" src="/resources/Image/Default.png"/>
 	            	</c:otherwise>
             	</c:choose>
             </c:otherwise>
@@ -726,10 +728,10 @@
          <span id="profile_name">${vo.user_name }</span><br/>
          <c:choose>
             <c:when test="${vo.gender == 'm'}">
-               <img id="gender_img" src="/resources/upload/user/man.jpg"/><br/>
+               <img id="gender_img" src="/resources/Image/man.jpg"/><br/>
             </c:when>
             <c:when test="${vo.gender == 'w'}">
-               <img id="gender_img" src="/resources/upload/user/woman.jpg"/><br/>
+               <img id="gender_img" src="/resources/Image/woman.jpg"/><br/>
             </c:when>
          </c:choose>
          <div id="profile_intro_scope">
@@ -738,10 +740,10 @@
          <span id="profile_name2">${vo.user_name }</span><br/>
          <c:choose>
             <c:when test="${vo.gender == 'm'}">
-               <img id="gender_img2" src="/resources/upload/user/man.jpg"/><br/>
+               <img id="gender_img2" src="/resources/Image/man.jpg"/><br/>
             </c:when>
             <c:when test="${vo.gender == 'w'}">
-               <img id="gender_img2" src="/resources/upload/user/woman.jpg"/><br/>
+               <img id="gender_img2" src="/resources/Image/woman.jpg"/><br/>
             </c:when>
          </c:choose>
          <div id="profile_intro_scope2">
@@ -847,6 +849,7 @@
 				<div id="popupLayer" class="popupLayer">
 					<div class="bg"></div>
 					<ul id="popupContents">
+						<li><a href="#self" onclick="insertReport(${bd.board_num})">부적절한 콘텐츠 신고</a></li>
 						<c:choose>
 							<c:when test="${sessionId == vo.user_id}">
 								<li><a id="delete" href="#" id="">삭제</a></li>
@@ -891,6 +894,7 @@
 				}); 
 			}
 		}
+		
 		function unfollowClick(idx1,idx2){
 			if(sessionId != ""){
 				 $.ajax({
@@ -910,6 +914,7 @@
 				}); 
 			}
 		}
+		
 	    function setFollowList(result){ // 팔로우show에서 받아온 데이터를 알맞게 정렬함
 	    	var temp = "";
 	    	$(result.list).each(function(){
@@ -924,6 +929,7 @@
     		});
 	    	document.getElementById("body-container").innerHTML= temp;
 	    }
+	    
 	    function unfollowingClick(follower,idx2){ // 언팔로우 할때 처리
 	    	 $.ajax({
 					type : 'GET',
@@ -941,6 +947,7 @@
 					}
 				}); 
 	    }
+	    
 	    function followingClick(follower){ // 팔로잉 할떄 처리
 	    	 $.ajax({
 					type : 'GET',
@@ -958,20 +965,30 @@
 					}
 				});  
 	    }
+	    
 	    function setFollowingList(result){ // 팔로잉show에서 받아온 데이터를 알맞게 정렬함
 	    	var temp = "";
 	    	$(result.list).each(function(){
 	    		if(this.follower != sessionId)
 	    			if( this.following == sessionId){
-	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='following' id='following"+this.follower+"' onclick='unfollowingClick(\""+this.follower+"\")' value='팔로잉'></div>";
+	    				if(this.default_profile != 1) {
+	    					temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='following' id='following"+this.follower+"' onclick='unfollowingClick(\""+this.follower+"\")' value='팔로잉'></div>";
+	    				} else {
+	    					temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='following' id='following"+this.follower+"' onclick='unfollowingClick(\""+this.follower+"\")' value='팔로잉'></div>";	    					
+	    				}
 	    			}else{
-	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='follow' id='follow"+this.follower+"' onclick='followingClick(\""+this.follower+"\")' value='팔로우'></div>";
+	    				if(this.default_profile != 1) {
+	    					temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='follow' id='follow"+this.follower+"' onclick='followingClick(\""+this.follower+"\")' value='팔로우'></div>";
+	    				} else {
+	    					temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='follow' id='follow"+this.follower+"' onclick='followingClick(\""+this.follower+"\")' value='팔로우'></div>";
+	    				}
 	    			}
 	    		else
 	    			temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span></div>";
 	    	});
 	    	document.getElementById("body-container").innerHTML= temp;
 	    }
+	    
 		function followerShow(){ // 팔로워 목록을 불러옴
 			$('#myModal2').modal('show'); // show the modal
 			$('#headerText').text("Follower");
@@ -999,7 +1016,6 @@
                 dataType: 'json',
                 contentType : 'application/json; charset=utf-8',
 	    	    success: function(result) {
-	    	    	console.log(result.list);
 	    	    	setFollowingList(result);
 	    	    },
 	    	    error:function(request,status,error){
@@ -1007,9 +1023,11 @@
 	    	    }
 	    	});
 		}
+		
 		function getBoardCount(){
 			return frm.bn.length;
 		}
+		
 		function ondelete(bno){
 			$.ajax({
 				type : 'delete',
@@ -1030,16 +1048,19 @@
 				}	
 			});
 		}
+		
 		function openPopup( bno ) {
 			var popup = document.getElementById("popupLayer"); 
 			$("#delete").attr("onclick","javascript:ondelete("+bno+")");
 			$(popup).fadeIn();
 		}
+		
 		function closePopup() {
 			var popup = document.getElementById("popupLayer");     
 			$(popup).fadeOut();
 			      
 		}
+		
 		function deleteReply( bno, rno ) {
 			$.ajax({
 				type : 'delete',
@@ -1062,6 +1083,7 @@
 		function viewclick(){
 			$("#tag").toggle();
 		}
+		
 		function insertReply( bno, uid ) {
 			var reply_content = $("#content"+bno).val();
 			var url = "/board/"+ bno +"/" + reply_content + "/" + uid;

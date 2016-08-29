@@ -284,7 +284,7 @@
 	    		if(this.default_profile == 0) {
 	    			temp +=	"<img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/>";
 	    		} else {
-	    			temp +=	"<img id='thumbnail' src='/resources/upload/user/Default.png'/>";
+	    			temp +=	"<img id='thumbnail' src='/resources/Image/Default.png'/>";
 	    		}
 	    		temp += "<span class='f_text'>"+this.follower+"</span><input type='radio' name='fradio' class='fradio' id='fradio' onclick='followingclick(\""+this.follower+"\")' value='"+this.follower+"'></div>";
 	    	});

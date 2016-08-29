@@ -186,4 +186,22 @@ public class BoardDAOImpl implements BoardDAO {
 		System.out.println("b");
 		session.delete( namespace + ".delete", board_num ); // Board
 	}
+
+	@Override
+	public void reportDelete(String user_id, int board_num) {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("user_id", user_id);
+		data.put("board_num", board_num);
+		session.delete(namespace4 + ".reportDelete", data);
+	}
+
+	@Override
+	public void reportDecrease(int board_num) {
+		Map<String, Integer> data = new HashMap<String, Integer>();
+		
+		data.put("board_num", board_num);
+		data.put("decrease", -1);
+		session.update(namespace + ".reportDecrease", data);
+	}
+
 }

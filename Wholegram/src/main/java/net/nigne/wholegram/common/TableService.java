@@ -1,14 +1,12 @@
-package net.nigne.wholegram.service;
+package net.nigne.wholegram.common;
 
 import org.springframework.stereotype.Service;
 
-import net.nigne.wholegram.common.Status;
-
 @Service
-public class HeartTableService {
+public class TableService {
 
 	/* HeartTable에 추가 시킬지 여부 결정 */
-	public Status HeartTableStatus(int getColumn) {
+	public Status TableStatus(int getColumn) {
 		Status status = new Status();
 		if(getColumn == 0) {
 			status.setStatus(true);

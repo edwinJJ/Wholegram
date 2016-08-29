@@ -110,4 +110,8 @@
    <delete id="delete">
       delete from board where board_num = #{board_num}
    </delete>
+   
+   <update id="reportDecrease">
+   		update board set report = report + #{decrease} where board_num = #{board_num}
+	</update>
 </mapper>

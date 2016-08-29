@@ -219,8 +219,9 @@ public class UserController {
 	/*프로필 전체 업데이트*/
 	@RequestMapping(value = "/update_user", method = RequestMethod.POST)
 	public ModelAndView update_user(MemberVO vo, Model model, HttpServletRequest request) {
-		service.updateUser(vo);
-		HttpSession session = request.getSession();
+		service.updateUser(vo); // 유저 개인정보 업데이트
+/*		fservice				// 팔로우 테이블의 f
+*/		HttpSession session = request.getSession();
 		session.setAttribute("user_id", vo.getUser_id());
 		return new ModelAndView("redirect:/user/update_form");
 	}

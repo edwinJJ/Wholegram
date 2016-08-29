@@ -23,7 +23,7 @@ function makeNewsForm(result) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
 							} else {
-								html += "<img class='profile_notice_img' src='/resources/upload/user/Default.png' /> ";
+								html += "<img class='profile_notice_img' src='/resources/Image/Default.png' /> ";
 							}
 								html +=	"<span class='notice_message'>" +
 											this.user_id + "님이 회원님을 팔로우하기 시작했습니다."; +
@@ -33,7 +33,7 @@ function makeNewsForm(result) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
 							} else {
-								html += "<img class='profile_notice_img' src='/resources/upload/user/Default.png' /> ";
+								html += "<img class='profile_notice_img' src='/resources/Image/Default.png' /> ";
 							}
 								html +=	"<span class='notice_message'>" + 
 											this.user_id + "님이 회원님의 사진을 좋아합니다." +
@@ -46,7 +46,7 @@ function makeNewsForm(result) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
 							} else {
-								html += "<img class='profile_notice_img' src='/resources/upload/user/Default.png' /> ";
+								html += "<img class='profile_notice_img' src='/resources/Image/Default.png' /> ";
 							}
 								html +=	"<span class='notice_message'>" +
 											this.user_id + "님이 댓글을 남겼습니다." +
@@ -59,7 +59,7 @@ function makeNewsForm(result) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
 							} else {
-								html += "<img class='profile_notice_img' src='/resources/upload/user/Default.png' /> ";
+								html += "<img class='profile_notice_img' src='/resources/Image/Default.png' /> ";
 							}
 								html +=	"<span class='notice_message'>" +
 											this.user_id + "님이 게시글에서 회원님을 언급했습니다." +
@@ -72,7 +72,7 @@ function makeNewsForm(result) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
 							} else {
-								html += "<img class='profile_notice_img' src='/resources/upload/user/Default.png' /> ";
+								html += "<img class='profile_notice_img' src='/resources/Image/Default.png' /> ";
 							}
 								html +=	"<span class='notice_message'>" + 
 											this.user_id + "님이 댓글에서 회원님을 언급했습니다." + 
@@ -85,7 +85,7 @@ function makeNewsForm(result) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
 							} else {
-								html += "<img class='profile_notice_img' src='/resources/upload/user/Default.png' /> ";
+								html += "<img class='profile_notice_img' src='/resources/Image/Default.png' /> ";
 							}
 								html +=	"<span class='notice_message'>" + 
 											this.user_id + "님이 게시물에 회원님을 태그했습니다." + 

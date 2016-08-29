@@ -219,7 +219,7 @@
 					if(this.default_profile != 1) {
 						html += 	"<img class='user_img' src='/user/getByteImage/" +  this.user_id + "' style='float:left;'>";
 					} else {
-						html +=		"<img class='user_img' src='/resources/upload/user/Default.png' style='float:left;'>";
+						html +=		"<img class='user_img' src='/resources/Image/Default.png' style='float:left;'>";
 					}
 						html +=		"<div class='user_nm' style='float:left;'>" + this.user_id + "</div>"
 					+				"<input type='checkbox' name='fancy-checkbox-success" + identify_count + "' id='fancy-checkbox-success" + identify_count +"' autocomplete='off' value='" + this.user_id + "' onclick='addReceive(this)'/>"

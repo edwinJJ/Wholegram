@@ -58,7 +58,7 @@ public class FollowServiceImpl implements FollowService {
 	public List<FollowVO> getMyFollwerList(String user_id) {
 		List<FollowVO> result = new ArrayList<FollowVO>();
 		
-		List<FollowVO> lfvo = dao.getMyFollowerList(user_id);	// 유저가 팔로우하고있는 유저list
+		List<FollowVO> lfvo = dao.getMyFollowerList(user_id);					// 유저가 팔로우하고있는 유저list
 		Iterator<FollowVO> extract = lfvo.iterator();
 		while(extract.hasNext()){
 			FollowVO fvo = new FollowVO();

@@ -26,16 +26,17 @@ import org.springframework.web.servlet.ModelAndView;
 import net.nigne.wholegram.common.Criteria;
 import net.nigne.wholegram.common.DebugStream;
 import net.nigne.wholegram.common.Status;
+import net.nigne.wholegram.common.TableService;
 import net.nigne.wholegram.domain.BoardVO;
 import net.nigne.wholegram.domain.HeartVO;
 import net.nigne.wholegram.domain.PageMaker;
 import net.nigne.wholegram.domain.ReplyVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.HeartService;
-import net.nigne.wholegram.service.HeartTableService;
 import net.nigne.wholegram.service.MemberService;
 import net.nigne.wholegram.service.NoticeServiceImpl;
 import net.nigne.wholegram.service.ReplyService;
+import net.nigne.wholegram.service.ReportService;
 
 @Controller
 @RequestMapping("/board")
@@ -47,11 +48,13 @@ public class BoardController {
 	@Inject
 	private HeartService hService;
 	@Inject
-	private HeartTableService htService;
+	private TableService tService;
 	@Inject
 	private NoticeServiceImpl nService;
 	@Inject
 	private MemberService mService;
+	@Inject
+	private ReportService rptService;
 	
 	/* 처음 게시물 리스트 보여줄 때*/ 
 	@RequestMapping(value = "", method = RequestMethod.GET)
@@ -272,6 +275,7 @@ public class BoardController {
 	            entity = new ResponseEntity<>( map, HttpStatus.OK);
 	         } catch (Exception e) {
 	            entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	            e.printStackTrace();
 	         }
 	      } else {
 	         try {
@@ -323,19 +327,20 @@ public class BoardController {
 			try {
 				
 				// heart 테이블에 추가할지 결정 (좋아요 증/감 여부 결정)
-				Status HeartTableStatus = htService.HeartTableStatus(hService.checkHeart(user_id, board_num));
+				Status TableStatus = tService.TableStatus(hService.checkHeart(user_id, board_num));
 				HeartVO hv = new HeartVO();
 				hv.setBoard_num(board_num);
 				hv.setUser_id(user_id);
 
 				// Heart테이블 (추가 or 제거) & 게시물 좋아요 (증 감) 
-				if(HeartTableStatus.isSuccess()) {
-					hService.insertHeart(hv);
-					bService.heartCount(board_num, 1);
+				if(TableStatus.isSuccess()) {								// 게시물 좋아요 가능
+					hService.insertHeart(hv);								// HeartTable에 등록
+					bService.heartCount(board_num, 1);						// 게시물 좋아요수 + 1
 					nService.insertNoticeHeart(user_id, board_num, 2);		// 좋아요 누름 알림 표시 띄우기
-				} else {
-					hService.deleteHeart(hv);
-					bService.heartCount(board_num, -1);
+					
+				} else {													// 게시물 좋아요 불가능 (이미 누 른상태일 경우)
+					hService.deleteHeart(hv);								// HeartTable에서 제거
+					bService.heartCount(board_num, -1);						// 게시물 좋아요수 - 1
 					nService.deleteNoticeHeart(user_id, board_num);			// 좋아요 누름 알림 표시 지우기
 				}
 				int heart = bService.getHeart(board_num);
@@ -380,17 +385,32 @@ public class BoardController {
 	
 	/* 게시물 신고 카운트 증가 */
 	@RequestMapping(value = "/report/{board_num}", method = RequestMethod.GET)
-	public void insertReport(@PathVariable("board_num") int board_num, HttpServletResponse response,
-		HttpServletRequest request) {
+	public ResponseEntity<String> insertReport(@PathVariable("board_num") int board_num, HttpServletResponse response, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
 
+		ResponseEntity<String> entity = null;
+		
 		if (user_id != null) {
 			
-			//bService.checkReport(); 게시물 신고 등록or삭제 여부 결정
-			
-			bService.report(user_id, board_num);	// 게시물 신고 Notice테이블에 등록
-			bService.reportCount(board_num);		// 게시물 신고 카운트 증가
+			try {
+				Status TableStatus = tService.TableStatus(rptService.checkReport(user_id, board_num)); // 게시물 신고 등록 or 삭제 여부 결정
+				
+				/*report테이블 (추가 or 제거) & 게시물 신고수 (증 감) */
+				if(TableStatus.isSuccess()) {					// 게시물 신고 할 때
+					bService.report(user_id, board_num);		// 게시물 신고 Notice테이블에 등록
+					bService.reportCount(board_num);			// 게시물 신고 카운트 증가
+					entity = new ResponseEntity<>( "INCREASE", HttpStatus.OK );
+					
+				} else {										// 이미 신고한 게시물일 때
+					bService.reportDelete(user_id, board_num);	// 게시물 신고 Notice테이블에서 제거
+					bService.reportDecrease(board_num);			// 게시물 신고 카운트 감소
+					entity = new ResponseEntity<>( "DECREASE", HttpStatus.OK );
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
 		} else {
 			try {
 				response.sendRedirect("login");
@@ -398,6 +418,8 @@ public class BoardController {
 				e.printStackTrace();
 			}
 		}
+		
+		return entity;
 	}
 
 	/* 게시물 삭제 */

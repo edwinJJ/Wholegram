@@ -24,4 +24,9 @@ public class ReportServiceImpl implements ReportService {
 		return dao.getList();
 	}
 
+    // 이미 신고한 게시물인지 확인
+	@Override
+	public int checkReport(String user_id, int board_num) {
+		return dao.checkReport(user_id, board_num);
+	}
 }

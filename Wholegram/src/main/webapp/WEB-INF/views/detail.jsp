@@ -223,7 +223,7 @@ video{
 	               		<img id="user_img" src="/user/getByteImage/${bdList.user_id}">
 	               </c:when>
 					<c:otherwise>
-						<img id="user_img" src="/resources/upload/user/Default.png">
+						<img id="user_img" src="/resources/Image/Default.png">
 					</c:otherwise>
                </c:choose>
                <a href="/${bdList.user_id}">${bdList.user_id}</a>

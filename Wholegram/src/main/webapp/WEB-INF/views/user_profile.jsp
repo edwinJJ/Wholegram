@@ -101,6 +101,7 @@
 				alert("모든 항목을 체크해주세요");
 			}
 		}
+		
 		/* Id 중복체크 */
 		function id_chk() {
 			var id = document.getElementById("user_id").value;
@@ -139,12 +140,17 @@
 <body>
 <!-- 상단의 head 부분 -->
 <%@include file="./header.jsp" %>
+
+<!-- 뉴스(소식)  -->
+<div id="news_box" style="display: none;"></div>
+
 <div style="background: #F8F8F8;">　
 	<div class="scope">
 		<div class="w3-third menu">
 			<ul class="w3-ul w3-border w3-center w3-hover-shadow">
 				<li class="w3-padding-16"><a href="/user/update_form" style="text-decoration: none;">프로필 편집</a></li>
 				<li class="w3-padding-16"><a href="/user/passwd_form" style="text-decoration: none;">비밀번호 변경</a></li>
+				<li class="w3-padding-16"><a href="/user/passwd_singout" style="text-decoration: none;">회원탈퇴</a></li>
 			</ul>
 		</div>
 		<div class="w3-third menu_content">
@@ -156,7 +162,7 @@
 							<p class="w3-center"><img src="/user/getByteImage" class="w3-circle" style="height: 106px; width: 106px"></p>
 						</c:when>
 						<c:otherwise>
-							<p class="w3-center"><img src="/resources/upload/user/Default.png" class="w3-circle" style="height: 106px; width: 106px"></p>
+							<p class="w3-center"><img src="/resources/Image/Default.png" class="w3-circle" style="height: 106px; width: 106px"></p>
 						</c:otherwise>
 					</c:choose>
 				</div>

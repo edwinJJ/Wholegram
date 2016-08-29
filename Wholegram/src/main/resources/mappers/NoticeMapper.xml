@@ -45,4 +45,7 @@
 	<delete id="notice_delete">
       delete from notice where board_num = #{board_num}
    </delete>
+   <delete id="reportDelete">
+		delete from report where user_id = #{user_id} and board_num = #{board_num}
+   </delete>
 </mapper>

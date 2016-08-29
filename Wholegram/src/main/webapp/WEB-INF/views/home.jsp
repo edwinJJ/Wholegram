@@ -81,7 +81,7 @@
 									<img src="/user/getByteImage/${bd.user_id}">	
 								</c:when>
 								<c:otherwise>
-									<img src="/resources/upload/user/Default.png">
+									<img src="/resources/Image/Default.png">
 								</c:otherwise>
 							</c:choose>
 							</a>
@@ -391,9 +391,14 @@
 	            "Content-Type" : "application/json",
 	         },
 	         data : '',
-	         dataType : 'json',
+	         dataType : 'text',
 	         success : function(value){
-	            alert("게시물 신고 완료가 완료되었습니다.");
+	        	 console.log(value);
+	        	if(value == "INCREASE") {
+		            alert("게시물 신고 완료되었습니다.");	        		
+	        	} else {
+	        		alert("게시물 신고를 취소하였습니다.");
+	        	}
 	            var popup = document.getElementById("popupLayer" + board_num);
 	            $(popup).fadeOut();
 	         },
@@ -401,7 +406,7 @@
 	              alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 	          }
 	      });
-	   }
+	}
 	
 
 </script>

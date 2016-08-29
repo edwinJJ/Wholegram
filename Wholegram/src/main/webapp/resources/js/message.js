@@ -266,16 +266,16 @@ function showMessage(result) {
 	}
 }
 
-
-// WebSocket Server connection
-//var host = location.host;
-//var wsUrl = "ws://" + host + "/chat/init";   					// ws://ip:port/chat/init
-//var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
-
-var hostname = location.hostname;							// ip
-var port = location.port;									// port
-var wsUrl = "ws://" + hostname + ":" + port + "/chat/init";	// full url
+var hostname = location.hostname;								// ip
+var port = location.port;										// port
+var wsUrl;														// full url
 var ws;
+
+if(port == "") {
+	wsUrl = "ws://" + hostname  + "/chat/init";					// port가 80일경우 값이 ""로 찍힘
+} else {
+	wsUrl = "ws://" + hostname + ":" + port + "/chat/init";	
+}
 
 function init() {
 	ws = new WebSocket(wsUrl);  								//소켓 객체 생성

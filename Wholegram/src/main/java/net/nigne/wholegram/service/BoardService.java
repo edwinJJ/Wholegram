@@ -37,4 +37,6 @@ public interface BoardService {
 	public void reportCount( int board_num );
 	public List<BoardVO> getReportList();
 	public void deleteAll( int board_num );
+	public void reportDelete(String user_id, int board_num);
+	public void reportDecrease(int board_num);
 }
