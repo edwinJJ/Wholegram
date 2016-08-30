@@ -202,7 +202,9 @@
 							<div id="popupLayer${bd.board_num}" class="popupLayer">
 								<div class="bg"></div>
 								<ul id="popupContents">
-		                           <li><a href="#self" onclick="insertReport(${bd.board_num})">부적절한 콘텐츠 신고</a></li>
+		                           <c:if test="${sessionId != bd.user_id}">
+                                   		<li><a href="#self" onclick="insertReport(${bd.board_num})">부적절한 콘텐츠 신고</a></li>
+                                   </c:if> 
 		                           <li><a href="${bd.media}" download>다운로드</a></li>
 		                           <li><a href="#self" onclick="closePopup(${bd.board_num})">취소</a></li>
 		                        </ul>

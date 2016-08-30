@@ -19,4 +19,5 @@ public interface MemberDAO {
 	public void setDefaultProfileImage(String user_id);
 	public List<MemberVO> getRandomUser( String user_id );
 	public int getUserprofileInfo(String user_id);
+	public void signout(String user_id);
 }

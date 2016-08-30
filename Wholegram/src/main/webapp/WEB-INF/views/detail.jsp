@@ -6,7 +6,7 @@
 <head>
    <meta charset="utf-8" />
    <link rel="stylesheet" href="/resources/css/bootstrap.css">
-   <link rel="stylesheet" href="/resources/css/w3.css">
+<!--    <link rel="stylesheet" href="/resources/css/w3.css"> -->
    <link rel="stylesheet" href="/resources/css/message.css">
    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
    <script src="http://code.jquery.com/jquery-1.7.min.js"></script>
@@ -188,6 +188,10 @@ video{
    height: 598px;
    background: #fff;
 }
+
+i[id^='heart_full'] {
+   color: red;
+}
 </style>
 </head>
 <body>
@@ -311,7 +315,7 @@ video{
                      <div id="popupLayer${bdList.board_num}" class="popupLayer">
                         <div class="bg"></div>
                         <ul id="popupContents">
-                           <li><a href="#self">다운로드${bdList.board_num}</a></li>
+                           <li><a href="${bdList.media }" download>다운로드${bdList.board_num}</a></li>
                            <li><a href="#self" onclick="closePopup(${bdList.board_num})">취소</a></li>
                         </ul>
                      </div>

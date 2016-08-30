@@ -30,13 +30,11 @@
 
 			<!-- 둘러보기 / 사용자가 following하지 않은 다른 user 리스트 -->
 			<div id="titleA">
-					<c:forEach items="${boardList}" var="b">
-						<c:if test="${b.media_type == 'i'}">
-							<a href="/${b.user_id}" class="fl"> 
-								<img class="cnt_img" src="${b.media}" style="margin-bottom: 16px;" />
-							</a>
-						</c:if>
-					</c:forEach>
+				<c:forEach items="${boardList}" var="b">
+						<a href="/${b.user_id}" class="fl"> 
+							<img class="cnt_img" src="${b.media_thumnail}" style="margin-bottom: 16px;" />
+						</a>
+				</c:forEach>
 			</div>
 		</div>
 	</div>

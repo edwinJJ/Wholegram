@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import net.nigne.wholegram.common.Encrypt;
 import net.nigne.wholegram.domain.MemberVO;
+import net.nigne.wholegram.service.MemberService;
 import net.nigne.wholegram.service.SignService;
 
 
@@ -27,6 +29,8 @@ public class SignController{
 	private Encrypt encrypt;
 	@Inject
 	private SignService sign;
+	@Inject
+	private MemberService mservice;
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public ModelAndView signUp(Locale locale, Model model) {
@@ -68,7 +72,7 @@ public class SignController{
 		return entity;
 	}
 	
-	/*이메일 인증*/
+	/*회원가입 이메일 인증*/
 	@RequestMapping(value = "/sendMail/{emailad1}/{emailad2}", method = RequestMethod.GET)
 	public ResponseEntity<String> sendMail(@PathVariable("emailad1") String emailad1, @PathVariable("emailad2") String emailad2) {
 		
@@ -92,6 +96,47 @@ public class SignController{
 		return mav;
 	}
 	
+	/* 회원탈퇴 이메일 인증 */
+	@RequestMapping(value = "/sendMail/Signout", method = RequestMethod.POST)
+	public ResponseEntity<String> sendMailSignout(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+
+		MemberVO vo = mservice.MemInfo(user_id);
+		String email = vo.getEmail();
+		int index = email.indexOf(".");
+		String emailad1 = email.substring(0, index);
+		String emailad2 = email.substring(index+1);
+		System.out.println(emailad1 + emailad2);
+		
+		ResponseEntity<String> entity = null;
+		try {
+			entity = new ResponseEntity<>(sign.sendMail(emailad1, emailad2), HttpStatus.OK);	
+		} catch(Exception e) {
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	/* 회원 탈퇴 */
+	@RequestMapping(value = "/signout", method = RequestMethod.POST)
+	public ResponseEntity<String> signout(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		
+		ResponseEntity<String> entity = null;
+		
+		try {
+			mservice.signout(user_id);
+			entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);	
+		} catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
 }
 
 class checkValue{

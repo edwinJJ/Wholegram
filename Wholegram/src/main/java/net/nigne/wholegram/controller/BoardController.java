@@ -254,19 +254,24 @@ public class BoardController {
 	            vo.setContent(temp);
 	            int reply_num = rService.insert(vo);
 
-	            if( !ls.isEmpty() ) {
+	            String user = null;
+	               
+	            if (!ls.isEmpty()) {
 	               Iterator<String> it = ls.iterator();
-	               while( it.hasNext() ) {
-	            	   System.out.println("www");
-	                  nService.rnInsert(it.next(), board_num, temp, 5, reply_num);
+	               while (it.hasNext()) {
+	                  user = it.next();
+	                  // 댓글에서 언급 시에 작성자와 언급되는 사용자가 다른 경우에만 Notice에 추가
+	                  if( user != user_id && !user.equals( user_id ) ) {
+	                     nService.rnInsert(user_id, user, board_num, temp, 5, reply_num);
+	                  }
 	               }
-	            } 
-	            
-	            // 접속자 ID와 게시물 작성자 ID가 다른 경우,
-	            if( uid != user_id && !uid.equals( user_id ) ) {
-	               // 게시물에 접속자가 댓글을 입력하면 reply, notice table에 입력
-	               nService.rnInsert(user_id, board_num, temp, 3, reply_num);
-	            }    
+	            }
+	               
+	               // 접속자 ID와 게시물 작성자 ID가 다른 경우,
+	              if( uid != user_id && !uid.equals( user_id ) ) {    
+	            // 게시물에 접속자가 댓글을 입력하면 Reply, Notice table에 입력
+	                  nService.rnInsert(user_id, user, board_num, temp, 3, reply_num);
+	               }       
 	            
 	            List<ReplyVO> list = rService.getList( board_num );
 	            Map<String, Object> map = new HashMap<>();

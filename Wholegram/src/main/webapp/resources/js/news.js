@@ -18,7 +18,7 @@ function makeNewsForm(result) {
 			count++;
 			html += "<label id='eachNotice_popup" + this.notice_num + "' class='w3-badge w3-right w3-small w3-red' style='display:block;'>!</label>";
 		}
-			html +=	"<div class='noticeList' onclick='check_Notice_indicate(" + this.notice_num + "," + this.board_num +")'>";
+			html +=	"<div class='noticeList' onclick='check_Notice_indicate(" + this.notice_num + "," + this.board_num +", 1)'>";
 						if(this.flag == 1) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
@@ -163,7 +163,12 @@ function showNewsForm() {
 }
 
 /* 알림 표시를 읽음으로 변환 (! 제거) + 상세페이지 이동 */
-function check_Notice_indicate(notice_num, board_num) {
+function check_Notice_indicate(notice_num, board_num, flag) {
+
+	if(flag == 1) {
+		return false;
+	}
+	
 	/*알림 표시를 읽음으로 변환 (! 제거)*/
 	var cnc_url = "/user/check_Notice_indicate/" + notice_num;
 	$.ajax({

@@ -61,7 +61,7 @@ public class Email {
             
             AuthenticationString authstrclass = new AuthenticationString();
             authstr = authstrclass.makeRandomAuthenticationString(authEmail);					 // 인증문자 받기
-            String html = "Wholegram 가입 Email 인증 문자입니다. " +
+            String html = "Wholegram Email 인증 문자입니다. " +
             				"<div>" +
             					authstr + 
             				"</div>";

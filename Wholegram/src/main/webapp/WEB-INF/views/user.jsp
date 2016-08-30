@@ -212,7 +212,7 @@
 		#profile_btn {
 			margin-left: 1%;
 			position: absolute;
-		    left: 18%;
+		    left: 33%;
 		    top: 7%;
 		}
 		#profile_btn2 {
@@ -250,9 +250,11 @@
 			font-size: 20px;
 		}
 		#profile_info {
+		  position: absolute;
 			font-size: 20px;
 			width: 100%;
 		}
+		
 		#follower_count {
 			margin-left: 5%;
 			cursor:pointer;
@@ -428,6 +430,7 @@
          cursor:pointer;
       }
       #profile_name{
+       position: absolute;
 		top: 50%;
       }
       #profile_info{
@@ -920,9 +923,18 @@
 	    	$(result.list).each(function(){
 	    		if(this.following != sessionId){
 	    			if( this.follower == sessionId && this.flag == 1)
-	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='following' id='following"+this.following+"' onclick='unfollowingClick(\""+this.following+"\")' value='팔로잉'></div>";
-    				else
-	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='follow' id='follow"+this.following+"' onclick='followingClick(\""+this.following+"\")' value='팔로우'></div>";
+	    				if(this.default_profile != 1) {
+	    					temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='following' id='following"+this.following+"' onclick='unfollowingClick(\""+this.following+"\")' value='팔로잉'></div>";
+	    				} else {
+	    					temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='following' id='following"+this.following+"' onclick='unfollowingClick(\""+this.following+"\")' value='팔로잉'></div>";
+	    				}
+    				else {
+    					if(this.default_profile != 1) {
+	    					temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='follow' id='follow"+this.following+"' onclick='followingClick(\""+this.following+"\")' value='팔로우'></div>";
+    					} else {
+    						temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='follow' id='follow"+this.following+"' onclick='followingClick(\""+this.following+"\")' value='팔로우'></div>";
+    					}
+		    		}
 	    		}else{
     				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span></div>";
 	    		}

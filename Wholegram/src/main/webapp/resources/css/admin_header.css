@@ -43,6 +43,10 @@
    position: relative;
     left: 300px;
 }
+.header-logo_img{
+   width:180px;
+   height:40px;
+}
 @media all and (max-width: 1140px) {
 	#header-user { display: none;}
 }

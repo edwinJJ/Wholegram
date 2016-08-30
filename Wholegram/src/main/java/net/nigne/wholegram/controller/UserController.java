@@ -33,6 +33,7 @@ import net.nigne.wholegram.domain.MemberVO;
 import net.nigne.wholegram.domain.NoticeVO;
 import net.nigne.wholegram.service.BoardService;
 import net.nigne.wholegram.service.FollowService;
+import net.nigne.wholegram.service.HeartService;
 import net.nigne.wholegram.service.MemberService;
 import net.nigne.wholegram.service.NoticeService;
 import net.nigne.wholegram.service.ProfileImageService;
@@ -63,6 +64,9 @@ public class UserController {
 	
 	@Inject
 	private FollowService fservice;
+	
+	@Inject
+	private HeartService hservice;
 	
 	/*로그아웃*/
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -227,22 +231,25 @@ public class UserController {
 	}
 	
 	/*유저 페이지에서 게시물당 댓글 스크롤링 처리*/
-	@RequestMapping(value = "/getNum/{no}/{rep_idx}", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> getNum(@PathVariable("no") int board_num,@PathVariable("rep_idx") int rep_idx) {
-		ResponseEntity<Map<String, Object>> entity = null;
-		BoardVO vo = new BoardVO();
-		vo.setBoard_num(board_num);
-		RepCriteria rc = new RepCriteria(board_num,rep_idx);
-		Map<String, Object> map = new HashMap<>();
-		map.put("bd", bservice.getOne(vo));
-		map.put("rp",rService.getListLimit(rc));
-		try{
-			entity = new ResponseEntity<>(map,HttpStatus.OK);
-		}catch(Exception e){
-			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		return entity;
-	}
+	   @RequestMapping(value = "/getNum/{no}/{rep_idx}", method = RequestMethod.GET)
+	   public ResponseEntity<Map<String, Object>> getNum(@PathVariable("no") int board_num,@PathVariable("rep_idx") int rep_idx,HttpServletRequest request) {
+	      ResponseEntity<Map<String, Object>> entity = null;
+	      BoardVO vo = new BoardVO();
+	      HttpSession session = request.getSession();
+	      String user_id = (String)session.getAttribute("user_id");
+	      vo.setBoard_num(board_num);
+	      RepCriteria rc = new RepCriteria(board_num,rep_idx);
+	      Map<String, Object> map = new HashMap<>();
+	      map.put("bd", bservice.getOne(vo));
+	      map.put("rp",rService.getListLimit(rc));
+	      map.put("ht", hservice.checkHeart(user_id, board_num));
+	      try{
+	         entity = new ResponseEntity<>(map,HttpStatus.OK);
+	      }catch(Exception e){
+	         entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	      }
+	      return entity;
+	   }
 	
 	/*비밀번호 변경 페이지*/
 	@RequestMapping(value = "/passwd_form", method = RequestMethod.GET)
@@ -291,6 +298,21 @@ public class UserController {
 			entity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		return entity;
+	}
+	
+	/*회원탈퇴 페이지 이동*/
+	@RequestMapping(value = "/passwd_singout", method = RequestMethod.GET)
+	public ModelAndView passwd_singout(Locale locale, Model model, HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		String user_id = (String) session.getAttribute("user_id");
+		model.addAttribute( "sessionId", user_id );
+		
+		MemberVO vo = service.MemInfo(user_id);
+		ModelAndView mav = new ModelAndView();		
+		mav.setViewName("user_signout");
+		mav.addObject("vo", vo);
+		return mav;
 	}
 	
 	/* 알림(상대방) 프로필 이미지 출력 */
@@ -400,5 +422,5 @@ public class UserController {
 		return entity;
 	}
 	
-	
+
 }

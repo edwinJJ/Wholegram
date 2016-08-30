@@ -105,4 +105,9 @@ public class MemberDAOImpl implements MemberDAO {
 	public int getUserprofileInfo(String user_id) {
 		return session.selectOne(namespace + ".getUserprofileInfo", user_id);
 	}
+
+	@Override
+	public void signout(String user_id) {
+		session.delete(namespace + ".signout", user_id);
+	}
 }

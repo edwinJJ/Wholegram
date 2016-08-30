@@ -38,6 +38,7 @@
 			background: #0054FF;
 		}
 		.input_scope {
+			margin-top: 50px;
 			margin-left: 25%;
 			width: 50%;
 		}
@@ -46,8 +47,12 @@
 			width: 100%;
 			resize: none;
 		}
-	</style>
-		<style>
+		#auth {
+			margin-left:15px; 
+			margin-top:5px; 
+		}
+	
+
 		@media all and (min-width: 1075px) and (max-width: 1260px){
  			.scope{
 				width: 1245px;
@@ -79,7 +84,97 @@
 		}
 	</style>
 	<script>
-
+		var sessionId = "${sessionId}";				// 접속자 ID
+		var thisPage = false;						// 메시지 페이지가 아니라는 의미
+	
+		var authstr = "";							// 메일 인증번호
+		
+		function phclear(self) {
+			self.placeholder = "";
+		}
+	
+		//메일 보내기
+		function sendMail() {
+			var emailSend_url = "/sendMail/Signout";
+			$.ajax({
+				type:'POST',
+				url: emailSend_url,
+				headers:{
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override":"POST",
+				},
+				dataType:'text',
+				success : function(result){	
+					alert("인증 메일을 발송했습니다.");
+					authstr = result;												// 메일 인증번호 담기
+					document.getElementById("emailarea").style.display = "block";	// 인증번호 입력칸 보여주기
+				},
+				error : function(result){
+					alert("error : 없는 메일 주소 입니다.");
+				}
+			});
+		}
+		
+		// 메일 인증번호 확인
+		function auth_check() {
+			var auth = document.getElementById("emailauth").value;
+			var emailchk = document.getElementById("emailchk");
+			if(authstr == auth) {									// 인증번호 일치할경우
+				emailchk.style.color="#009688";
+				var pwinput = document.getElementById("pwinput");
+				pwinput.style.display="block";
+			} else {												// 인증번호 불일치
+				emailchk.style.color="#f44336";
+			}
+		}
+		
+		//회원 탈퇴
+		function signOut() {
+			var passwd = document.getElementById("passwd").value;
+			var mem_no = document.getElementById("mem_no").value;
+			var cp_url = "/user/check_passwd/" + mem_no + "/" + passwd;
+			$.ajax({
+				type: 'POST',
+				url: cp_url,
+				headers:{
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override":"POST",
+				},
+				dataType:'JSON',
+				data: '',
+				success : function(result) {
+					if(result == 0) {	//실패
+						alert("비밀번호가 틀렸습니다.");
+					} else {
+						signOut2();
+					}
+				},
+				error : function(result){
+					alert("Error_chk");
+				}
+			});
+		}
+		
+		function signOut2() {
+			var sout_url = "/signout";
+			$.ajax({
+				type: 'POST',
+				url: sout_url,
+				headers:{
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override":"POST",
+				},
+				dataType:'text',
+				data: '',
+				success : function(result) {
+					alert("회원 탈퇴가 완료되었습니다. 감사합니다.");
+					location.href="/login";
+				},
+				error : function(result){
+					alert("Error_chk");
+				}
+			});
+		}
 	</script>
 <body>
 <!-- 상단의 head 부분 -->
@@ -113,19 +208,18 @@
 				<form id="passwd_edit" onSubmit="return false">
 					<input type="hidden" id="mem_no" name="mem_no" value="${vo.mem_no }">
 					<div class="input_scope">
-						<div class="w3-group">
-							<input id="passwd" name="passwd" class="w3-input" type="password" required> <label class="w3-label w3-validate">이전 비밀번호</label>
+						<button type="button" class="btn btn-primary" onclick="sendMail();">이메일 인증</button>
+ 						<div id="emailarea" class="w3-group" style="display:none;">
+							<input id="emailauth" name="passwd" class="w3-input" type="password" placeholder="Email 인증번호" onclick="phclear(this);" onblur="auth_check();" required> 
+							<label id="emailchk" style="color:#f44336">이메일 확인</label>
 						</div>
-						<div class="w3-group">
-							<input id="passwd_new" name="passwd_new" class="w3-input" type="password" required onblur="pwleng_check()" > <label class="w3-label w3-validate">새 비밀번호</label>
+						<div id="pwinput" class="w3-group" style="display:none;">
+							<input id="passwd" name="passwd" class="w3-input" type="password" placeholder="비밀번호 입력" onclick="phclear(this);" required> <label class="w3-label w3-validate">비밀번호 확인</label><br>
+							<button type="button" class="btn btn-danger" onclick="signOut();">회원탈퇴</button>
+							<div id="message" style="margin-top:10px;"></div>
 						</div>
-					   	<div class="w3-group">
-							<input id="passwd_newck" name="passwd_newck" class="w3-input" type="password" required> <label class="w3-label w3-validate">새 비밀번호 확인</label>
-						</div>
-						<button class="btn btn-info" style="margin-top:20px;" onclick="update_passwd()">비밀번호 변경</button>
-						<div id="message" style="margin-top:10px;"></div>
  					</div>
-					</form>
+				</form>
 			</div>
 		</div>
 	</div>

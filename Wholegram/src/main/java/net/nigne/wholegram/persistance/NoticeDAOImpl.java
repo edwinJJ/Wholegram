@@ -79,25 +79,25 @@ public class NoticeDAOImpl implements NoticeDAO {
 	}
 
 	@Transactional
-	@Override
-	public void rnInsert(String user_id, int board_num, String content, int flag, int reply_num) {
-		BoardVO vo = session.selectOne( namespace2 + ".getOne", board_num );
-		Map<String, Object> map = new HashMap<>();
-		
-		if(flag == 5) {
-			map.put("user_id", vo.getUser_id());
-			map.put("other_id", user_id);
-		} else {
-			map.put("user_id", user_id);
-			map.put("other_id", vo.getUser_id());
-		}
-		map.put("refer_content", content);
-		map.put("media", vo.getMedia_thumnail());
-		map.put("flag", flag);
-		map.put("reply_num", reply_num);
-		map.put("board_num", board_num);
-		session.insert( namespace + ".rnInsert", map);
-	}
+   @Override
+   public void rnInsert(String user_id, String user, int board_num, String content, int flag, int reply_num) {
+      BoardVO vo = session.selectOne( namespace2 + ".getOne", board_num );
+      Map<String, Object> map = new HashMap<>();
+      
+      if(flag == 5) {
+         map.put("user_id", user_id); // 언급하는 사용자
+         map.put("other_id", user);   // 언급 당하는 사용자
+      } else {
+         map.put("user_id", user_id);
+         map.put("other_id", vo.getUser_id());
+      }
+      map.put("refer_content", content);
+      map.put("media", vo.getMedia_thumnail());
+      map.put("flag", flag);
+      map.put("reply_num", reply_num);
+      map.put("board_num", board_num);
+      session.insert( namespace + ".rnInsert", map);
+   }
 
 	@Override
 	public void rnDelete( int reply_num ) {

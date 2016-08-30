@@ -42,8 +42,8 @@ public class NoticeServiceImpl implements NoticeService {
 
 	// 댓글 달았을시 notice(알림) 테이블에 추가
 	@Override
-	public void rnInsert( String user_id, int board_num, String content, int flag, int reply_num ) {
-		dao.rnInsert(user_id, board_num, content, flag, reply_num);
+	public void rnInsert( String user_id, String user, int board_num, String content, int flag, int reply_num ) {
+		dao.rnInsert(user_id, user, board_num, content, flag, reply_num);
 	}
 	
 	// 댓글 지웠을시 notice(알림) 테이블에 삭제

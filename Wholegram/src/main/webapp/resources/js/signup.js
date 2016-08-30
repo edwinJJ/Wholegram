@@ -194,7 +194,7 @@ var authstr = "";	// 이메일 인증 문자
 			},
 			dataType:'text',
 			success : function(result){	
-				alert("인증문자를 발송했습니다.");
+				alert("인증 메일을 발송했습니다.");
 				authstr = result;											// 메일 인증번호 담기
 				document.getElementById("auth").style.display = "block";	// 인증번호 입력칸 보여주기
 			},

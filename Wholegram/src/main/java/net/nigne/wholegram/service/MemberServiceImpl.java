@@ -294,4 +294,10 @@ public class MemberServiceImpl implements MemberService {
 		return dao.getRandomUser(user_id);
 	}
 
+	/*회원탈퇴*/
+	@Override
+	public void signout(String user_id) {
+		dao.signout(user_id);
+	}
+
 }
