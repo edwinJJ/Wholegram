@@ -347,7 +347,7 @@ i[id^='heart_full'] {
    function heartCount( board_num ) {
       var hc_url = "/board/heart/" + board_num;
       $.ajax({
-         type : 'GET',
+         type : 'POST',
          url : hc_url,
          headers : {
             "Content-Type" : "application/json",
@@ -365,7 +365,7 @@ i[id^='heart_full'] {
    
    function insertReport( board_num ) {
       $.ajax({
-         type : 'GET',
+         type : 'POST',
          url : "/board/report/" + board_num,
          headers : {
             "Content-Type" : "application/json",
@@ -430,7 +430,7 @@ i[id^='heart_full'] {
          var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
          
          $.ajax({
-            type : 'GET',
+            type : 'POST',
             url : url,
             headers : {
                "Content-Type" : "application/json",

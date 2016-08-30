@@ -67,11 +67,11 @@ var authstr = "";	// 이메일 인증 문자
 		var flag = true;
 		if(length>5){
 			$.ajax({
-				type:'GET',
+				type:'POST',
 				url:i_curl,
 				headers:{
 					"Content-Type" : "application/json",
-					"X-HTTP-Method-Override":"GET",
+					"X-HTTP-Method-Override":"POST",
 				},
 				dataType:'JSON',
 				data: '',
@@ -134,11 +134,11 @@ var authstr = "";	// 이메일 인증 문자
 			flag=false;
 		}else{
 			$.ajax({
-				type:'GET',
+				type:'POST',
 				url:e_curl,
 				headers:{
 					"Content-Type" : "application/json",
-					"X-HTTP-Method-Override":"GET",
+					"X-HTTP-Method-Override":"POST",
 				},
 				dataType:'JSON',
 				data: '',
@@ -186,11 +186,11 @@ var authstr = "";	// 이메일 인증 문자
 		
 		var emailSend_url = "/sendMail/" + text_sub + "/" + text_sub2;
 		$.ajax({
-			type:'GET',
+			type:'POST',
 			url: emailSend_url,
 			headers:{
 				"Content-Type" : "application/json",
-				"X-HTTP-Method-Override":"GET",
+				"X-HTTP-Method-Override":"POST",
 			},
 			dataType:'text',
 			success : function(result){	

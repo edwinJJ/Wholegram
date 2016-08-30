@@ -255,11 +255,11 @@
 	
  	function setBoardList( page ) { 
         $.ajax({
-			type : 'GET',
+			type : 'POST',
 			url : '/board/scroll/page/' + page,
 			headers : {
 				"Content-Type" : "application/json",
-				"X-HTTP-Method-Override" : "GET",
+				"X-HTTP-Method-Override" : "POST",
 			},
 			data : '',
 			async: false,
@@ -306,7 +306,7 @@
 	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
 	      
 	      $.ajax({
-	         type : 'GET',
+	         type : 'POST',
 	         url : url,
 	         headers : {
 	            "Content-Type" : "application/json",
@@ -327,7 +327,7 @@
 	function heartCount( board_num ) {
 		var hc_url = "/board/heart/" + board_num;
 		$.ajax({
-			type : 'GET',
+			type : 'POST',
 			url : hc_url,
 			headers : {
 				"Content-Type" : "application/json",
@@ -387,7 +387,7 @@
 	// 신고관련
 	function insertReport( board_num ) {
 	      $.ajax({
-	         type : 'GET',
+	         type : 'POST',
 	         url : "/board/report/" + board_num,
 	         headers : {
 	            "Content-Type" : "application/json",

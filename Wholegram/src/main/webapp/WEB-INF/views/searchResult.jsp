@@ -391,7 +391,7 @@
 			var url = "/board/"+ bno +"/" + reply_content;
 			
 			$.ajax({
-				type : 'GET',
+				type : 'DELETE',
 				url : url,
 				headers : {
 					"Content-Type" : "application/json",
@@ -411,7 +411,7 @@
 		function heartCount(board_num ) {
 			var hc_url = "/board/heart/" + board_num;
 			$.ajax({
-				type : 'GET',
+				type : 'POST',
 				url : hc_url,
 				headers : {
 					"Content-Type" : "application/json",
@@ -502,7 +502,7 @@
 			
 			$('#myModal').modal('show'); // show the modal
 			$.ajax({ 
-	    		type: 'GET',
+	    		type: 'POST',
                 url: '/user/getNum/'+no+'/'+idx,
                 dataType: 'json',
                 contentType : 'application/json; charset=utf-8',
@@ -551,7 +551,7 @@
 			 var hash = window.location.pathname.split( '/' );
 		   if(($(window).scrollTop() == $(document).height() - $(window).height())&& FLAG) {
 		        $.ajax({ 
-		    		type: 'GET',
+		    		type: 'POST',
 	                url: '/scroll/hash/'+hash[2]+'/'+no,
 	                dataType: 'json',
 	                contentType : 'application/json; charset=utf-8',
@@ -575,7 +575,7 @@
 			 var no = $("#board_num").val()
 		   if($("#li").scrollTop() == $("#li").prop("scrollHeight")-$("#li").height()) {
 				   $.ajax({ 
-			    		type: 'GET',
+			    		type: 'POST',
 		                url: 'rep/'+no+"/"+itemids.length,
 		                dataType: 'json',
 		                contentType : 'application/json; charset=utf-8',

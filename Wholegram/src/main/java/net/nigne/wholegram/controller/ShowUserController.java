@@ -76,7 +76,7 @@ public class ShowUserController {
 	   }
 	
 	//해시태그 검색후 스크롤링과 관련
-	@RequestMapping( value = "scroll/hash/{text}/{count}", method = RequestMethod.GET )
+	@RequestMapping( value = "scroll/hash/{text}/{count}", method = RequestMethod.POST )
 	public ResponseEntity<Map<String, Object>> scrollList( @PathVariable("count") Integer cnt,@PathVariable("text") String index,HttpServletResponse response, HttpServletRequest request ) {
 		ResponseEntity<Map<String, Object>> entity = null;
 		HttpSession session = request.getSession();

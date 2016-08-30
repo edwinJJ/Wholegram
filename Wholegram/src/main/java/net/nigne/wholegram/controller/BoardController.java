@@ -167,7 +167,7 @@ public class BoardController {
 	}
 	
 	/* 쩍쨘횇짤쨌횗 횈채횑횂징 */
-	@RequestMapping(value = "/scroll/page/{page}", method = RequestMethod.GET)
+	@RequestMapping(value = "/scroll/page/{page}", method = RequestMethod.POST)
 	public ModelAndView Board_Scroll_List(@PathVariable("page") int page, Locale locale, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
@@ -212,7 +212,7 @@ public class BoardController {
 	}
 	
 	/* 댓글 입력할 때*/ 
-	@RequestMapping(value = "/{board_num}/{content}/{uid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{board_num}/{content}/{uid}", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> insert(@PathVariable("uid")String uid, @PathVariable("board_num") int board_num, @PathVariable("content")String content, HttpServletRequest request, HttpServletResponse response) {
 		
 		ResponseEntity<Map<String, Object>> entity = null;
@@ -321,7 +321,7 @@ public class BoardController {
 	}
 	
 	/* 게시물 좋아요 증감 */
-	@RequestMapping( value = "/heart/{board_num}", method = RequestMethod.GET )
+	@RequestMapping( value = "/heart/{board_num}", method = RequestMethod.POST )
 	public ResponseEntity<Integer> insertHeart( @PathVariable( "board_num" ) int board_num,  HttpServletResponse response, HttpServletRequest request ) {
 		
 		ResponseEntity<Integer> entity = null;
@@ -389,7 +389,7 @@ public class BoardController {
 	}
 	
 	/* 게시물 신고 카운트 증가 */
-	@RequestMapping(value = "/report/{board_num}", method = RequestMethod.GET)
+	@RequestMapping(value = "/report/{board_num}", method = RequestMethod.POST)
 	public ResponseEntity<String> insertReport(@PathVariable("board_num") int board_num, HttpServletResponse response, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");

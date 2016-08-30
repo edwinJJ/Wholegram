@@ -79,7 +79,7 @@ public class UserController {
 	}
 	
 	// 팔로우 등록
-	@RequestMapping( value = "/{uid}", method = RequestMethod.GET )
+	@RequestMapping( value = "/{uid}", method = RequestMethod.POST )
 	public ResponseEntity<Boolean> followInsert( @PathVariable("uid") String uid, HttpServletRequest request, Model model, HttpServletResponse response ) {
 		ResponseEntity<Boolean> entity = null;
 		HttpSession session = request.getSession();
@@ -105,7 +105,7 @@ public class UserController {
 		return entity;
 	}
 	// 팔로우 삭제
-		@RequestMapping( value = "/{uid}/{uid2}", method = RequestMethod.GET )
+		@RequestMapping( value = "/{uid}/{uid2}", method = RequestMethod.POST )
 		public ResponseEntity<Boolean> followDelete( @PathVariable("uid") String uid,@PathVariable("uid2") String uid2, HttpServletRequest request, Model model, HttpServletResponse response ) {
 			ResponseEntity<Boolean> entity = null;
 			HttpSession session = request.getSession();
@@ -131,7 +131,7 @@ public class UserController {
 			return entity;
 		}
 	// 팔로워 목록 보여주기
-	@RequestMapping(value = "/getFollower/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getFollower/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> getFollower(@PathVariable("id") String id,Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		ResponseEntity<Map<String, Object>> entity = null;
@@ -147,7 +147,7 @@ public class UserController {
 	}
 	
 	//팔로잉 목록 보여주기
-	@RequestMapping(value = "/getFollowing/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getFollowing/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> getFollowing(@PathVariable("id") String id,Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		ResponseEntity<Map<String, Object>> entity = null;
@@ -231,7 +231,7 @@ public class UserController {
 	}
 	
 	/*유저 페이지에서 게시물당 댓글 스크롤링 처리*/
-	   @RequestMapping(value = "/getNum/{no}/{rep_idx}", method = RequestMethod.GET)
+	   @RequestMapping(value = "/getNum/{no}/{rep_idx}", method = RequestMethod.POST)
 	   public ResponseEntity<Map<String, Object>> getNum(@PathVariable("no") int board_num,@PathVariable("rep_idx") int rep_idx,HttpServletRequest request) {
 	      ResponseEntity<Map<String, Object>> entity = null;
 	      BoardVO vo = new BoardVO();

@@ -881,7 +881,7 @@
 		function followClick(idx){
 			if(sessionId != ""){
 				 $.ajax({
-					type : 'GET',
+					type : 'POST',
 					url : '/user/' + idx,
 					headers : {
 						"Content-Type" : "application/json",
@@ -901,7 +901,7 @@
 		function unfollowClick(idx1,idx2){
 			if(sessionId != ""){
 				 $.ajax({
-					type : 'GET',
+					type : 'POST',
 					url : '/user/' + idx1 + '/'+idx2,
 					headers : {
 						"Content-Type" : "application/json",
@@ -944,7 +944,7 @@
 	    
 	    function unfollowingClick(follower,idx2){ // 언팔로우 할때 처리
 	    	 $.ajax({
-					type : 'GET',
+					type : 'POST',
 					url : '/user/' + follower + '/'+idx2,
 					headers : {
 						"Content-Type" : "application/json",
@@ -962,7 +962,7 @@
 	    
 	    function followingClick(follower){ // 팔로잉 할떄 처리
 	    	 $.ajax({
-					type : 'GET',
+					type : 'POST',
 					url : '/user/' + follower,
 					headers : {
 						"Content-Type" : "application/json",
@@ -1005,7 +1005,7 @@
 			$('#myModal2').modal('show'); // show the modal
 			$('#headerText').text("Follower");
 			$.ajax({ 
-	    		type: 'GET',
+	    		type: 'POST',
                 url: '/user/getFollowing/'+ currentId,
                 dataType: 'json',
                 contentType : 'application/json; charset=utf-8',
@@ -1023,7 +1023,7 @@
 			$('#myModal2').modal('show'); // show the modal
 			$('#headerText').text("Following");
 			$.ajax({ 
-	    		type: 'GET',
+	    		type: 'POST',
                 url: '/user/getFollower/'+ currentId,
                 dataType: 'json',
                 contentType : 'application/json; charset=utf-8',
@@ -1101,7 +1101,7 @@
 			var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
 			if(reply_content.trim() != ""){
 				$.ajax({
-					type : 'GET',
+					type : 'POST',
 					url : url,
 					headers : {
 						"Content-Type" : "application/json",
@@ -1123,7 +1123,7 @@
 		function heartCount(board_num ) {
 			var hc_url = "/board/heart/" + board_num;
 			$.ajax({
-				type : 'GET',
+				type : 'POST',
 				url : hc_url,
 				headers : {
 					"Content-Type" : "application/json",
@@ -1212,7 +1212,7 @@
 		function read(no,idx) { // Grid Layer 이미지중 하나를 클릭하였을시 해당되는 내용을 불러옴
 			$('#myModal').modal('show'); // show the modal
 			$.ajax({ 
-	    		type: 'GET',
+	    		type: 'POST',
                 url: 'user/getNum/'+no+'/'+idx,
                 dataType: 'json',
                 contentType : 'application/json; charset=utf-8',
@@ -1317,7 +1317,7 @@
 			 var no = $("#board_num").val()
 		   if($("#li").scrollTop() == $("#li").prop("scrollHeight")-$("#li").height()) {
 				   $.ajax({ 
-			    		type: 'GET',
+			    		type: 'POST',
 		                url: 'rep/'+no+"/"+itemids.length,
 		                dataType: 'json',
 		                contentType : 'application/json; charset=utf-8',

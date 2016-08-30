@@ -48,7 +48,7 @@ public class SignController{
 	}
 	
 	/*아이디 중복 확인*/
-	@RequestMapping(value = "/checkId/{user_id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/checkId/{user_id}", method = RequestMethod.POST)
 	public ResponseEntity<Boolean> CheckId(@PathVariable("user_id") String id) {
 		ResponseEntity<Boolean> entity = null;
 		try{
@@ -60,7 +60,7 @@ public class SignController{
 	}
 
 	/*이메일 중복 확인*/
-	@RequestMapping(value = "/checkEmail/{email}", method = RequestMethod.GET)
+	@RequestMapping(value = "/checkEmail/{email}", method = RequestMethod.POST)
 	public ResponseEntity<Boolean> CheckEmail(@PathVariable("email") String email) {
 		System.out.println(sign.checkEmail(email+"%"));
 		ResponseEntity<Boolean> entity = null;
@@ -73,7 +73,7 @@ public class SignController{
 	}
 	
 	/*회원가입 이메일 인증*/
-	@RequestMapping(value = "/sendMail/{emailad1}/{emailad2}", method = RequestMethod.GET)
+	@RequestMapping(value = "/sendMail/{emailad1}/{emailad2}", method = RequestMethod.POST)
 	public ResponseEntity<String> sendMail(@PathVariable("emailad1") String emailad1, @PathVariable("emailad2") String emailad2) {
 		
 		ResponseEntity<String> entity = null;

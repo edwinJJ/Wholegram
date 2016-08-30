@@ -23,7 +23,7 @@ public class ReplyController {
 	private ReplyService service;
 	
 	// 댓글의 스크롤이 끝에 도달할시 추가로 댓글을 가져옴
-	@RequestMapping(value = "/{no}/{rep_idx}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{no}/{rep_idx}", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> getNum(@PathVariable("no") int board_num,@PathVariable("rep_idx") int rep_idx) {
 		ResponseEntity<Map<String, Object>> entity = null;
 		RepCriteria rc = new RepCriteria(board_num,rep_idx); // 게시물번호와 댓글의 개수 입력
