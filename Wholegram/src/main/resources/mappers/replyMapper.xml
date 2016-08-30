@@ -5,7 +5,7 @@
  
 <mapper namespace="net.nigne.wholegram.mappers.replyMapper">
 	<select id="getList" resultType="net.nigne.wholegram.domain.ReplyVO">
-		select * from reply where board_num = #{board_num}
+		select * from reply where board_num = #{board_num} 
 	</select>
 	
 	<insert id="insert">

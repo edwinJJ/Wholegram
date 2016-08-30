@@ -6,7 +6,7 @@
 <head>
    <meta charset="utf-8" />
    <link rel="stylesheet" href="/resources/css/bootstrap.css">
-<!--    <link rel="stylesheet" href="/resources/css/w3.css"> -->
+   <link rel="stylesheet" href="/resources/css/w3.css">
    <link rel="stylesheet" href="/resources/css/message.css">
    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
    <script src="http://code.jquery.com/jquery-1.7.min.js"></script>
@@ -114,12 +114,12 @@ li {
 }
 
 #cnt_reply {
-   background: #fff;
-   width: 284px;
-   height: 60px;
-   position: absolute;
-   bottom: 0;
-   border-top: 1px solid #efefef;
+   background: #fff!important;
+   width: 284px!important;
+   height: 60px!important;
+   position: absolute!important;
+   bottom: 0!important;
+   border-top: 1px solid #efefef!important;
 }
 
 #cnt_reply input[type="text"] {
@@ -288,7 +288,7 @@ i[id^='heart_full'] {
                </ul>
                
                <div id="cnt_reply">
-                  <a class="heart" href="#self"> <br /> 
+                  <a class="heart" href="#self">
                      <c:choose>
                         <c:when test="${bdList.aldy_heart}">
                            <!-- 게시물에 좋아요가 눌러져있는 경우 -->
@@ -315,7 +315,7 @@ i[id^='heart_full'] {
                      <div id="popupLayer${bdList.board_num}" class="popupLayer">
                         <div class="bg"></div>
                         <ul id="popupContents">
-                           <li><a href="${bdList.media }" download>다운로드${bdList.board_num}</a></li>
+                           <li><a href="${bdList.media }" download>다운로드</a></li>
                            <li><a href="#self" onclick="closePopup(${bdList.board_num})">취소</a></li>
                         </ul>
                      </div>

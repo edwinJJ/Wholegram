@@ -17,4 +17,5 @@ public interface FollowDAO {
 	public List<FollowVO> getMyFollowerList(String user_id);
 	public void userfollowDelete(FollowVO vo);
 	public void statusUpdate(Map<String, Object> map);
+	
 }

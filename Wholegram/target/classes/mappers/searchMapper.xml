@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="net.nigne.wholegram.mappers.searchMapper">
+	<select id="getSearch" resultType="net.nigne.wholegram.domain.MemberVO">
+		select user_id,user_name,info from member where user_id like CONCAT('%', #{idx}, '%') or user_name like CONCAT('%', #{idx},'%')  or info like CONCAT('%', #{idx},'%')
+	</select>
+	<select id="getHashSearch" resultType="net.nigne.wholegram.domain.BoardVO">
+		select * from board where content like CONCAT('%', #{idx}, '%')
+	</select>
+	<select id="getHashSearchCount" resultType="int">
+		select count(*) from board where content like CONCAT('%', #{idx},' %') or board_num in (select board_num from reply where content like CONCAT('%', #{idx}, ' %'))
+	</select>
+</mapper>

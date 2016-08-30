@@ -49,11 +49,26 @@ public class FollowServiceImpl implements FollowService {
 		return dao.getFollowNumberof(user_id);
 	}
 	
+	// 팔로워 목록 보여주기
 	@Override
 	public List<FollowVO> getMyFollwingList(String user_id) {
-		return dao.getMyFollowingList(user_id);
+		List<FollowVO> result = new ArrayList<FollowVO>();
+		
+		List<FollowVO> lfvo =  dao.getMyFollowingList(user_id);					// 유저를 팔로우하고있는 유저list
+		
+		Iterator<FollowVO> extract = lfvo.iterator();
+		while(extract.hasNext()){
+			FollowVO fvo = new FollowVO();
+			fvo = extract.next();
+			int default_profile = mdao.getUserprofileInfo(fvo.getFollowing());	// 유저를 팔로우하고 있는 각각 유저의 프로필이미지 존재여부
+			fvo.setDefault_profile(default_profile);
+			result.add(fvo);
+		}
+		return result;
 	}
 
+	
+	// 팔로잉 목록 보여주기
 	@Override
 	public List<FollowVO> getMyFollwerList(String user_id) {
 		List<FollowVO> result = new ArrayList<FollowVO>();

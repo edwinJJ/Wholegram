@@ -81,8 +81,15 @@
                <c:if test="${sessionId ne mb.user_id}">
                   <div id="wrapper">
                      <div id="b_header">
-                        <a id="cnt_user_img" class="fl" href="${mb.user_id}"> 
-                           <img id="${mb.user_profile}" src="/user/getByteImage/" >
+                        <a id="cnt_user_img" class="fl" href="${mb.user_id}">
+                        	<c:choose>
+	                        	<c:when test="${mb.default_profile != 1}">
+	                           		<img id="${mb.user_profile}" src="/user/getByteImage/${mb.user_id}" >
+	                           	</c:when> 
+	                           	<c:otherwise>
+		                           	<img id="${mb.user_profile}" src="/resources/Image/Default.png" >
+	                           	</c:otherwise>
+                           	</c:choose>
                         </a> 
                         <input type="button" id="followBtn${mb.user_id}" name="followBtn${mb.user_id}" class="followBtn fr" value="팔로우" onclick="insertFollow('${mb.user_id}','${mb.mem_no}')" />
                         

@@ -130,7 +130,8 @@ public class UserController {
 			}
 			return entity;
 		}
-	// 팔로워 목록 보여주기
+		
+	// 팔로잉 목록 보여주기
 	@RequestMapping(value = "/getFollower/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> getFollower(@PathVariable("id") String id,Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
@@ -146,7 +147,7 @@ public class UserController {
 		return entity;
 	}
 	
-	//팔로잉 목록 보여주기
+	// 팔로워 목록 보여주기
 	@RequestMapping(value = "/getFollowing/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> getFollowing(@PathVariable("id") String id,Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();

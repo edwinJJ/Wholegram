@@ -18,7 +18,7 @@ function makeNewsForm(result) {
 			count++;
 			html += "<label id='eachNotice_popup" + this.notice_num + "' class='w3-badge w3-right w3-small w3-red' style='display:block;'>!</label>";
 		}
-			html +=	"<div class='noticeList' onclick='check_Notice_indicate(" + this.notice_num + "," + this.board_num +", 1)'>";
+			html +=	"<div class='noticeList' onclick=\"check_Notice_indicate(" + this.notice_num + "," + this.board_num +",'" + this.user_id + "')\">";
 						if(this.flag == 1) {
 							if(this.default_profile == 0) {
 								html += "<img class='profile_notice_img' src='/user/getByteImage/" + this.user_id + "' /> "; 
@@ -163,13 +163,9 @@ function showNewsForm() {
 }
 
 /* 알림 표시를 읽음으로 변환 (! 제거) + 상세페이지 이동 */
-function check_Notice_indicate(notice_num, board_num, flag) {
+function check_Notice_indicate(notice_num, board_num, user_id) {
 
-	if(flag == 1) {
-		return false;
-	}
-	
-	/*알림 표시를 읽음으로 변환 (! 제거)*/
+	/* 알림 표시를 읽음으로 변환 (! 제거) */
 	var cnc_url = "/user/check_Notice_indicate/" + notice_num;
 	$.ajax({
 		type: 'POST',
@@ -180,16 +176,15 @@ function check_Notice_indicate(notice_num, board_num, flag) {
 		},
 		dataType:'text',
 		success : function(result) {
-/*			alert("1 : " + result);
-			alert("2 : " + JSON.stringify(result));*/
-//			showNewsForm();
-			
-			location.href = "/board/" + board_num; // 상세페이지 이동 
+			if(board_num == "" || board_num == null) {
+				alert("테스트1");
+				location.href="/" + user_id + "";
+			} else {
+				alert("테스트2");
+				location.href = "/board/" + board_num; // 상세페이지 이동 
+			}
 		},
 		error : function(result){
-/*			alert("4 : " + result);
-			alert("5 : " + JSON.stringify(result));
-			alert("6 : " + JSON.parse(result));*/
 			alert("error!! : " + result);
 		}
 	});

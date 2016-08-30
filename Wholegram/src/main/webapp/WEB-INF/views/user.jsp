@@ -48,7 +48,7 @@
 		    background-color:#86E57F;
 		    font-weight: bold;
 		    position: absolute;
-		    left: 20%;
+		    left: 33%;
 		    top: 5%
     	}
     	#notuserfollow{
@@ -61,7 +61,7 @@
 		    color: #3897f0;
 		    font-weight: bold;
 		    position: absolute;
-		    left: 20%;
+		    left: 33%;
 		    top: 5%
     	}
     	.following{
@@ -799,7 +799,7 @@
 				
 			</div>
 			
-			<!-- Modal 생성 -->
+			<!-- 게시물 Modal 생성 -->
 			<div class="modal" id="myModal" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -829,7 +829,7 @@
 				</div>
 			</div>
 			
-			<!-- Modal 생성 -->
+			<!-- 팔로우/팔로잉 Modal 생성 -->
 			<div class="modal" id="myModal2" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -935,9 +935,9 @@
     						temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='follow' id='follow"+this.following+"' onclick='followingClick(\""+this.following+"\")' value='팔로우'></div>";
     					}
 		    		}
-	    		}else{
+	    		}else
     				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span></div>";
-	    		}
+	    		
     		});
 	    	document.getElementById("body-container").innerHTML= temp;
 	    }
@@ -1097,28 +1097,29 @@
 		}
 		
 		function insertReply( bno, uid ) {
-			var reply_content = $("#content"+bno).val();
-			var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
-			if(reply_content.trim() != ""){
-				$.ajax({
-					type : 'POST',
-					url : url,
-					headers : {
-						"Content-Type" : "application/json",
-					},
-					data : 
-						JSON.stringify({content:reply_content}),
-					dataType : 'json',
-					success : function(result){
-						setReplyList(result.result, bno);
-						$("#content"+bno).val("");
-					},
-					error : function(result) {
-						alert("fail");
-					}
-				});
-			}
-		}
+	      var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
+	      alert(reply_content);
+	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
+	      
+	      $.ajax({
+	         type : 'POST',
+	         url : url,
+	         headers : {
+	            "Content-Type" : "application/json",
+	         },
+	         data : 
+	            JSON.stringify({content:reply_content}),
+	         dataType : 'json',
+	         success : function(result){
+	            //setReplyList(result.result, bno);
+	        	 addReplyList(result.result, bno);
+	         },
+	         error : function(request,status,error) {
+	            alert("insertReply fail");
+	            alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	         }
+	      });
+	   }
 
 		function heartCount(board_num ) {
 			var hc_url = "/board/heart/" + board_num;

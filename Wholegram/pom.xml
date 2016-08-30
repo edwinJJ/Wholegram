@@ -220,7 +220,7 @@
 			<version>3.0.2-1.2</version>
 			<classifier>linux-armhf</classifier>
 		</dependency>
- -->		
+	 -->	
 		
  
 		<!--이미지 회전 -->
