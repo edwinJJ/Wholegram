@@ -131,6 +131,7 @@ public class SignController{
 		try {
 			mservice.signout(user_id);
 			entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);	
+			session.invalidate();
 		} catch(Exception e) {
 			e.printStackTrace();
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);

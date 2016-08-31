@@ -95,9 +95,7 @@ public class PersonController {
 			fService.followInsert(vo);
 			List<FollowVO> list = fService.getfwList();					// follow 테이블에 입력
 			
-			System.out.println("abc1");
 			nService.insertFollow(vo, 1);								// notice 테이블에 입력
-			System.out.println("abc2");
 			Map<String, Object> map = new HashMap<>();
 			map.put("list", list);
 			entity = new ResponseEntity<>( map, HttpStatus.OK);

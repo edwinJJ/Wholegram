@@ -100,7 +100,7 @@ function showRoomList(roomList) {
 		}
 			html +=
 				"<span>" + this.member_user_id + "</span>" + 
-				"<a href='#' data-toggle='modal' onclick='chatNameModal(${ri.chat_chat_num})'><img class='chat_name_change' src='/resources/Image/chat_room_name.jpg'></a>" +
+				"<a href='#' data-toggle='modal' onclick='chatNameModal(" + this.chat_chat_num + ")'><img class='chat_name_change' src='/resources/Image/chat_room_name.jpg'></a>" +
 			"</div>";
 	});
 	document.getElementById("roomList").innerHTML = html;

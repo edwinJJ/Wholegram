@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" href="/resources/css/bootstrap.css">
 	<link rel="stylesheet" href="/resources/css/w3.css">
@@ -386,27 +386,34 @@
 		function viewclick(){
 			$("#tag").toggle();
 		}
-		function insertReply( bno ) {
-			var reply_content = $("#content"+bno).val();
-			var url = "/board/"+ bno +"/" + reply_content;
+		
+		String.prototype.replaceAll = function(org, dest) {
+	       return this.split(org).join(dest);
+	    }
 			
-			$.ajax({
-				type : 'DELETE',
-				url : url,
-				headers : {
-					"Content-Type" : "application/json",
-				},
-				data : 
-					JSON.stringify({content:reply_content}),
-				dataType : 'json',
-				success : function(result){
-					setReplyList(result.result, bno);
-				},
-				error : function(result) {
-					alert("fail");
-				}
-			});
-		}
+		function insertReply( bno, uid ) {
+	      var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
+	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
+	      
+	      $.ajax({
+	         type : 'POST',
+	         url : url,
+	         headers : {
+	            "Content-Type" : "application/json",
+	         },
+	         data : 
+	            JSON.stringify({content:reply_content}),
+	         dataType : 'json',
+	         success : function(result){
+	            //setReplyList(result.result, bno);
+	        	 addReplyList(result.result, bno);
+	         },
+	         error : function(request,status,error) {
+	            alert("insertReply fail");
+	            alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	         }
+	      });
+	   }
 
 		function heartCount(board_num ) {
 			var hc_url = "/board/heart/" + board_num;
@@ -498,8 +505,7 @@
 		}
 		
 		/* when clicking a thumbnail */
-		function read(no,idx) {
-			
+		function read(no,idx) { // Grid Layer 이미지중 하나를 클릭하였을시 해당되는 내용을 불러옴
 			$('#myModal').modal('show'); // show the modal
 			$.ajax({ 
 	    		type: 'POST',
@@ -512,14 +518,40 @@
 	    	    		$("#image").html('<img src="'+result.bd.media+'">'+'<i id ="viewpeople" class="fa fa-info-circle fa-2x" onclick="viewclick()"></i>');
 	    	    	else
 	    	    		$("#image").html('<video src="'+result.bd.media+'" controls>');
-		    	    	$("#content").html(result.bd.user_id+" "+result.bd.content);
+	    	    		$("#cnt_board_heart").html("좋아요 " + result.bd.heart + "개");
+		    	    	$("#text").html(result.bd.user_id+" "+result.bd.content);
 		    	    	$("#tag").html(result.bd.tag).css("display","none");
-		    	    	$("#prev").attr("onclick","read("+prevNext.prev+",0)");
-		    	    	$("#next").attr("onclick","read("+prevNext.next+",0)");
+		    	    	if(no != prevNext.prev){
+		    	    		$("#prev").attr("onclick","read("+prevNext.prev+",0)");
+		    	    	}else{
+		    	    		$("#prev").attr("onclick","");
+		    	    	}
+		    	    	if(no != prevNext.next){
+		    	    		$("#next").attr("onclick","read("+prevNext.next+",0)");
+		    	    	}else{
+		    	    		$("#next").attr("onclick","");
+		    	    	}
+		    	    	if(typeof prevNext.next == "undefined"){
+		    	    		$("#prev").attr("onclick","");
+		    	    	}
+
+		    	    	if(typeof prevNext.prev == "undefined"){
+		    	    		$("#next").attr("onclick","");
+		    	    	}
 		    	    	setReplyList(result.rp, no);
-		    	    	$("#rep_inp").html('<input type="hidden" id="board_num" name="board_num" value="'+result.bd.board_num+'" /> ');
-		    	    	$("#rep_inp").html($("#rep_inp").html()+'<input type="text" id="content'+result.bd.board_num+'" name="content'+result.bd.board_num+'" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('+result.bd.board_num+')" placeholder="댓글달기..." />');						
-	    	    	
+		    	    	$("#rep_inp").html("<a class='heart' href='#self'> <br />");
+		    	    	if(result.ht == "1"){
+		    	    		$("#rep_inp").html($("#rep_inp").html()+"<i id='heart_full"+result.bd.board_num+"' class='test fa fa-heart fa-2x' aria-hidden='true' onclick='heartCount("+result.bd.board_num+")'></i>");
+		    	    		$("#rep_inp").html($("#rep_inp").html()+"<i id='heart_empty"+result.bd.board_num+"' class='test fa fa-heart-o fa-2x' aria-hidden='true' style='display: none;' onclick='heartCount("+result.bd.board_num+")'></i>")
+		    	    	}else{
+		    	    		$("#rep_inp").html($("#rep_inp").html()+"<i id='heart_full"+result.bd.board_num+"' class='test fa fa-heart fa-2x' aria-hidden='true' style='display: none;' onclick='heartCount("+result.bd.board_num+")'></i>");
+		    	    		$("#rep_inp").html($("#rep_inp").html()+"<i id='heart_empty"+result.bd.board_num+"' class='test fa fa-heart-o fa-2x' aria-hidden='true'  onclick='heartCount("+result.bd.board_num+")'></i>")
+		    	    	}
+		    	    	$("#rep_inp").html($("#rep_inp").html()+"</a>");
+		    	    	$("#rep_inp").html($("#rep_inp").html()+'<input type="hidden" id="board_num" name="board_num" value="'+result.bd.board_num+'" /> ');
+		    	    	$("#rep_inp").html($("#rep_inp").html()+"<input type=\"text\" id=\"content" + result.bd.board_num+"\" name=\"content"+result.bd.board_num+"\" style=\"width: 450px; outline-style: none;\" onkeydown=\"javascript:if( event.keyCode == 13 ) insertReply('" + result.bd.board_num +"' , '"+result.bd.user_id+"')\" placeholder=\"댓글달기...\" />");						
+		    	    	$("#rep_inp").html($("#rep_inp").html()+"<i class='fa fa-ellipsis-h fa-2x fr' onclick='openPopup("+result.bd.board_num+")' style='color: #bfbfbf;' aria-hidden='true'></i>");
+
 	    	    },
 	    	    error:function(request,status,error){
     	    	    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);

@@ -13,6 +13,7 @@ import net.nigne.wholegram.domain.MemberVO;
 @Service
 public interface BoardService {
 	public List<BoardVO> getList( List<HeartVO> hList, String user_id, int startNum, int pagePerBlock );
+	public BoardVO getOneList(List<HeartVO> hList, BoardVO bdList);
 	public List<HeartVO> getHeartList(List<BoardVO> bList, List<HeartVO> hList);
 	public List<BoardVO> get( List<MemberVO> mList );
 	public List<List<BoardVO>> getbdList( List<MemberVO> mbList );

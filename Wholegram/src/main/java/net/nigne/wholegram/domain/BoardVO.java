@@ -10,7 +10,7 @@ public class BoardVO {
 	private int heart;
 	private String media_type;
 	private String tag;
-	private boolean aldy_heart;
+	private boolean aldy_heart;			// 게시물 보여줄때, 좋아요누른 게시물인지 아닌지 구별하기위해 추가 (DB 컬럼에 없음)
 	private String media_thumnail;
 	private int report;
 	

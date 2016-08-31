@@ -25,7 +25,7 @@ public class BoardServiceImpl implements BoardService {
 	private MemberDAO mdao;
 	
 /*	전체(혹은 일부)게시물 목록을 담고있는 bList와 사용자가 좋아요를 누른 게시물 목록만 가지고있는 hList를 비교하여
-	같은 게시물 번호를 있다면 그 게시물에 setAldy_heart를 true를 적용시켜, view단에서 이를 활용하여, 좋아요 누른 게시물, 누르지 않은 게시물을 나타내준다.*/
+	같은 게시물 번호를 있다면 그 게시물에 변수(Aldy_heart)를 true를 적용시켜, view단에서 이를 활용하여, 좋아요 누른 게시물, 누르지 않은 게시물을 나타내준다.*/
 	@Transactional
 	@Override
 	public List<BoardVO> getList(List<HeartVO> hList, String user_id, int startNum, int pagePerBlock ) {
@@ -52,6 +52,23 @@ public class BoardServiceImpl implements BoardService {
 			bhList.add(bv);
 		}
 		return bhList;
+	}
+
+	/*게시물 상세보기에서, 자신이 좋아요를 누른 게시물인지 아닌지 구별해준다*/
+	@Transactional
+	@Override
+	public BoardVO getOneList(List<HeartVO> hList, BoardVO bdList) {
+		int board_num = bdList.getBoard_num();
+		bdList.setAldy_heart(false);									
+		
+		Iterator<HeartVO> extract = hList.iterator();
+		while(extract.hasNext()) {
+			HeartVO data = extract.next();
+			if(board_num == data.getBoard_num()) {			// 사용자가 좋아요를 누른 모든 게시물 번호와, 현재 자세하게 보려는 게시물의 번호와 비교하여, 일치하면 Aldy_heart를 true로 해준다! (좋아요 눌렀다는 표시)
+				bdList.setAldy_heart(true);
+			}
+		}
+		return bdList;
 	}
 
 	/* 게시물 좋아요 (+1/-1) */
