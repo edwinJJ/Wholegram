@@ -305,21 +305,21 @@ i[id^='heart_full'] {
                   <input type="hidden" id="board_num" name="board_num" value="${bdList.board_num}" /> 
                   <input type="text" id="content${bdList.board_num}" name="content${bdList.board_num}" style="width: 214px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('${bdList.board_num}', '${bdList.user_id}')" placeholder="댓글달기..." /> 
                   <a href="#self" onclick="openPopup(${bdList.board_num})"> 
-                     <i class="fa fa-ellipsis-h fa-2x fr" style="color: #bfbfbf;" aria-hidden="true"></i>
+                     <i class="fa fa-ellipsis-h fa-2x fr" style="color: #bfbfbf; margin-top:17px;" aria-hidden="true"></i>
                   </a>
                </div>
             </div>
             
             <!-- option 메뉴 팝업 -->
-                  <div id="popup_wrap">
-                     <div id="popupLayer${bdList.board_num}" class="popupLayer">
-                        <div class="bg"></div>
-                        <ul id="popupContents">
-                           <li><a href="${bdList.media }" download>다운로드</a></li>
-                           <li><a href="#self" onclick="closePopup(${bdList.board_num})">취소</a></li>
-                        </ul>
-                     </div>
-                  </div>
+            <div id="popup_wrap">
+               <div id="popupLayer${bdList.board_num}" class="popupLayer">
+                  <div class="bg"></div>
+                  <ul id="popupContents">
+                     <li><a href="${bdList.media }" download>다운로드</a></li>
+                     <li><a href="#self" onclick="closePopup(${bdList.board_num})">취소</a></li>
+                  </ul>
+               </div>
+            </div>
    </div>
 </div>
 

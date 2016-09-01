@@ -89,7 +89,7 @@ public class UserController {
 			FollowVO vo = new FollowVO();
 			vo.setFollower( uid );
 			vo.setFollowing( user_id );
-			vo.setFlag(0);							// follow 테이블에 입력
+			vo.setFlag(0);												// follow 테이블에 입력
 			if(fservice.followCheck(uid, user_id)){
 				fservice.followInsert(vo);	
 				fservice.statusUpdate(uid , user_id,1);

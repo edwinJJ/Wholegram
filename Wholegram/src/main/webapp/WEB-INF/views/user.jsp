@@ -210,9 +210,9 @@
 			margin-left: -20%;
 		}
 		#profile_btn {
-			margin-left: 1%;
-			position: absolute;
-		    left: 33%;
+			/* position: absolute; */
+		    /* left: 33%; */
+		    padding-left: 25%;
 		    top: 7%;
 		}
 		#profile_btn2 {
@@ -239,6 +239,8 @@
 			overflow:hidden;
 	        height:auto;
 			font-size: 20px;
+			position: absolute;
+	          top: 66%;
 		}
 		#profile_intro_scope2 {
 			margin-left: -20%;
@@ -319,9 +321,6 @@
       #user_id2 {
          font-size: 20px;
          margin-left: -20%;
-      }
-      #profile_btn {
-         margin-left: 1%;
       }
       #profile_btn2 {
          margin-top: 1%;
@@ -431,15 +430,15 @@
       }
       #profile_name{
        position: absolute;
-		top: 50%;
+		top: 42%;
       }
       #profile_info{
-   		top: 100%;
+   		top: 120%;
       }
       #gender_img {
       	width:25px;
       	height:25px;
-      	margin-top:-12px;
+      	margin-top:-5px;
       }
       #gender_img2 {
       	width:15px;
@@ -728,15 +727,16 @@
                </c:choose>
             </c:otherwise>
          </c:choose>
-         <span id="profile_name">${vo.user_name }</span><br/>
-         <c:choose>
-            <c:when test="${vo.gender == 'm'}">
-               <img id="gender_img" src="/resources/Image/man.jpg"/><br/>
-            </c:when>
-            <c:when test="${vo.gender == 'w'}">
-               <img id="gender_img" src="/resources/Image/woman.jpg"/><br/>
-            </c:when>
-         </c:choose>
+         <span id="profile_name">${vo.user_name }
+	         <c:choose>
+	            <c:when test="${vo.gender == 'm'}">
+	               <img id="gender_img" src="/resources/Image/man.jpg"/><br/>
+	            </c:when>
+	            <c:when test="${vo.gender == 'w'}">
+	               <img id="gender_img" src="/resources/Image/woman.jpg"/><br/>
+	            </c:when>
+	         </c:choose>
+         </span><br/>
          <div id="profile_intro_scope">
             <span id="profile_intro">${vo.info }</span>
          </div>
@@ -1096,9 +1096,12 @@
 			$("#tag").toggle();
 		}
 		
+		String.prototype.replaceAll = function(org, dest) {
+	       return this.split(org).join(dest);
+	    }
+		
 		function insertReply( bno, uid ) {
 	      var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
-	      alert(reply_content);
 	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
 	      
 	      $.ajax({

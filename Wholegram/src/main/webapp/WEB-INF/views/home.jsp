@@ -302,7 +302,6 @@
 	   
 	   function insertReply( bno, uid ) {
 	      var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
-	      alert(reply_content);
 	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
 	      
 	      $.ajax({

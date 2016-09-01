@@ -77,7 +77,7 @@ public class BoardController {
 			int startNum = ( page - 1 ) * pagePerBlock;
 			
 			
-			List<HeartVO> hList = hService.getaldyList(user_id); 								// 게시글에 이미 좋아요를 누른 게시물 목록 추출 (DB -> Heart table)
+			List<HeartVO> hList = hService.getaldyList(user_id); 								// 좋아요를 누른 게시물 목록 추출 (DB -> Heart table)
 			
 			
 			List<BoardVO> bList = bService.getList( hList, user_id, startNum, pagePerBlock ); 	// home 게시글 리스트 -> 좋아요 누른/누르지않은 게시물을 구분해서 리스트를 가져옴 (BoardVO에 좋아요 '누른/안누른'을 구분하는 변수가 존재함)
@@ -374,10 +374,13 @@ public class BoardController {
 		model.addAttribute("sessionId", user_id);
 
 		if (user_id != null) {
-			BoardVO bdList = bService.boardList(board_num);		// 번호에 해당되는 게시물에대한 정보
+			BoardVO bdList = bService.boardList(board_num);				// 번호에 해당되는 게시물에대한 정보
+			
+			List<HeartVO> hList = hService.getaldyList(user_id); 		// 좋아요를 누른 게시물 목록 추출 (DB -> Heart table)
+			bdList = bService.getOneList( hList, bdList);  				// 지금 볼 게시글이 좋아요 누를 누른 게시물인지 확인
 			
 			List<ReplyVO> rList = new ArrayList<ReplyVO>();
-			rList = rService.getList(bdList.getBoard_num());	// 게시물에대한 댓글리스트를 가져옴
+			rList = rService.getList(bdList.getBoard_num());			// 게시물에대한 댓글리스트를 가져옴
 			
 			mav.addObject("bdList", bdList);
 			mav.addObject("replyResult", rList);

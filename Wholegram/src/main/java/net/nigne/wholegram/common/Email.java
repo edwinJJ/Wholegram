@@ -52,7 +52,7 @@ public class Email {
             session.setDebug(true); 														     // 메일을 전송할 때 상세한 상황을 콘솔에 출력한다.
             
             MimeMessage msg = new MimeMessage(session);
-            msg.setSubject("Wholegram 가입 Email인증");
+            msg.setSubject("Wholegram Email인증");
             Address fromAddr = new InternetAddress("wholegramroot@gmail.com");					 // 보내는사람 EMAIL
             msg.setFrom(fromAddr);
             

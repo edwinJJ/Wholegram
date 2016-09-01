@@ -304,7 +304,6 @@
          <ul class="nav nav-tabs">
              <li id ="navi-tag" style="display:block"><a onclick= "clickTag()" >Tag</a></li>
              <li id ="navi-filter" style="display:block;"><a onclick= "clickFileter()" >Filter</a></li>
-             <li id ="navi-direct" style="display:block"><a onclick= "clickDirect()" >Direct</a></li>
          </ul>
          
          <div id = "setTag" class = "tag" style="display:block; ">
@@ -341,7 +340,6 @@
             <table>
                <tr>
                   <td onclick="upload()"><i class="fa fa-paper-plane fa-2x" aria-hidden="true" ></i></td>
-                  <td onclick="convertTohashTag()" ><input type="button" value="Tag test"></td>
                </tr>
             </table>
          </div>

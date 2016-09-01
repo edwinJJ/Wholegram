@@ -177,11 +177,9 @@ function check_Notice_indicate(notice_num, board_num, user_id) {
 		dataType:'text',
 		success : function(result) {
 			if(board_num == "" || board_num == null) {
-				alert("테스트1");
-				location.href="/" + user_id + "";
+				location.href="/" + user_id + "";		// User페이지 이동
 			} else {
-				alert("테스트2");
-				location.href = "/board/" + board_num; // 상세페이지 이동 
+				location.href = "/board/" + board_num; 	// 상세페이지 이동 
 			}
 		},
 		error : function(result){

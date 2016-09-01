@@ -140,7 +140,7 @@ var thisPage = false;                  // 메시지 페이지가 아니라는 �
 function insertFollow( uid, mno ) {
    $.ajax({
       type : 'POST',
-      url : '/person/' + uid,
+      url : '/user/' + uid,
       headers : {
          "Content-Type" : "application/json",
          "X-HTTP-Method-Override" : "POST",
