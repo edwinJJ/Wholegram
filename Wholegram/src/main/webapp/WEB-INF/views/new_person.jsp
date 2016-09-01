@@ -112,9 +112,7 @@
                            <c:forEach items="${bdList}" var="bl">
                               <c:forEach items="${bl}" var="bd">
                                  <c:if test="${bd.user_id == mb.user_id}">
-                                 <c:if test="${bd.media_type == 'i'}">
-                                    <img id="${bd.user_id}" class="cnt_img ${bd.board_num} fl" src="${bd.media}" />
-                                 </c:if>
+                                 	<img id="${bd.user_id}" class="cnt_img ${bd.board_num} fl" src="${bd.media_thumnail}" />
                                  </c:if>
                               </c:forEach>
                            </c:forEach>
@@ -139,8 +137,8 @@ var thisPage = false;                  // 메시지 페이지가 아니라는 �
 
 function insertFollow( uid, mno ) {
    $.ajax({
-      type : 'POST',
-      url : '/user/' + uid,
+      type : 'GET',
+      url : '/person/' + uid,
       headers : {
          "Content-Type" : "application/json",
          "X-HTTP-Method-Override" : "POST",

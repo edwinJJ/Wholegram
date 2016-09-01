@@ -13,6 +13,8 @@
    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
    <script type="text/javascript" src="/resources/js/search.js"></script>
+   <script type="text/javascript" src="/resources/js/jquery.modal.js"></script>
+   <link href="/resources/css/jquery.modal.css" type="text/css" rel="stylesheet" />
 <title></title>
 <style>
 input[type="button"], input[type="text"] {
@@ -193,6 +195,9 @@ i[id^='heart_full'] {
    color: red;
 }
 </style>
+
+
+
 </head>
 <body>
 <!-- Header -->
@@ -425,9 +430,8 @@ i[id^='heart_full'] {
       }
       
       function insertReply( bno, uid ) {
-         var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
-         alert(reply_content);
-         var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
+         var reply_content = $("#content"+bno).val();
+         var url = "/board/"+ bno +"/1/" + uid;
          
          $.ajax({
             type : 'POST',
@@ -483,6 +487,23 @@ i[id^='heart_full'] {
 				}	
 			});
 		}
+      
+     	/* 관리자 로그아웃 */
+	  	$(document).ready(function(e) {				
+	  		$('a#confirm').click(function() {		// 
+	  			modal({
+	  				type: 'confirm',
+	  				title: 'Logout',
+	  				text: '로그아웃 하시겠습니까?',
+	  				callback: function(result) {
+	  					if(result == true) {
+	  						close_message();
+	  						location.href="/user/logout";
+	  					} 
+	  				}
+	  			});
+	  		});
+	  	});
 </script>
 
 <div id="chat_box"></div>

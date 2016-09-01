@@ -46,7 +46,7 @@ import net.nigne.wholegram.service.NoticeService;
 @RestController
 @RequestMapping("/")
 public class UploadController {
-	public static String PATH = "C:\\item\\";
+	public static String PATH = "E:\\item\\";
 	public static String URLPATH = "/resources/upload/";
 	public static String destination="";
 	private static String OS = System.getProperty("os.name").toLowerCase();
@@ -132,24 +132,29 @@ public class UploadController {
 			vo.setMedia_type(param.get("type").toString());
 			vo.setMedia_thumnail(URLPATH+"video_thumnail//"+uid+".png");
 			if(param.get("atag")!= EMPTY){
-				vo.setTag(param.get("atag").toString()); // �궗�엺 �깭洹몃�� �븯���쓣 寃쎌슦 ���옣
+				vo.setTag(param.get("atag").toString()); 
 			}
 				bs.BoardUP(vo);
-				Files.write(path, imagedata); // path�뿉 �벐�뿬吏� 媛믪쓣 �넗���룄 �뙆�씪 �옉�꽦
-			
-			if(compareToDataType(type)){
-				FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(PATH+uploadPath+uid+"."+type); // �룞�쁺�긽�쓣 �봽�젅�엫�떒�쐞濡� �옄由�..
-				System.out.println(PATH+uploadPath+uid+"."+type);
-				grabber.start();    
-				Java2DFrameConverter paintConverter = new Java2DFrameConverter(); // Frame -> bufferedImage濡� 蹂��솚�븯湲� �쐞�븳 而⑤쾭�꽣 �깮�꽦
-				ImageIO.write(resizeImage(paintConverter.getBufferedImage(grabber.grabImage(),1),295,295,type),"png", new File(destination+uid+".png")); // bufferedImage瑜� �씠誘몄�濡� ���옣
-				grabber.stop();  // for臾몄씠 �뾾�쑝誘�濡� �빐�떦 �룞�쁺�긽�쓽 泥ロ봽�젅�엫�쓣 �씠誘몄�濡� 媛��졇�샂
-			}else{
-				System.out.println("test중 : " + type);
-				BufferedImage buf = ImageIO.read(new File(PATH+uploadPath+uid+"."+type));
-				ImageIO.write(resizeImage(buf,200,200,type), "png",new File(destination+uid+".png"));
+				Files.write(path, imagedata); // 해당 경로로 이미지or 동영상을 저장
+			boolean Rotate = false;			  // 썸네일 이미지를 회전시킬지 안시킬지 결정하는 함수
+			if(compareToDataType(type)){	  // 동영상일 경우
+				FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(PATH+uploadPath+uid+"."+type); // 해당경로에 있는 동영상을 불러옴
+				grabber.start();  																   // 프레임 캡쳐 시작
+				int wd = grabber.grabImage().imageWidth;										   // 캡쳐된 이미지의 width 구함
+				int he = grabber.grabImage().imageHeight;										   // 캡쳐된 이미지의 height 구함
+
+				if(wd == he){
+					Rotate = true;																   // 이미지의 높이가 같은 경우 true
+				}
+				System.out.println(Rotate);
+				Java2DFrameConverter paintConverter = new Java2DFrameConverter(); // Frame -> bufferedImage로 변환
+				ImageIO.write(resizeImage(paintConverter.getBufferedImage(grabber.grabImage(),1),295,295,type,Rotate),"png", new File(destination+uid+".png")); // bufferedImage瑜� �씠誘몄�濡� ���옣
+				grabber.stop();  // 한 프레임 캡쳐 종료
+ 			}else{							//	동영상이 아닐 경우
+				BufferedImage buf = ImageIO.read(new File(PATH+uploadPath+uid+"."+type)); //해당경로에 있는 파일을 불러옴
+				ImageIO.write(resizeImage(buf,200,200,type,false), "png",new File(destination+uid+".png")); // 썸네일 이미지를 만들어 자장함
 			}
-			int board_num = bs.getBoardNum(vo);
+			int board_num = bs.getBoardNum(vo);		// 알림을 클릭하였을때 동작하기 위한 변수
 			if(param.get("content").toString().indexOf("@")!=-1){ // 게시물에 작성된 내용중에 유저를 언급하였을 경우 notice테이블에 입력됨
 				NoticeVO nvo = new NoticeVO();
 				nvo.setMedia(URLPATH+"video_thumnail//"+uid+".png");
@@ -160,10 +165,10 @@ public class UploadController {
 				nvo.setUser_id2(ls);
 				ns.insertFromUpload(nvo);
 			}
-			if(param.get("atag").toString()!="" && param.get("atag").toString()!=null){
+			if(param.get("atag").toString()!="" && param.get("atag").toString()!=null){ // 사진 업로드 할때 사진에 태그된 아이디를  notice테이블에 입력
 				System.out.println(param.get("atag").toString().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", ""));
-				String atagTemp = param.get("atag").toString().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", " ");
-				String[] tagArr =  atagTemp.split(" ");
+				String atagTemp = param.get("atag").toString().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", " "); // 모든 태그들을 제거
+				String[] tagArr =  atagTemp.split(" ");						//	단어별로 나눔
 				List<String> list = putNotice(tagArr,user_id,6);
 				NoticeVO nvo = new NoticeVO();
 				nvo.setMedia(URLPATH+"video_thumnail//"+uid+".png");
@@ -185,11 +190,11 @@ public class UploadController {
 	@RequestMapping(value = "/getFollowingUser", method = RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> GetFollowingAjax(HttpServletRequest request) throws Exception{
 		
-		HttpSession session = request.getSession();	
+		HttpSession session = request.getSession();					
 		
 		ResponseEntity<Map<String,Object>> entity = null;
-		String user_id = (String)session.getAttribute("user_id");
-		List<FollowVO> ls = fs.getMyFollwerList(user_id);
+		String user_id = (String)session.getAttribute("user_id"); // 현재 접속한 유저 아이디를 가져옴
+		List<FollowVO> ls = fs.getMyFollwerList(user_id); 		  // 나를 팔로워 하고 있는 목록 불러옴
 		Map<String,Object> map = new HashMap<>();
 		map.put("list", ls);
 		
@@ -201,7 +206,8 @@ public class UploadController {
 		}
 		return entity;
 	}
-	public static boolean find(List<String> buf,String idx){
+	
+	public static boolean find(List<String> buf,String idx){ // 아이디가 중복되어서 언급되거나 태그된 경우를 체크
 		boolean flag = false;
 		
 		for(String s:buf){
@@ -212,9 +218,9 @@ public class UploadController {
 		return flag;
 	}
 	public static void osSetting(String OS){ // OS 에 따라 경로를 설정해줌
-		if(OS.indexOf("win") >= 0){
-			PATH = "C:\\item\\"; 
-			destination="C:\\item\\video_thumnail\\";
+		if(OS.indexOf("win") >= 0){		     // OS가 윈도우일 경우
+			PATH = "E:\\item\\"; 
+			destination="E:\\item\\video_thumnail\\";
 			File video = new File(PATH+"video");
 			File image = new File(PATH+"image");
 			File videoThumnail = new File(PATH+"video_thumnail");
@@ -225,7 +231,7 @@ public class UploadController {
 			}
 		}
 		
-		if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 ){
+		if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 ){  // OS가 Unix or linux일 경우
 			PATH ="/home/test/upload/";
 			URLPATH="/resources/upload/";
 			destination="/home/test/upload/video_thumnail/";
@@ -247,6 +253,7 @@ public class UploadController {
 		}
 		return path;
 	}
+	
 	public List<String> putNotice(String[] idx,String user_id,int flag){ // 리스트에다가 notice될 아이디값을 입력받고 리턴
 		List<String> ls = new ArrayList<String>();
 		for(String s:idx){
@@ -259,6 +266,7 @@ public class UploadController {
 		}
 		return ls;
 	}
+	
 	public static boolean compareToDataType(String type){ // 들어온 타입이 비디오일 경우 true 아니면 false로 처리
 		boolean flag = false;
 		
@@ -269,9 +277,9 @@ public class UploadController {
 		return flag;
 	}
 	
-	// 이미지를 resizing
-	public static BufferedImage resizeImage(BufferedImage image, int width, int height, String type) {
-		float w = new Float(width) ;
+	/* 썸네일 이미지를 만들어주는 역할*/
+	public static BufferedImage resizeImage(BufferedImage image, int width, int height, String type,boolean flag) {
+		float w = new Float(width) ;		// 이미지의 높이 넓이를 불러옴
 		float h = new Float(height) ;
 
 		if ( w <= 0 && h <= 0 ) {
@@ -286,14 +294,23 @@ public class UploadController {
 		int wi = (int) w;
 		int he = (int) h;
 		
-		BufferedImage resizedImage = new BufferedImage(wi,he,BufferedImage.TYPE_INT_RGB);
-		Graphics2D rImage = (Graphics2D) resizedImage.getGraphics();
-		rImage.drawImage(image.getScaledInstance(wi,he,image.SCALE_AREA_AVERAGING),0,0,wi,he,null);
+		BufferedImage resizedImage = new BufferedImage(wi,he,BufferedImage.TYPE_INT_RGB); // 이미지를 불러옴
+		Graphics2D rImage = (Graphics2D) resizedImage.getGraphics();					  // 이미지를 2D화 시킴
+		rImage.drawImage(image.getScaledInstance(wi,he,image.SCALE_AREA_AVERAGING),0,0,wi,he,null); // 이미지 썸네일 만들기
 		
-		if(compareToDataType(type)) {
-	         return Scalr.rotate(resizedImage, Rotation.CW_90);
+		if(compareToDataType(type) ) {
+			System.out.println(compareToDataType(type));
+			if(flag){												//원본 이미지의 가로 세로가 같은 경우
+				System.out.println("2"+flag);
+				return resizedImage;								// 회전없이 이미지 저장
+				
+			}else													//원본 이미지의 가로 세로가 다른경우
+				return Scalr.rotate(resizedImage, Rotation.CW_90);  // 이미지를 90도 회전
 		} else {
-			return resizedImage;
+			if(wi == he)
+				return resizedImage;
+			else
+				return Scalr.rotate(resizedImage, Rotation.CW_90);
 		}
 	}
 	/* TODO �젣嫄곗삁�젙

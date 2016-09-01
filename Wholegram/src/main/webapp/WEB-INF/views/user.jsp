@@ -210,9 +210,7 @@
 			margin-left: -20%;
 		}
 		#profile_btn {
-			/* position: absolute; */
-		    /* left: 33%; */
-		    padding-left: 25%;
+			margin-left: 25%;
 		    top: 7%;
 		}
 		#profile_btn2 {
@@ -852,13 +850,17 @@
 				<div id="popupLayer" class="popupLayer">
 					<div class="bg"></div>
 					<ul id="popupContents">
-						<li><a href="#self" onclick="insertReport(${bd.board_num})">부적절한 콘텐츠 신고</a></li>
+						<c:choose>
+							<c:when test="${sessionId != vo.user_id}">
+								<li><a href="#self" id="diss" onclick="insertReport(${bd.board_num})">부적절한 콘텐츠 신고</a></li>
+							</c:when>
+						</c:choose>
 						<c:choose>
 							<c:when test="${sessionId == vo.user_id}">
 								<li><a id="delete" href="#" id="">삭제</a></li>
 							</c:when>
 						</c:choose>
-						<li><a href="#" id="">다운로드</a></li>
+						<li><a href="#" id="downloads" download>다운로드</a></li>
 						<li><a href="#self" onclick="closePopup()">취소</a></li>
 					</ul>
 				</div>
@@ -872,8 +874,8 @@
 	
 	<script>
 	var sessionId = "${sessionId}";		// 접속자 ID
-	var currentId = "${vo.user_id}"
-	var thisPage = false;					// 메시지 페이지가 아니라는 의미
+	var currentId = "${vo.user_id}"		// 다른 User페이지 이동시, 그 유저 ID
+	var thisPage = false;				// 메시지 페이지가 아니라는 의미
 	var VIDEO = "m";
 	var IMAGE = "i";
 	var FLAG = true;
@@ -922,21 +924,26 @@
 	    	var temp = "";
 	    	$(result.list).each(function(){
 	    		if(this.following != sessionId){
-	    			if( this.follower == sessionId && this.flag == 1)
+	    			if( this.follower == sessionId && this.flag == 1) {
 	    				if(this.default_profile != 1) {
 	    					temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='following' id='following"+this.following+"' onclick='unfollowingClick(\""+this.following+"\")' value='팔로잉'></div>";
 	    				} else {
 	    					temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='following' id='following"+this.following+"' onclick='unfollowingClick(\""+this.following+"\")' value='팔로잉'></div>";
 	    				}
-    				else {
+	    			} else {
     					if(this.default_profile != 1) {
 	    					temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='follow' id='follow"+this.following+"' onclick='followingClick(\""+this.following+"\")' value='팔로우'></div>";
     					} else {
     						temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span><input type='button' class='follow' id='follow"+this.following+"' onclick='followingClick(\""+this.following+"\")' value='팔로우'></div>";
     					}
 		    		}
-	    		}else
-    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span></div>";
+	    		}else {
+	    			if(this.default_profile != 1) {
+    					temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.following+"'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span></div>";
+	    			} else {
+	    				temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.following+"'>"+this.following+"</a></span></div>";
+	    			}
+	    		}
 	    		
     		});
 	    	document.getElementById("body-container").innerHTML= temp;
@@ -981,7 +988,7 @@
 	    function setFollowingList(result){ // 팔로잉show에서 받아온 데이터를 알맞게 정렬함
 	    	var temp = "";
 	    	$(result.list).each(function(){
-	    		if(this.follower != sessionId)
+	    		if(this.follower != sessionId) {
 	    			if( this.following == sessionId){
 	    				if(this.default_profile != 1) {
 	    					temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='following' id='following"+this.follower+"' onclick='unfollowingClick(\""+this.follower+"\")' value='팔로잉'></div>";
@@ -995,8 +1002,13 @@
 	    					temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span><input type='button' class='follow' id='follow"+this.follower+"' onclick='followingClick(\""+this.follower+"\")' value='팔로우'></div>";
 	    				}
 	    			}
-	    		else
-	    			temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span></div>";
+	    		} else {
+	    			if(this.default_profile != 1) {
+	    				temp += "<div class='f_list'><img id='thumbnail' src='/user/getByteImage/"+this.follower+"'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span></div>";
+	    			} else {
+	    				temp += "<div class='f_list'><img id='thumbnail' src='/resources/Image/Default.png'/><span class='f_text'><a href='/"+this.follower+"'>"+this.follower+"</a></span></div>";
+	    			}
+	    		}
 	    	});
 	    	document.getElementById("body-container").innerHTML= temp;
 	    }
@@ -1101,8 +1113,8 @@
 	    }
 		
 		function insertReply( bno, uid ) {
-	      var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
-	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
+	      var reply_content = $("#content"+bno).val();
+	      var url = "/board/"+ bno +"/1/" + uid;
 	      
 	      $.ajax({
 	         type : 'POST',
@@ -1114,8 +1126,8 @@
 	            JSON.stringify({content:reply_content}),
 	         dataType : 'json',
 	         success : function(result){
-	            //setReplyList(result.result, bno);
-	        	 addReplyList(result.result, bno);
+	            setReplyList(result.result, bno);
+	        	 //addReplyList(result.result, bno);
 	         },
 	         error : function(request,status,error) {
 	            alert("insertReply fail");
@@ -1162,14 +1174,15 @@
 		
 		function setReplyList(data, bno) {
 			var	result	= "";
-
 			$(data).each(function() {	
-				result += "<li id='rep'><a class='user_id' href='/"+this.user_id+"'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
+				result += "<li><a class='user_id fwb' href='/"+ this.user_id +"'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
 				if( sessionId == this.user_id ) {
-					result += "<input type='button' class='deleteBtn fr' value='X' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
-				}
+					result += " " + "<input type='button' class='deleteBtn fr' value='X' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
+				} 
+				$("#content"+bno).val("");
 			});
-			document.getElementById( "cnt_reply" ).innerHTML = result;
+
+			document.getElementById( "cnt_reply").innerHTML = result;
 		}
 		
 		function addReplyList(data, bno) {
@@ -1258,15 +1271,39 @@
 		    	    	$("#rep_inp").html($("#rep_inp").html()+"</a>");
 		    	    	$("#rep_inp").html($("#rep_inp").html()+'<input type="hidden" id="board_num" name="board_num" value="'+result.bd.board_num+'" /> ');
 		    	    	$("#rep_inp").html($("#rep_inp").html()+"<input type=\"text\" id=\"content" + result.bd.board_num+"\" name=\"content"+result.bd.board_num+"\" style=\"width: 450px; outline-style: none;\" onkeydown=\"javascript:if( event.keyCode == 13 ) insertReply('" + result.bd.board_num +"' , '"+result.bd.user_id+"')\" placeholder=\"댓글달기...\" />");						
-		    	    	$("#rep_inp").html($("#rep_inp").html()+"<i class='fa fa-ellipsis-h fa-2x fr' onclick='openPopup("+result.bd.board_num+")' style='color: #bfbfbf;' aria-hidden='true'></i>");
-
+		    	    	$("#rep_inp").html($("#rep_inp").html()+"<i class='fa fa-ellipsis-h fa-2x fr' onclick='openPopup("+result.bd.board_num+")' style='color: #bfbfbf; margin-top:10px; margin-right:5px;' aria-hidden='true'></i>");
+						$("#downloads").attr("href",result.bd.media);
+						$("#diss").attr("onclick","insertReport("+result.bd.board_num+")");
 	    	    },
 	    	    error:function(request,status,error){
     	    	    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
     	   	 	}
 	    	});
 		}
-		
+		function insertReport( board_num ) {
+		      $.ajax({
+		         type : 'POST',
+		         url : "/board/report/" + board_num,
+		         headers : {
+		            "Content-Type" : "application/json",
+		         },
+		         data : '',
+		         dataType : 'text',
+		         success : function(value){
+		        	 console.log(value);
+		        	if(value == "INCREASE") {
+			            alert("게시물 신고 완료되었습니다.");	        		
+		        	} else {
+		        		alert("게시물 신고를 취소하였습니다.");
+		        	}
+		            var popup = document.getElementById("popupLayer" + board_num);
+		            $(popup).fadeOut();
+		         },
+		         error:function(request,status,error){
+		              alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		          }
+		      });
+		}
 		function readReply(data){ // 받아온 댓글을 정렬
 			var result ="";
 			for(var d in data){

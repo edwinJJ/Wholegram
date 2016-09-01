@@ -104,32 +104,37 @@ public class UserController {
 			}
 		return entity;
 	}
+	
 	// 팔로우 삭제
-		@RequestMapping( value = "/{uid}/{uid2}", method = RequestMethod.POST )
-		public ResponseEntity<Boolean> followDelete( @PathVariable("uid") String uid,@PathVariable("uid2") String uid2, HttpServletRequest request, Model model, HttpServletResponse response ) {
-			ResponseEntity<Boolean> entity = null;
-			HttpSession session = request.getSession();
-			String user_id = (String)session.getAttribute("user_id");
-			try {
-				FollowVO vo = new FollowVO();
-				vo.setFollower( uid );
-				vo.setFollowing( user_id );
-				fservice.userfollowDelete(vo);
-				if(fservice.followCheck(uid, user_id)){
-					fservice.statusUpdate(uid , user_id,0);
-				}
-				NoticeVO nvo = new NoticeVO();
-				nvo.setUser_id(user_id);
-				nvo.setOther_id(uid);
-				nvo.setFlag(1);
-				nservice.followDelete(nvo);
-				entity = new ResponseEntity<>( true, HttpStatus.OK);
-			} catch( Exception e ) {
-				entity = new ResponseEntity<>( false,HttpStatus.BAD_REQUEST );
-				System.out.println(e.toString());
+	@RequestMapping( value = "/{uid}/{uid2}", method = RequestMethod.POST )
+	public ResponseEntity<Boolean> followDelete( @PathVariable("uid") String uid,@PathVariable("uid2") String uid2, HttpServletRequest request, Model model, HttpServletResponse response ) {
+		ResponseEntity<Boolean> entity = null;
+		HttpSession session = request.getSession();
+		String user_id = (String)session.getAttribute("user_id");
+		
+		
+		try {
+			FollowVO vo = new FollowVO();
+			vo.setFollower( uid );
+			vo.setFollowing( user_id );
+			fservice.userfollowDelete(vo);
+			
+			
+			if(fservice.followCheck(uid, user_id)){
+				fservice.statusUpdate(uid , user_id,0);
 			}
-			return entity;
+			NoticeVO nvo = new NoticeVO();
+			nvo.setUser_id(user_id);
+			nvo.setOther_id(uid);
+			nvo.setFlag(1);
+			nservice.followDelete(nvo);
+			entity = new ResponseEntity<>( true, HttpStatus.OK);
+		} catch( Exception e ) {
+			entity = new ResponseEntity<>( false,HttpStatus.BAD_REQUEST );
+			System.out.println(e.toString());
 		}
+		return entity;
+	}
 		
 	// 팔로잉 목록 보여주기
 	@RequestMapping(value = "/getFollower/{id}", method = RequestMethod.POST)

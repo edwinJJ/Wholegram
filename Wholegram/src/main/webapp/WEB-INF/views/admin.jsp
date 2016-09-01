@@ -12,6 +12,8 @@
   	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 	<script type="text/javascript" src="/resources/js/search.js"></script>
+	<script type="text/javascript" src="/resources/js/jquery.modal.js"></script>
+	<link href="/resources/css/jquery.modal.css" type="text/css" rel="stylesheet" />
 <title></title>
 <style>
 * {
@@ -97,6 +99,7 @@ table, th, td {
 }
 
 </style>
+
 </head>
 <body>
 <%@include file="./admin_header.jsp" %>
@@ -146,45 +149,67 @@ table, th, td {
 
 
 <script>
+	var sessionId = "${sessionId}";		// 접속자 ID
+	var currentId = "${vo.user_id}"		// 다른 User페이지 이동시, 그 유저 ID
+	var thisPage = false;				// 메시지 페이지가 아니라는 의미
+	
+	function openPopup( bno ) {
+		var popup = document.getElementById("popupLayer" + bno);
+		$(popup).show();
+	 }
+	 
+	function closePopup( bno ) {
+		var popup = document.getElementById("popupLayer" + bno);
+		$(popup).fadeOut();
+	}
+	
+	function deleteAll( bno ) {
+		$.ajax({
+			type : 'delete',
+			url : '/admin/delete/'+ bno,
+			headers : {
+				"Content-Type" : "application/json",
+				"X-HTTP-Method-Override" : "DELETE",
+			},
+			data : '',
+			dataType : 'json',
+			success : function( result ) {
+				setList(result.boardList);
+			},
+			error : function(request,status,error) {
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}	
+		});
+	}
+	
+	function setList(data) {
+		var	result	= "";
+		$(data).each(function() {	
+			result += "<tr><td><a href='/admin/"+ this.board_num +"'><img class='img' src='"+ this.media_thumnail +"'/></a></td><td>"+ this.board_num+"</td><td>"+ this.user_id+"</td><td onclick='openPopup("+this.board_num+")'>"+ this.report+"</td><td><input type='button' id='deleteBtn' onclick='deleteAll("+this.board_num+")' value='X'/></td></tr>";
+		});
+		document.getElementById( "tbody" ).innerHTML = result;
+	}
 
-function openPopup( bno ) {
-	var popup = document.getElementById("popupLayer" + bno);
-	$(popup).show();
- }
- 
-function closePopup( bno ) {
-	var popup = document.getElementById("popupLayer" + bno);
-	$(popup).fadeOut();
-}
-
-function deleteAll( bno ) {
-	$.ajax({
-		type : 'delete',
-		url : '/admin/delete/'+ bno,
-		headers : {
-			"Content-Type" : "application/json",
-			"X-HTTP-Method-Override" : "DELETE",
-		},
-		data : '',
-		dataType : 'json',
-		success : function( result ) {
-			setList(result.boardList);
-		},
-		error : function(request,status,error) {
-			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-		}	
+	
+	/* 관리자 로그아웃 */
+	$(document).ready(function(e) {				
+		$('a#confirm').click(function() {		// 
+			modal({
+				type: 'confirm',
+				title: 'Logout',
+				text: '로그아웃 하시겠습니까?',
+				callback: function(result) {
+					if(result == true) {
+						close_message();
+						location.href="/user/logout";
+					} 
+				}
+			});
+		});
 	});
-}
-
-function setList(data) {
-	var	result	= "";
-	$(data).each(function() {	
-		result += "<tr><td><a href='/admin/"+ this.board_num +"'><img class='img' src='"+ this.media_thumnail +"'/></a></td><td>"+ this.board_num+"</td><td>"+ this.user_id+"</td><td onclick='openPopup("+this.board_num+")'>"+ this.report+"</td><td><input type='button' id='deleteBtn' onclick='deleteAll("+this.board_num+")' value='X'/></td></tr>";
-	});
-	document.getElementById( "tbody" ).innerHTML = result;
-}
-
 </script>
+	<div id="chat_box"></div>
+	<script src="/resources/js/message.js"></script>
 </body>
 
 </html>

@@ -25,6 +25,32 @@
 	<script type="text/javascript" src="/resources/js/jquery.modal.js"></script>
 
     <style type="text/css">
+    	* {
+		   padding: 0;
+		   margin: 0;
+		}
+	    input[type="button"] {
+		    background: #fff;
+		    color: #b3b3b3;
+		    outline-style: none;
+		    border-style: none;
+		    -webkit-appearance: button;
+    		cursor: pointer;
+		}
+		.fr {
+		    float: right;
+		}
+    	input[id^=content] {
+		    width: 80% !important;
+		    margin-left: 2%;
+		    margin-right: 7%;
+		    border-style: none;
+		    -webkit-appearance: button;    
+		    line-height: inherit;
+		}
+	    i[id^='heart_full'] {
+		    color: red;
+		}
     	.col-lg-4, .col-md-4, .col-sm-4, .col-xs-4{
     		    margin-left: 0px !important;
     		    padding-bottom: 10px;
@@ -85,6 +111,50 @@
 		#profile_intro_scope {
 			width: 400px;
 		}
+			.popupLayer {
+			display: none;
+		}
+		#popupContents {
+			z-index: 19999;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			width: 514px;
+			height: 205px;
+			margin: -102.5px 0 0 -257px;
+		}
+		
+		#popupContents  li {
+			border: 1px solid #efefef;
+			background: #fff;
+			width: 478px;
+			height: 50px;
+			padding: 0px 16px;
+			text-align: center;
+			line-height: 50px;
+		}
+		
+		
+		#popupContents  li:hover {
+			background: #efefef;
+			font-weight: 600;
+		}
+		
+		#popupContents li:nth-child(1), #popupContents li:nth-child(2),
+			#popupContents li:nth-child(3) {
+			border-bottom: none;
+		}
+	    .popupLayer .bg {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #000;
+			opacity: 0.7;
+			z-index:9999;
+		}
+		
 		#profile_intro {
 			overflow:hidden;
 	        height:auto;
@@ -338,6 +408,9 @@
 								<a id = "next" class="carousel-control right" href="#modalCarousel" data-slide="next" onclick=""> <i class="glyphicon glyphicon-chevron-right"></i></a>
 							</div>
 							<div id="content"></div>
+							<div id="cnt_board_heart"></div>
+							<div id="text"></div>
+
 							<div id="li">
 							<ul id="cnt_reply"></ul>
 							</div>
@@ -349,6 +422,23 @@
 					</div>
 				</div>
 			</div>
+			
+			<div id="popup_wrap"> 
+				<div id="popupLayer" class="popupLayer">
+					<div class="bg"></div>
+					<ul id="popupContents">
+						<li><a href="#self" id="diss" onclick="insertReport(${bd.board_num})">부적절한 콘텐츠 신고</a></li>
+						<c:choose>
+							<c:when test="${sessionId == vo.user_id}">
+								<li><a id="delete" href="#" id="">삭제</a></li>
+							</c:when>
+						</c:choose>
+						<li><a href="#" id="downloads" download>다운로드</a></li>
+						<li><a href="#self" onclick="closePopup()">취소</a></li>
+					</ul>
+				</div>
+			</div>
+			
 		</div>
 	</div>
 </div>
@@ -382,7 +472,17 @@
 				}	
 			});
 		}
-	
+		function openPopup( bno ) {
+			var popup = document.getElementById("popupLayer"); 
+			$("#delete").attr("onclick","javascript:ondelete("+bno+")");
+			$(popup).fadeIn();
+		}
+		
+		function closePopup() {
+			var popup = document.getElementById("popupLayer");     
+			$(popup).fadeOut();
+			      
+		}
 		function viewclick(){
 			$("#tag").toggle();
 		}
@@ -392,8 +492,8 @@
 	    }
 			
 		function insertReply( bno, uid ) {
-	      var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
-	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
+	      var reply_content = $("#content"+bno).val();
+	      var url = "/board/"+ bno +"/1/" + uid;
 	      
 	      $.ajax({
 	         type : 'POST',
@@ -405,8 +505,8 @@
 	            JSON.stringify({content:reply_content}),
 	         dataType : 'json',
 	         success : function(result){
-	            //setReplyList(result.result, bno);
-	        	 addReplyList(result.result, bno);
+	            setReplyList(result.result, bno);
+	        	/* addReplyList(result.result, bno); */
 	         },
 	         error : function(request,status,error) {
 	            alert("insertReply fail");
@@ -447,7 +547,7 @@
 			      $(hef).show();
 			  }
 			
-			var cbh = document.getElementById("cnt_board_heart" + board_num);
+			var cbh = document.getElementById("cnt_board_heart");
 			cbh.innerHTML = "좋아요 " + result + "개";
 		}
 		
@@ -457,8 +557,9 @@
 			$(data).each(function() {	
 				result += "<li id='rep'><a class='user_id' href='#'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
 				if( sessionId == this.user_id ) {
-					result += "<input type='button' class='deleteBtn' value='삭제' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
+					result += " " + "<input type='button' class='deleteBtn fr' value='X' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
 				}
+				$("#content"+bno).val("");
 			});
 			document.getElementById( "cnt_reply" ).innerHTML = result;
 		}
@@ -469,7 +570,7 @@
 			$(data).each(function() {	
 				result += "<li id='rep'><a class='user_id' href='#'>"+ this.user_id + "</a>" + " " + "<span>" + this.content + "</span>";
 				if( sessionId == this.user_id ) {
-					result += "<input type='button' class='deleteBtn' value='삭제' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
+					result += " " + "<input type='button' class='deleteBtn fr' value='X' onclick='deleteReply(" + this.board_num +","+ this.reply_num + ")' /></li>";	
 				}
 			});
 			document.getElementById( "cnt_reply" ).innerHTML += result;
@@ -513,6 +614,7 @@
                 dataType: 'json',
                 contentType : 'application/json; charset=utf-8',
 	    	    success: function(result) {
+	    	    	console.log(result);
 	    	    	var prevNext = checkBoard(no);
 	    	    	if(result.bd.media_type == IMAGE)
 	    	    		$("#image").html('<img src="'+result.bd.media+'">'+'<i id ="viewpeople" class="fa fa-info-circle fa-2x" onclick="viewclick()"></i>');
@@ -551,14 +653,38 @@
 		    	    	$("#rep_inp").html($("#rep_inp").html()+'<input type="hidden" id="board_num" name="board_num" value="'+result.bd.board_num+'" /> ');
 		    	    	$("#rep_inp").html($("#rep_inp").html()+"<input type=\"text\" id=\"content" + result.bd.board_num+"\" name=\"content"+result.bd.board_num+"\" style=\"width: 450px; outline-style: none;\" onkeydown=\"javascript:if( event.keyCode == 13 ) insertReply('" + result.bd.board_num +"' , '"+result.bd.user_id+"')\" placeholder=\"댓글달기...\" />");						
 		    	    	$("#rep_inp").html($("#rep_inp").html()+"<i class='fa fa-ellipsis-h fa-2x fr' onclick='openPopup("+result.bd.board_num+")' style='color: #bfbfbf;' aria-hidden='true'></i>");
-
+		    	    	$("#downloads").attr("href",result.bd.media);
+		    	    	$("#diss").attr("onclick","insertReport("+result.bd.board_num+")");
 	    	    },
 	    	    error:function(request,status,error){
     	    	    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
     	   	 	}
 	    	});
 		}
-		
+		function insertReport( board_num ) {
+		      $.ajax({
+		         type : 'POST',
+		         url : "/board/report/" + board_num,
+		         headers : {
+		            "Content-Type" : "application/json",
+		         },
+		         data : '',
+		         dataType : 'text',
+		         success : function(value){
+		        	 console.log(value);
+		        	if(value == "INCREASE") {
+			            alert("게시물 신고 완료되었습니다.");	        		
+		        	} else {
+		        		alert("게시물 신고를 취소하였습니다.");
+		        	}
+		            var popup = document.getElementById("popupLayer" + board_num);
+		            $(popup).fadeOut();
+		         },
+		         error:function(request,status,error){
+		              alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		          }
+		      });
+		}
 		function readReply(data){
 			var result ="";
 			for(var d in data){
@@ -608,7 +734,7 @@
 		   if($("#li").scrollTop() == $("#li").prop("scrollHeight")-$("#li").height()) {
 				   $.ajax({ 
 			    		type: 'POST',
-		                url: 'rep/'+no+"/"+itemids.length,
+		                url: '/rep/'+no+"/"+itemids.length,
 		                dataType: 'json',
 		                contentType : 'application/json; charset=utf-8',
 			    	    success: function(result) {

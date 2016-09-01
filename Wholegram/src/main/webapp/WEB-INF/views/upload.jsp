@@ -327,15 +327,6 @@
                </tr>
             </table>
          </div>
-         
-         <div id="direct" class = "direct" style="display:none">
-            <table>
-               <tr>
-                  <td onclick="restore()"><i class="fa fa-comments fa-5x" aria-hidden="true" ></i></td>
-               </tr>
-            </table>
-         </div>
-         
          <div id="submitbtn" class="submitbtn"> 
             <table>
                <tr>

@@ -19,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.nigne.wholegram.common.Criteria;
@@ -73,15 +75,11 @@ public class BoardController {
 			}
 			
 			int pagePerBlock = 5;
-			//int endNum = page * 5; 
 			int startNum = ( page - 1 ) * pagePerBlock;
-			
 			
 			List<HeartVO> hList = hService.getaldyList(user_id); 								// 좋아요를 누른 게시물 목록 추출 (DB -> Heart table)
 			
-			
 			List<BoardVO> bList = bService.getList( hList, user_id, startNum, pagePerBlock ); 	// home 게시글 리스트 -> 좋아요 누른/누르지않은 게시물을 구분해서 리스트를 가져옴 (BoardVO에 좋아요 '누른/안누른'을 구분하는 변수가 존재함)
-			
 
 			/* home 게시글 댓글 리스트 (각 게시글에 해당되는 댓글들) */
 			Iterator<BoardVO> biterator = bList.iterator();
@@ -109,7 +107,6 @@ public class BoardController {
 		return mav;
 	}
 
-	// TODO - 게시물을 다 가져왔을경우 더이상 가져오지 못하게 할것 ex) return false하도록
 	/* user화면에서 스크롤시 게시물 가져옴 */
 	@RequestMapping( value = "scroll/{count}", method = RequestMethod.POST )
 	public ResponseEntity<Map<String, Object>> scrollList( @PathVariable( "count") Integer cnt,HttpServletResponse response, HttpServletRequest request ) {
@@ -166,7 +163,7 @@ public class BoardController {
 		return entity;
 	}
 	
-	/* 쩍쨘횇짤쨌횗 횈채횑횂징 */
+	/* Home에서 게시물 5개 이상이면 스크롤링으로 5개 더 보여주기 */
 	@RequestMapping(value = "/scroll/page/{page}", method = RequestMethod.POST)
 	public ModelAndView Board_Scroll_List(@PathVariable("page") int page, Locale locale, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
@@ -178,14 +175,13 @@ public class BoardController {
 
 			int pagePerBlock = 5;
 			int endNum = page * 5 - pagePerBlock;
-			System.out.println(endNum);
-			// 째횚쩍횄짹횤쩔징 횑쨔횑 횁횁쩐횈쩔채쨍짝 쨈짤쨍짜 째횚쩍횄쨔째 쨍챰쨌횕 횄횩횄창
-			List<HeartVO> hList = hService.getaldyList(user_id);
+			
+			List<HeartVO> hList = hService.getaldyList(user_id);				// 좋아요를 누른 게시물 목록 추출 (DB -> Heart table)
 
-			// home 째횚쩍횄짹횤 쨍짰쩍쨘횈짰 -> 횁횁쩐횈쩔채 쨈짤쨍짜/쨈짤쨍짙횁철쩐횎쨘 째횚쩍횄쨔째쨩 짹쨍쨘횖횉횠쩌짯 5쨔첩횂째 째횚쩍횄쨔째쨘횓횇횒 쨍쨋횁철쨍쨌 째횚쩍횄쨔째 쨍짰쩍쨘횈짰쨍짝 째징횁짰쩔횊
-			List<BoardVO> bList = bService.getList(hList, user_id, 5, endNum);
+			
+			List<BoardVO> bList = bService.getList(hList, user_id, 5, endNum);  // home 게시글 리스트 -> 좋아요 누른/누르지않은 게시물을 구분해서 리스트를 가져옴 (BoardVO에 좋아요 '누른/안누른'을 구분하는 변수가 존재함)
 
-			// home 째횚쩍횄짹횤 쨈챰짹횤 쨍짰쩍쨘횈짰
+			/* home 게시글 댓글 리스트 (각 게시글에 해당되는 댓글들) */
 			Iterator<BoardVO> biterator = bList.iterator();
 			List<ReplyVO> rList = new ArrayList<ReplyVO>();
 			List<ReplyVO> replyResult = new ArrayList<ReplyVO>();
@@ -198,7 +194,7 @@ public class BoardController {
 				while (riterator.hasNext()) {
 					ReplyVO rv = new ReplyVO();
 					rv = riterator.next();
-					replyResult.add(rv);
+					replyResult.add(rv);										// 각 번호에 해당되는 게시글의 목록을 차례로 add시킴. 
 				}
 			}
 			mav.addObject("bList", bList);
@@ -212,85 +208,94 @@ public class BoardController {
 	}
 	
 	/* 댓글 입력할 때*/ 
+	@ResponseBody
 	@RequestMapping(value = "/{board_num}/{content}/{uid}", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> insert(@PathVariable("uid")String uid, @PathVariable("board_num") int board_num, @PathVariable("content")String content, HttpServletRequest request, HttpServletResponse response) {
-		
+	public ResponseEntity<Map<String, Object>> insert(@RequestBody Map<String, Object> param,
+			@PathVariable("uid") String uid, @PathVariable("board_num") int board_num,
+			@PathVariable("content") String content, HttpServletRequest request, HttpServletResponse response) {
+
 		ResponseEntity<Map<String, Object>> entity = null;
 		HttpSession session = request.getSession();
 		String user_id = (String) session.getAttribute("user_id");
-		
+
 		if (user_id != null) {
 			List<String> compare = new ArrayList<String>();
-	         List<String> ls = new ArrayList<String>();
-	         
-	         try { 
-	            // 댓글 입력 (reply table)
-	            ReplyVO vo = new ReplyVO();
-	            vo.setBoard_num(board_num);
-	            vo.setUser_id(user_id);
-	            
-	            String test = content;
+			List<String> ls = new ArrayList<String>();
 
-	               test = test.replaceAll("@", " @").replaceAll("#"," #").replaceFirst(" ","");
-	               String[] test2 = test.split(" ");
-	               String temp=test;
-	                for(String s:test2){
-	                  if(s.indexOf("@")!=-1 || s.indexOf("#")!=-1){
-	                     if(!find(compare,s)){
-	                        System.out.println(s);
-	                        System.out.println(find(compare,s));
-	                        if(s.indexOf("@")!=-1 ){
-	                           temp = temp.replaceAll(s, "<a href=/"+s.substring(1)+">"+s+" </a>");
-	                           ls.add(s.substring(1));
-	                           compare.add(s);
-	                          
-	                        }else
-	                           temp = temp.replaceAll(s,"<a href=/hash/"+URLEncoder.encode(s,"UTF-8")+">"+s+" </a>");
-	                           compare.add(s);
-	                     }
-	                  }
-	               }
-	            
-	            vo.setContent(temp);
-	            int reply_num = rService.insert(vo);
+			try {
+				// 댓글 입력 (reply table)
+				ReplyVO vo = new ReplyVO();
+				vo.setBoard_num(board_num);
+				vo.setUser_id(user_id);
 
-	            String user = null;
-	               
-	            if (!ls.isEmpty()) {
-	               Iterator<String> it = ls.iterator();
-	               while (it.hasNext()) {
-	                  user = it.next();
-	                  // 댓글에서 언급 시에 작성자와 언급되는 사용자가 다른 경우에만 Notice에 추가
-	                  if( user != user_id && !user.equals( user_id ) ) {
-	                     nService.rnInsert(user_id, user, board_num, temp, 5, reply_num);
-	                  }
-	               }
-	            }
-	               
-	               // 접속자 ID와 게시물 작성자 ID가 다른 경우,
-	              if( uid != user_id && !uid.equals( user_id ) ) {    
-	            // 게시물에 접속자가 댓글을 입력하면 Reply, Notice table에 입력
-	                  nService.rnInsert(user_id, user, board_num, temp, 3, reply_num);
-	               }       
-	            
-	            List<ReplyVO> list = rService.getList( board_num );
-	            Map<String, Object> map = new HashMap<>();
-	            map.put("result", list);
-	            
-	            entity = new ResponseEntity<>( map, HttpStatus.OK);
-	         } catch (Exception e) {
-	            entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	            e.printStackTrace();
-	         }
-	      } else {
-	         try {
-	            response.sendRedirect("login");
-	         } catch (IOException e) {
-	            e.printStackTrace();
-	         }
-	      }
-	      return entity;
-	   }
+				String test = param.get("content").toString();
+
+				test = test.replaceAll("@", " @").replaceAll("#", " #").replaceFirst(" ", "");
+				String[] test2 = test.split(" ");
+				String temp = test;
+				for (String s : test2) {
+					if (s.indexOf("@") != -1 || s.indexOf("#") != -1) {
+						if (!find(compare, s)) {
+							System.out.println(s);
+							System.out.println(find(compare, s));
+							if (s.indexOf("@") != -1) {
+								if (mService.compareId(s.substring(1)) == 1) {
+									temp = temp.replaceAll(s, "<a href=/" + s.substring(1) + ">" + s + " </a>");
+									ls.add(s.substring(1));
+									compare.add(s);
+								}
+							} else {
+								if (!s.equals("#")) {
+									temp = temp.replaceAll(s,
+											"<a href=/hash/" + URLEncoder.encode(s, "UTF-8") + ">" + s + " </a>");
+									compare.add(s);
+								}
+							}
+						}
+					}
+				}
+
+				vo.setContent(temp.replaceAll("&63", "&#63").replaceAll("&37", "&#37").replace("&46", "&#46")
+						.replace("&92", "&#92").replace("&47", "&#47"));
+				int reply_num = rService.insert(vo);
+
+				String user = null;
+
+				if (!ls.isEmpty()) {
+					Iterator<String> it = ls.iterator();
+					while (it.hasNext()) {
+						user = it.next();
+						// 댓글에서 언급 시에 작성자와 언급되는 사용자가 다른 경우에만 Notice에 추가
+						if (user != user_id && !user.equals(user_id)) {
+							nService.rnInsert(user_id, user, board_num, temp, 5, reply_num);
+						}
+					}
+				}
+
+				// 접속자 ID와 게시물 작성자 ID가 다른 경우,
+				if (uid != user_id && !uid.equals(user_id)) {
+					// 게시물에 접속자가 댓글을 입력하면 Reply, Notice table에 입력
+					nService.rnInsert(user_id, user, board_num, temp, 3, reply_num);
+				}
+
+				List<ReplyVO> list = rService.getList(board_num);
+				Map<String, Object> map = new HashMap<>();
+				map.put("result", list);
+
+				entity = new ResponseEntity<>(map, HttpStatus.OK);
+			} catch (Exception e) {
+				entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				response.sendRedirect("login");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return entity;
+	}
 
 	/* 댓글 삭제할 때 */
 	@RequestMapping( value = "/{board_num}/{reply_num}", method = RequestMethod.DELETE )

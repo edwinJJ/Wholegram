@@ -192,7 +192,7 @@
 								<input type="hidden" id="board_num" name="board_num" value="${bd.board_num}" /> 
 								<input type="text" id="content${bd.board_num}" name="content${bd.board_num}" style="width: 450px; outline-style: none;" onkeydown="javascript:if( event.keyCode == 13 ) insertReply('${bd.board_num}', '${bd.user_id}')" placeholder="댓글달기..." /> 
 								<a href="#self" onclick="openPopup(${bd.board_num})"> 
-									<i class="fa fa-ellipsis-h fa-2x fr" style="color: #bfbfbf;" aria-hidden="true"></i>
+									<i class="fa fa-ellipsis-h fa-2x fr" style="color: #bfbfbf; margin-top:15px;" aria-hidden="true"></i>
 								</a>
 							</div>
 						</div>
@@ -301,8 +301,8 @@
 	   }
 	   
 	   function insertReply( bno, uid ) {
-	      var reply_content = ($("#content"+bno).val()).replaceAll("#","%23");
-	      var url = "/board/"+ bno +"/" + reply_content + "/" + uid;
+	      var reply_content = $("#content"+bno).val();
+	      var url = "/board/"+ bno +"/1/" + uid;
 	      
 	      $.ajax({
 	         type : 'POST',

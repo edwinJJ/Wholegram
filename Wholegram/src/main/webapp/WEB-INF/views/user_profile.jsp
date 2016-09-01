@@ -94,7 +94,7 @@
 		var thisPage = false;						// 메시지 페이지가 아니라는 의미
 		
 		function msg() { 
-			if((user_name.value != "") && (user_id.value != "") && (info.value != "") && (email.value != "") && (phone.value != "") && ($(genderMan).prop("checked") != false || $(genderWoman).prop("checked") != false)) {
+			if((user_name.value != "") && (user_id.value != "") && (user_id_label.style.color != "red") && (info.value != "") && (email.value != "") && (phone.value != "") && ($(genderMan).prop("checked") != false || $(genderWoman).prop("checked") != false)) {
 				document.getElementById("pro_edit").submit();
 				alert("프로필을 제출하였습니다.");
 			} else {
@@ -105,8 +105,12 @@
 		/* Id 중복체크 */
 		function id_chk() {
 			var id = document.getElementById("user_id").value;
-			var ic_url = "/user/id_chk/" + id;
-			if(id.length > 5) {
+			var leng = id.length;
+			if(leng < 6) { 
+				user_id_label.style.color = "red";
+				user_id_label.innerHTML = "ID는 6글자 이상 입력해주세요";
+			} else {
+				var ic_url = "/user/id_chk/" + id;
 				$.ajax({
 					type: 'POST',
 					url: ic_url,
@@ -129,7 +133,7 @@
 					error : function(result){
 						alert("e : " + result);
 					}
-				});
+				}); 
 			}
 		}
 		

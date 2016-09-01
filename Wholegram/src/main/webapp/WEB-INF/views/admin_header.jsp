@@ -1,9 +1,7 @@
 <link rel="stylesheet" href="/resources/css/admin_header.css">  
 <script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 <script src="/resources/js/news.js"></script>
-<!-- <link rel="stylesheet" href="/resources/css/w3.css">
- --> 
-
+<!-- <link rel="stylesheet" href="/resources/css/w3.css"> --> 
 
 <div id="header" style="background: #FFFFFF; width: 100%">
    <a><span id="header-logo"><input type="image" src="/resources/Image/Wholegram.png" name="logo" class="header-logo_img"></span></a>
@@ -12,6 +10,7 @@
       <a id="header-new_person" href="/person"><i class="fa fa-users fa-2x" style="color:black;"></i></a>
       <a id="header-user" href="/admin"><i class="fa fa-user fa-2x" style="color:black;"></i></a>
    </span>
+   <a href="#" id="confirm" class="btn btn-default logout2" style="margin-left:325px; margin-top:-10px;">Logout</a>
 </div>
 
 <!-- line -->

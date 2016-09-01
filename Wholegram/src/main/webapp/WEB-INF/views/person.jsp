@@ -17,7 +17,10 @@
 	<script src="https://use.fontawesome.com/9fc8d6f50a.js"></script>
 	<script type="text/javascript" src="/resources/js/search.js"></script>
 	<script src="resources/js/jquery.lazyloadxt.js" type="text/javascript"></script>
+	<script type="text/javascript" src="/resources/js/jquery.modal.js"></script>
+	<link href="/resources/css/jquery.modal.css" type="text/css" rel="stylesheet" />
 <title></title>
+
 </head>
 <body>
 <%@include file="./admin_header.jsp" %>
@@ -38,6 +41,23 @@
 			</div>
 		</div>
 	</div>
-
+<script>
+	/* 관리자 로그아웃 */
+	$(document).ready(function(e) {				
+		$('a#confirm').click(function() {		// 
+			modal({
+				type: 'confirm',
+				title: 'Logout',
+				text: '로그아웃 하시겠습니까?',
+				callback: function(result) {
+					if(result == true) {
+						close_message();
+						location.href="/user/logout";
+					} 
+				}
+			});
+		});
+	});
+</script>
 </body>
 </html>

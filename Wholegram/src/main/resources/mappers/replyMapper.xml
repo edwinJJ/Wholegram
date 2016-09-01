@@ -16,7 +16,7 @@
 		delete from reply where reply_num = #{reply_num}
 	</delete>
 	<select id="getListLimit" resultType="net.nigne.wholegram.domain.ReplyVO">
-		select * from reply where board_num = #{board_num} order by reg_date desc limit #{start},#{end}
+		select * from reply where board_num = #{board_num} limit #{start},#{end}
 	</select>
 	<select id="getReplynum" resultType="int">
 		select reply_num from reply order by reg_date desc limit 1;

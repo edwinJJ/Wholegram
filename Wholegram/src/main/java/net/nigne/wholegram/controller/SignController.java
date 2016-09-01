@@ -88,11 +88,20 @@ public class SignController{
 	/*이메일로 비밀번호 찾기*/
 	@RequestMapping(value = "/sendMailFind", method = RequestMethod.POST)
 	public ModelAndView sendMailFind(HttpServletRequest request) {
-		String emailaddress = request.getParameter("email");
+		String user_id = request.getParameter("user_id");
+		
+		try {
+			MemberVO vo = mservice.MemInfo(user_id);	// 사용자 정보 가져옴
+			String emailaddress = vo.getEmail();
+			sign.sendFindMail(emailaddress);			// 새로운 비밀번호 메일로 전송
+		} catch(Exception e) {
+			System.out.println("사용자 ID or Email 없음");
+			e.printStackTrace();
+		}
 		
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("login");
-		sign.sendFindMail(emailaddress);		// 새로운 비밀번호 메일로 전송
+		
 		return mav;
 	}
 	
