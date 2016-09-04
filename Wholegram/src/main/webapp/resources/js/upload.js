@@ -19,18 +19,18 @@
 		var IMAGETYPE = ["jpg","jpeg","gif","png","bmp"];
 	    panelInit();
 	    set_init_size(ini,canvas,context,panel);
+	    
 	    $(document).ready(function(){
 			$('#file').change(function(e) {
-				  var file    = document.querySelector('input[type=file]').files[0];
-				  console.log(VIDEOTYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length)));
-				  var reader  = new FileReader();
+				  var file    = document.querySelector('input[type=file]').files[0];									// input type='file' 불러옴
+				  var reader  = new FileReader();																	
 				  var img = document.getElementById("img");
 				  if(file.size > MAX_SIZE){
 					  alert("제한용량(50MB)을 초과하였습니다. 현재파일용량"+parseInt(file.size/MEGABYTE)+"MB");
 				  }else{
-					  reader.readAsDataURL(file);
-					  reader.onload = function  () {  
-						  if(VIDEOTYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){  //파일 타입이 비디오일 경우
+					  reader.readAsDataURL(file);																		// file을 DataURL형태로 읽음.
+					  reader.onload = function  () {
+						  if(VIDEOTYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){ // 파일 타입이 비디오일 경우
 							  cvs.style.display = "none";
 							  vss.style.display = "block";
 							  document.getElementById("videotype").src=reader.result;
@@ -41,8 +41,8 @@
 							  $("#setTag").css("display","none");
 							  $("#filter").css("display","none");
 							  $("#direct").css("display","block");
-							  type = "m";
-							  } else if(IMAGETYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){ // 파일타입이 이미지일 경우
+							  type = "m";																							// media 타입(동영상타입)
+							  } else if(IMAGETYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){	// 파일타입이 이미지일 경우
 								  img.src = reader.result;
 								  dataurl = reader.result;
 								  $("#delete").css("display","block");
@@ -51,7 +51,7 @@
 								  $("#setTag").css("display","block");
 								  $("#filter").css("display","none");
 								  $("#direct").css("display","none");
-								  type = "i";
+								  type = "i";																						// Image 타입(사진타입)
 							  }	else{
 								  alert("지원하지 않는 파일 형식 입니다.")
 							  }
@@ -181,10 +181,11 @@
 		    return new Blob([new Uint8Array(array)], {type: 'image/'+type});
 		}
 		
-	    function upload(){ // 이미지 or 동영상 및 텍스트들을 올림
-	    	var nStart = new Date().getTime();
+		/*이미지 or 동영상 및 텍스트들을 올림*/
+	    function upload(){
+	    	var nStart = new Date().getTime();	// 단순 업로드 시간 체크하기 위함(업로드하는 로직상 굳이 필요없음)
 	    	if(type=="i"){
-				dataurl = canvas.toDataURL(); // 이미지 타입일 경우 캔버스에서 데이터를 뽑아옴
+				dataurl = canvas.toDataURL();	// 이미지 타입일 경우 캔버스에서 데이터를 뽑아옴
 	    	}
 	    	if($("#file").val() == NULL){
 	    		alert("사진을 불러오세요");
@@ -210,7 +211,7 @@
 		    	    success: function(result) {
 		    	       if(result){
 		    	    	   var nEnd =  new Date().getTime();      //종료시간 체크(단위 ms)
-		    		       var nDiff = nEnd - nStart;      //두 시간차 계산(단위 ms)
+		    		       var nDiff = nEnd - nStart;     		 //두 시간차 계산(단위 ms)
 		    		       console.log(nDiff + "ms");
 		    		       window.location.replace('/board');
 		    	       }else

@@ -1226,11 +1226,11 @@
 			return page;
 		}
 		
-		function read(no,idx) { // Grid Layer 이미지중 하나를 클릭하였을시 해당되는 내용을 불러옴
+		function read(no,idx) { 		 // Grid Layer 이미지중 하나를 클릭하였을시 해당되는 내용을 불러옴
 			$('#myModal').modal('show'); // show the modal
 			$.ajax({ 
 	    		type: 'POST',
-                url: 'user/getNum/'+no+'/'+idx,
+                url: '/user/getNum/'+no+'/'+idx,
                 dataType: 'json',
                 contentType : 'application/json; charset=utf-8',
 	    	    success: function(result) {
