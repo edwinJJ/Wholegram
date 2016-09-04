@@ -305,7 +305,7 @@
 			<div class="col-sm-9">
 				<div id="chat_header" class="well">
 					<div style="text-align: center;">
-						<font style="color: #4375DB; font-size: 20px;">인스타그래머에게</font>
+						<font style="color: #4375DB; font-size: 20px;">Wholegram 친구에게</font>
 						<!-- <a id="user_search" href="#" data-toggle="modal" data-target="#myModal"><i class="fa fa-search-plus fa-2x" aria-hidden="true"></i></a> -->
 						<a id="user_search" class="w3-btn-floating w3-ripple w3-teal2" data-toggle="modal" data-target="#myModal" onclick="followingList()" style="text-decoration:none">+</a>
 					</div>

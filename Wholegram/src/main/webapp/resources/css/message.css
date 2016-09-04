@@ -1,7 +1,7 @@
 .msg_position {
 	position: fixed;
-	width: 250px;
-	height:300px;
+	width: 325px;
+	height:400px;
 	margin-bottom: 33px;
 	margin-right: 18px;
 	bottom: 0;
@@ -41,4 +41,54 @@
 	float:right; 
 	margin-right:50px; 
 	margin-top:13px;
+}
+
+.balloon_right {
+  display: inline-block;
+  position: relative;
+  background: #d9edf7;
+  height: auto;
+  width: auto;
+  margin: 0 auto 8px;
+  padding:6px 10px 6px 10px;
+  border-radius: 10px;
+}
+.balloon_right:after {
+	left: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(136, 183, 213, 0);
+	border-left-color: #d9edf7;
+	border-width: 6px;
+	margin-top: -6px;
+}
+
+.balloon_left {
+  display: inline-block;
+  position: relative;
+  background: #d9edf7;
+  height: auto;
+  width: auto;
+  margin: 0 auto 8px;
+  padding:6px 10px 6px 10px;
+  border-radius: 10px;
+}
+.balloon_left:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(136, 183, 213, 0);
+	border-right-color: #d9edf7;
+	border-width: 6px;
+	margin-top: -6px;
 }

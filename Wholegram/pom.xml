@@ -190,14 +190,14 @@
 		<!--  동영상 프레임 캡쳐  -->
 		
 		<!-- windows Setting javacv 1.1이하로 내릴것 -->  
-<!-- 		<dependency>
+		<dependency>
 		    <groupId>org.bytedeco</groupId>
 		    <artifactId>javacv</artifactId>
 		    <version>1.1</version>
-		  </dependency> -->
+		  </dependency>
 
 		<!-- linux arm Setting javacv 1.2 javacpp 1.2.1 ffmpeg 3.0.2-1.2 로 올릴것 -->
-
+<!-- 
 		<dependency>
 			<groupId>org.bytedeco</groupId>
 			<artifactId>javacv</artifactId>
@@ -220,7 +220,7 @@
 			<version>3.0.2-1.2</version>
 			<classifier>linux-armhf</classifier>
 		</dependency>
-		
+ -->		
 		
  
 		<!--이미지 회전 -->

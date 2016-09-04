@@ -132,7 +132,7 @@ function show_messageform(token, chat_num) {
 				+	"<input id='chat_num' type='hidden' value='" + chat_num + "'/>"
 				+	"<span onclick='close_message()' class='w3-closebtn'>&times;</span>" 
 				+	"<div class='panel-heading'>Message 보내기</div>"
-				+	"<div id='message_container' style='height:255px; overflow:auto;'>"
+				+	"<div id='message_container' style='height:355px; overflow:auto; overflow-x:hidden;'>"
 				+		"<div id='msg_content'></div>"
 				+	"</div>"
 				+	"<input id='send_msg' class='form-control2 msg_content2' type='text' onkeypress='if(event.keyCode==13) {send_message(" + chat_num + "); return false;}'>";
@@ -216,15 +216,29 @@ function showMessage(result) {
 		}
 		
 		var chat_chat_num;																// 메시지 확인 체크하기위한 변수
-		$(object).each(function() {														// 대화목록을 화면에 뿌려줌
-			var msgBox = document.createElement("div");		
+		$(object).each(function() {														// 대화목록을 화면에 뿌려주는 작업
+			
+			var msgBox = document.createElement("div");									// 대화 한마디 한마디 마다 div 라인 생성. 길이는 200으로 제한 (나 or 상대방 말풍선이 시작되는 벽까지 닿으면 디자인이 이상해지므로)
+			msgBox.style.width = "200px";												 
+			
+			var msgBoxSpan = document.createElement("span");							// 대화내용 텍스트를 담을 span
 			if(sessionId == this.written_user_id) {										// 사용자(본인)이 작성한 글이면 오른쪽으로 출력
-				msgBox.style.float = "right";
-				var textnode = document.createTextNode(this.msg);
+				
+				msgBox.style.float = "right";											// 오른쪽 정렬
+				msgBoxSpan.style.float = "right";										//     ""
+				msgBoxSpan.style.textAlign = "right";									//     ""
+				msgBoxSpan.style.marginRight = "10px";									// 말풍선 꼬리를 보여주기 위해 간격 벌려놓음
+				msgBoxSpan.classList.add('balloon_right');								// class추가
+				var textnode = document.createTextNode(this.msg);						// 텍스트 생성
+				
 			} else {																	// 다른 사용자가 작성한 글이면 왼쪽으로 출력
-				var textnode = document.createTextNode(this.written_user_id + " : " + this.msg);
+				
+				msgBoxSpan.style.marginLeft = "10px";												// 말풍선 꼬리를 보여주기 위해 간격 벌려놓음
+				msgBoxSpan.classList.add('balloon_left');											// class추가
+				var textnode = document.createTextNode(this.written_user_id + " : " + this.msg);	// 텍스트 생성
 			}
-			msgBox.appendChild(textnode);
+			msgBoxSpan.appendChild(textnode);											// Span에 대화내용을 담는다
+			msgBox.appendChild(msgBoxSpan);												// div에 Span(대화내용) 추가
 			document.getElementById("msg_content").appendChild(msgBox);
 			msgBox.style.clear = "both";
 
