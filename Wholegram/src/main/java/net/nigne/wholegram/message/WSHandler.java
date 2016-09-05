@@ -1,15 +1,12 @@
 package net.nigne.wholegram.message;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -17,7 +14,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
@@ -93,6 +89,7 @@ public class WSHandler extends TextWebSocketHandler {
 			Map<String, Object> data = new HashMap<>();								// (접속자ID, WebSocket session) 형태의 Map으로 저장
 			data.put(application.getUser_id(), session);
 			application.setUserInfo(data);											// 'data'를 application에 List형식으로 담아둔다
+
 			/* 안 읽은 메시지가 있으면 헤더에 알림표시를 띄어준다 */
 			List<Integer> roomNumber = chatservice.getRoomList(user_id);			// 유저가 포함되어있는 채팅방 번호만 추출
 			List<Integer> roomList = chatservice.checkReadRoom(roomNumber, user_id);// 최신 메시지를 읽지 않은 채팅방 리스트 추출
@@ -121,6 +118,8 @@ public class WSHandler extends TextWebSocketHandler {
 		int index = msgtoString2.indexOf(":");
 		String madeOfUser = msgtoString2.substring(0, index-1);								// 채팅방을 만든 유저 Id 추출
 		int chat_num = Integer.parseInt(msgtoString2.substring(index+2));					// 새로만들어진 채팅방 번호 추출
+		
+		List<Msg_listVO> msglist = chatservice.addDateInfo(chat_num);						// 채팅방이 생성된 날짜를 입력한다.
 		
 		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();							// 채팅방에 해당되는 유저 List를 가져옴
 		userList = chatservice.userList(chat_num);
@@ -183,28 +182,14 @@ public class WSHandler extends TextWebSocketHandler {
 		chatservice.msgStorage(data);									
 		
 		int chat_num = interpre.getmsg_Chatnum();						// 채팅방 번호 가져옴
-		System.out.println("채팅방 번호 : " + chat_num);
 		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();		// 채팅방에 해당되는 유저 List를 가져옴
 		userList = chatservice.userList(chat_num);			
 		
-		System.out.println("유저리스트 담은 객체 : " + userList);
-		Iterator<Chat_userVO> abc = userList.iterator();
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		while(abc.hasNext()) {
-			Chat_userVO cv = new Chat_userVO();
-			cv = abc.next();
-			System.out.println("유저 List : " + cv.getMember_user_id());
-		}
-		
-
-		
 		
 		List<Msg_listVO> msglist = new ArrayList<Msg_listVO>();			// 본인이 해당된 채팅방으로부터 메시지 꺼내옴	
-		msglist = chatservice.msgGet(chat_num);
-		
+		msglist = chatservice.addDateInfo(chat_num);					// 지난 메시지들이 현재 날짜와 다른지 비교함. (다를경우 -> DB에 지난 메세지의 날짜를 알려주기 위한 토큰 입력)
 		MessageJSON mj = new MessageJSON();								// DB에서 꺼내온 메시지들을 json으로 변환
 		String result = mj.GSON(msglist);								
-		System.out.println("json : " + result);
 		
 		
 		List<Map<String, Object>> tidyUserInfo = new ArrayList<Map<String, Object>>();		// 메시지 받을 유저를 담을 변수
@@ -234,41 +219,26 @@ public class WSHandler extends TextWebSocketHandler {
 			}
 		}
 		
-		Iterator<Map<String, Object>> wow = tidyUserInfo.iterator();
-		while(wow.hasNext()) {
-			Map<String, Object> roll = new HashMap<String, Object>();
-			roll = wow.next();
-			Iterator it = roll.entrySet().iterator();
-			while(it.hasNext()) {
-				Entry entry = (Entry) it.next();
-				System.out.println("ID : " + entry.getKey() + ", " + "session : " + entry.getValue());
-			}
-		}
-		
-		
-		
-/*		ExtractMessageAndUser EMAU = new ExtractMessageAndUser();		// 메시지 해석 & 추출
-		String result = EMAU.InterPre(session, msg);
-		
-		List<Map<String, Object>> tidyUserInfo	= EMAU.ExtractUser();	// 접속자중에서 메시지 받을 사용자 추출
-*/
 		
 		/* 채팅방에 해당되는 유저들에게 메시지 보내기 */
 		Iterator<Map<String, Object>> extract3 = tidyUserInfo.iterator();		
-		int count = 0;
+//		int count = 0;
 		while(extract3.hasNext()) {							
 			Map<String, Object> Data = new HashMap<String, Object>();
 			Data = extract3.next();
 			for(WebSocketSession s : wsSession) {
 				if(s.isOpen() && Data.containsValue(s)) {
 					try {
-						Iterator it = Data.entrySet().iterator();
-						while(it.hasNext()) {
-							Entry entry = (Entry) it.next();
-							System.out.println("count : " + count + ", ID : " + entry.getKey() + ", " + "session : " + entry.getValue());
-							count++;
-						}
 						s.sendMessage(new TextMessage(result));
+						/*  
+						     메시지 받을 유저 정보
+						    Iterator it = Data.entrySet().iterator();
+							while(it.hasNext()) {
+								Entry entry = (Entry) it.next();
+								//System.out.println("count : " + count + ", ID : " + entry.getKey() + ", " + "session : " + entry.getValue());
+								//count++;
+							}
+						*/
 					} catch(IOException e) {
 						e.printStackTrace();
 					}
@@ -292,39 +262,6 @@ public class WSHandler extends TextWebSocketHandler {
 	}
 	
 	
-	/*클라이언트에게 스레드로 계속 신호보내기*/
-/*	private void Test(String string, WebSocketSession session) {
-		for(WebSocketSession s : wsSession) {
-			if(s.isOpen()) {
-				try {
-					session.sendMessage(new TextMessage(string));
-				} catch(IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	 public void afterPropertiesSet(WebSocketSession session) throws Exception {
-           Thread thread = new Thread(){
-                  int i=0;
-                  @Override
-                  public void run() {
-                         while (true){
-                               try {
-                                      Test("send message index "+ i++, session);
-                                      Thread.sleep(1000);
-                               } catch (InterruptedException e) {
-                                      e.printStackTrace();
-                                      break;
-                               }
-                         }
-                  }
-           };
-           thread.start();
-     }*/
-
-	
-	 
 	/* JSON형태로 변환 */
 	class MessageJSON {
 		public String GSON(List<Msg_listVO> msglist) {	

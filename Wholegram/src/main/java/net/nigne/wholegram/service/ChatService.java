@@ -20,4 +20,5 @@ public interface ChatService {
 	public void changeRoom(int chat_chat_num, String chatName);
 	public List<Chat_userVO> userList(int chat_num);
 	public List<Integer> getRoomList(String user_id);
+	public List<Msg_listVO> addDateInfo(int chat_chat_num);
 }

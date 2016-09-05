@@ -228,6 +228,7 @@ public class ChatDAOImpl implements ChatDAO {
 		return session.selectList(namespace + ".getRoomList", user_id);
 	}
 
+	@Transactional
 	@Override
 	public void changeRoom(int chat_chat_num, String chatName) {
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -236,5 +237,19 @@ public class ChatDAOImpl implements ChatDAO {
 		session.update(namespace + ".changeRoom", data);
 	}
 
+	@Transactional
+	@Override
+	public void DateNotice(int chat_chat_num, String lastTime) {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("chat_chat_num", chat_chat_num);
+		data.put("admin", "admin");
+		data.put("dateImpl", lastTime);
+		session.insert(namespace + ".DateNotice", data);
+	}
+
+	@Override
+	public String getLastMsgDate(int chat_chat_num) {
+		return session.selectOne(namespace + ".getLastMsgDate", chat_chat_num);
+	}
 
 }

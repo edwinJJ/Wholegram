@@ -126,11 +126,13 @@ public class MessageController {
 	@RequestMapping(value = "/getRoomData/{chat_chat_num}", method = RequestMethod.POST)
 	public ResponseEntity<List<Msg_listVO>> getRoomData(@PathVariable("chat_chat_num") int chat_chat_num, HttpServletRequest request) {
 
-		List<Msg_listVO> ml = chatservice.msgGet(chat_chat_num);
 		ResponseEntity<List<Msg_listVO>> entity = null;
 		try{
-			entity = new ResponseEntity<>(chatservice.msgGet(chat_chat_num), HttpStatus.OK);
+			//List<Msg_listVO> ml = chatservice.msgGet(chat_chat_num);					// 채팅방 정보(대화목록, 작성자) 가져오기
+			List<Msg_listVO> ml = chatservice.addDateInfo(chat_chat_num);				// 지난 메시지들이 현재 날짜와 다른지 비교함. (다를경우 -> DB에 지난 메세지의 날짜를 알려주기 위한 토큰 입력)
+			entity = new ResponseEntity<>(ml, HttpStatus.OK);							// 변경된 채팅방 정보를 리턴
 		} catch(Exception e) {
+			e.printStackTrace();
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		return entity;

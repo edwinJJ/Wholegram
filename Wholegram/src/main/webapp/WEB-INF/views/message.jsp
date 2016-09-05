@@ -252,6 +252,7 @@
 				data : '',
 				success : function(result) {
 					showRoomList(result);
+					localStorage.setItem("chat", "false");
 				}, 
 				error : function(result) {
 					alert("error : " + result);
@@ -326,10 +327,10 @@
 							<button type="button" class="close" onclick="delRoom(${ri.chat_chat_num})">&times;</button>
 							<span><img class="chat_img" src="/resources/Image/Message.png"></span>
 							<c:choose>
-								<c:when test="${ri.chat_name == NULL}">
+								<c:when test="${ri.chat_name == NULL}">		<!-- 채팅방 이름이 없을경우 -->
 									<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span id="room_name${ri.chat_chat_num }" class="chat_name" >채팅방 : ${ri.chat_chat_num }</span></a>
 								</c:when>
-								<c:otherwise>
+								<c:otherwise>								<!-- 채팅방 이름이 있을경우 -->
 									<a href="#" class="chat_aname" onclick="getChatRoom(${ri.chat_chat_num})" ><span id="room_name${ri.chat_chat_num }" class="chat_name" >${ri.chat_name }</span></a>
 								</c:otherwise>
 							</c:choose>

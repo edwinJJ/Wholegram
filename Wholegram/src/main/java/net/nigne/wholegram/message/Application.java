@@ -36,13 +36,7 @@ public class Application {
 	}
 
 	public void setUserInfo(Map<String, Object> userInfo) {
-/*		Iterator<Map<String, Object>> extract = this.userInfo.iterator();
-		while(extract.hasNext()) {
-			Map<String, Object> extract2 = new HashMap<String, Object>();
-			extract2 = extract.next();
-			extract2.get(key)
-		}
-*/		this.userInfo.add(userInfo);
+		this.userInfo.add(userInfo);
 
 		int count = 0;
 		List<Map<String, Object>> test = this.userInfo;
@@ -88,6 +82,7 @@ public class Application {
 				System.out.println(c + "(삭제후)웹소켓 접속자 현황 - ID : " + entry.getKey() + " , session : " + entry.getValue());
 				c++;
 			}
-		}*/
+		}
+*/
 	}
 }

@@ -22,4 +22,6 @@ public interface ChatDAO {
 	public void changeRoom(int chat_chat_num, String chatName);
 	public List<Chat_userVO> userList(int chat_num);
 	public List<Integer> getRoomList(String user_id);
+	public void DateNotice(int chat_chat_num, String lastTime);
+	public String getLastMsgDate(int chat_chat_num);
 }

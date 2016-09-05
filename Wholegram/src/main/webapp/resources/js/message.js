@@ -165,7 +165,7 @@ function getChatRoom(chat_chat_num) {
 			localStorage.setItem("chat", "true");				// localStorage의 chat을 true로 설정 (메시지창을 보여주기 위함, 규칙)
 			localStorage.setItem("chat_num", chat_chat_num);	// localStorage의 chat_num을 유저가 선택한 채팅방 번호로 설정 (새로고침 or 페이지 이동시에 열어두고있던 채팅방의 정보를 가져오기 위함)
 			
-			token = localStorage.getItem("chat", "true");
+			token = localStorage.getItem("chat");
 			chat_num = localStorage.getItem("chat_num");
 			
 			show_messageform(token, chat_num);					// 메시지창 보여주기
@@ -187,13 +187,16 @@ function send_message(chat_num) {
 	var msg2 = "[write : " + sessionId + "]";					// 작성자 ID
 	if(chat_num != 0) {
 		var msg3 = document.getElementById("send_msg").value; 	// 메시지 내용
+		if(msg3 == "") {								
+			return false;										// 메시지 내용이 아무것도없을 경우 아무일도 해주지 않음
+		}
 		send_msg.value = "";
 	}
 	var msg = (msg1 + msg2 + msg3);
 	ws.send(msg); 	 											//서버로 메시지 전송
 }
 
-/*화면에 message를 뿌려줌*/
+/* 화면에 message를 뿌려줌 */
 function showMessage(result) {
 	var impl = result.substring(0,7);													// 새로운 채팅방 생성을 알리는 용도 
 	
@@ -222,6 +225,8 @@ function showMessage(result) {
 			msgBox.style.width = "200px";												 
 			
 			var msgBoxSpan = document.createElement("span");							// 대화내용 텍스트를 담을 span
+			var textnode;																// 텍스트 담을 변수
+			
 			if(sessionId == this.written_user_id) {										// 사용자(본인)이 작성한 글이면 오른쪽으로 출력
 				
 				msgBox.style.float = "right";											// 오른쪽 정렬
@@ -229,16 +234,22 @@ function showMessage(result) {
 				msgBoxSpan.style.textAlign = "right";									//     ""
 				msgBoxSpan.style.marginRight = "10px";									// 말풍선 꼬리를 보여주기 위해 간격 벌려놓음
 				msgBoxSpan.classList.add('balloon_right');								// class추가
-				var textnode = document.createTextNode(this.msg);						// 텍스트 생성
+				textnode = document.createTextNode(this.msg);							// 텍스트 생성
 				
-			} else {																	// 다른 사용자가 작성한 글이면 왼쪽으로 출력
+			} else if(this.written_user_id == "admin") {										// 날짜를 알려주는 경우
+				msgBox.style.width = "300px";
+				msgBox.style.marginTop = "10px";
+				msgBox.style.marginBottom = "10px";
+				msgBox.style.textAlign = "center";
+				textnode = document.createTextNode("-   " + this.date.substring(0,10) + "   -");
+			} else {																			// 다른 사용자가 작성한 글이면 왼쪽으로 출력
 				
-				msgBoxSpan.style.marginLeft = "10px";												// 말풍선 꼬리를 보여주기 위해 간격 벌려놓음
-				msgBoxSpan.classList.add('balloon_left');											// class추가
-				var textnode = document.createTextNode(this.written_user_id + " : " + this.msg);	// 텍스트 생성
+				msgBoxSpan.style.marginLeft = "10px";											// 말풍선 꼬리를 보여주기 위해 간격 벌려놓음
+				msgBoxSpan.classList.add('balloon_left');										// class추가
+				textnode = document.createTextNode(this.written_user_id + " : " + this.msg);	// 텍스트 생성
 			}
-			msgBoxSpan.appendChild(textnode);											// Span에 대화내용을 담는다
-			msgBox.appendChild(msgBoxSpan);												// div에 Span(대화내용) 추가
+			msgBoxSpan.appendChild(textnode);													// Span에 대화내용을 담는다
+			msgBox.appendChild(msgBoxSpan);														// div에 Span(대화내용) 추가
 			document.getElementById("msg_content").appendChild(msgBox);
 			msgBox.style.clear = "both";
 
