@@ -74,7 +74,7 @@
  	<insert id="DateNotice">
  		insert into msg_list (chat_chat_num, written_user_id, `date`) values( #{chat_chat_num}, #{admin}, #{dateImpl});
  	</insert>
- 	<select id="getLastMsgDate" resultType="String">
- 		select date from msg_list where chat_chat_num = #{chat_chat_num} order by date desc limit 1
+ 	<select id="getLastMsgDate" resultType="net.nigne.wholegram.domain.Msg_listVO">
+ 		select written_user_id, date from msg_list where chat_chat_num = #{chat_chat_num} order by date desc limit 1
  	</select>
  </mapper>

@@ -141,31 +141,33 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public List<Msg_listVO> addDateInfo(int chat_chat_num) {
 
-		String LastgMsgDate = dao.getLastMsgDate(chat_chat_num);					// 마지막 메시지 등록 날짜
+		Msg_listVO LastMsgInfo = dao.getLastMsgInfo(chat_chat_num);								// 마지막 메시지 등록 날짜
 		
-		SimpleDateFormat SimpleFormat = new SimpleDateFormat( "yyyy-MM-dd" );		// yyyy-MM-dd 형태로 기준 생성. (DB에서 msg_list 테이블의 date컬럼이 yyyy-mm-dd 형식으로 되어있기 때문에)
-		Date currentTime = new Date();												// 현재시각 가져옴(년,월,일,시간,분,초 단위까지 나옴)
-		Date pastTime = null;														// DB에 입력되있던 메시지가 등록된 날짜를 담을 변수
+		SimpleDateFormat SimpleFormat = new SimpleDateFormat( "yyyy-MM-dd" );					// yyyy-MM-dd 형태로 기준 생성. (DB에서 msg_list 테이블의 date컬럼이 yyyy-mm-dd 형식으로 되어있기 때문에)
+		Date currentTime = new Date();															// 현재시각 가져옴(년,월,일,시간,분,초 단위까지 나옴)
+		Date pastTime = null;																	// DB에 입력되있던 메시지가 등록된 날짜를 담을 변수
 		String dateImpl = "";
-		dateImpl = SimpleFormat.format(currentTime);								// 현재시각을 'yyyy-mm-dd' 형태로 맞춰줌
-		
+		dateImpl = SimpleFormat.format(currentTime);											// 현재시각을 'yyyy-mm-dd' 형태로 맞춰줌
+		 					
 		try {
-			if(!(LastgMsgDate == null || LastgMsgDate.equals(""))) {				// 새로 생긴 채팅방일경우 예외처리 : 방금 생성됫기 때문에 등록된 메시지내용과, 그에 해당되는 날짜가 없다.
+			if(LastMsgInfo != null) {															// 새로 생긴 채팅방일경우 예외처리 : 방금 생성됫기 때문에 메시지에 관한 아무런 데이터가 없다
+	
+				currentTime = SimpleFormat.parse(dateImpl);										// 현재시각 = 'yyyy-mm-dd'형태로 맞춰진 현재시각을 Date타입으로 파싱
+				pastTime = SimpleFormat.parse(LastMsgInfo.getDate());							// DB저장된 마지막 메시지 등록 시각 = DB에서 각 메시지가 등록된 날짜를 'yyyy-mm-dd'형태의 Date타입으로 파싱
+	
+				int compare = pastTime.compareTo(currentTime);									// 날짜 비교. 비교대상의 날짜가(pastTime) 비교할 날짜(currentTime)보다 지난 날짜일경우 -1 , 미래 날짜일경우 +1 리턴
 
-				currentTime = SimpleFormat.parse(dateImpl);							// 현재시각 = 'yyyy-mm-dd'형태로 맞춰진 현재시각을 Date타입으로 파싱
-				pastTime = SimpleFormat.parse(LastgMsgDate);						// DB저장된 마지막 메시지 등록 시각 = DB에서 각 메시지가 등록된 날짜를 'yyyy-mm-dd'형태의 Date타입으로 파싱
-
-				int compare = pastTime.compareTo(currentTime);						// 날짜 비교. 비교대상의 날짜가(pastTime) 비교할 날짜(currentTime)보다 지난 날짜일경우 -1 , 미래 날짜일경우 +1 리턴
-				if(compare < 0 ) {													// 날짜가 하루 이상 지났을경우.
-					dao.DateNotice(chat_chat_num, dateImpl);						// 채팅창에 날짜 메시지를 띄어주기 위한 구별 토큰을 입력한다. (메시지 내용없이 작성자만 'admin'으로 입력 후, 나중에 view단에서 작성자가 admin일 경우 해당 날짜를 뿌려주게 된다.)
+				if((compare < 0) && !(LastMsgInfo.getWritten_user_id().equals("admin"))) {		// (날짜가 하루 이상 지났을경우 && 내용이 날짜를 나타내는 데이터가 아닐경우) == 채팅내용없이 날짜가 하루이상 지나갔을 경우 날짜등록을 해주지 않는다. == 가져온 마지막데이터 작성자가 admin 즉, 날짜일경우 채팅내용이 없었다는 얘기이므로, 다시 날짜를 등록해주지 않는다. (등록할 경우, 채팅창에 날짜만 연달아 보이게 됨) 
+					dao.DateNotice(chat_chat_num, dateImpl);									// 날짜등록 == 채팅창에 날짜 메시지를 띄어주기 위한 구별 토큰을 입력한다. (메시지 내용없이 작성자만 'admin'으로 입력 후, 나중에 view단에서 작성자가 admin일 경우 해당 날짜를 뿌려주게 된다.)
 				}
 			} else {
-				dao.DateNotice(chat_chat_num, dateImpl);							// 새로생긴 채팅방일 경우 생성날짜 등록해준다.
+				dao.DateNotice(chat_chat_num, dateImpl);										// 날짜등록 == 새로생긴 채팅방일 경우 그냥 생성날짜 등록해준다.
 			}
-		} catch (ParseException e1) {
-			e1.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}							
+		
 
-		return dao.msgGet(chat_chat_num);											// 변경된 채팅방 데이터를 다시 가져온다.		
+		return dao.msgGet(chat_chat_num);														// 변경된 채팅방 데이터를 다시 가져온다.		
 	}
 }

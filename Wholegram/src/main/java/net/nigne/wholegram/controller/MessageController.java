@@ -128,8 +128,7 @@ public class MessageController {
 
 		ResponseEntity<List<Msg_listVO>> entity = null;
 		try{
-			//List<Msg_listVO> ml = chatservice.msgGet(chat_chat_num);					// 채팅방 정보(대화목록, 작성자) 가져오기
-			List<Msg_listVO> ml = chatservice.addDateInfo(chat_chat_num);				// 지난 메시지들이 현재 날짜와 다른지 비교함. (다를경우 -> DB에 지난 메세지의 날짜를 알려주기 위한 토큰 입력)
+			List<Msg_listVO> ml = chatservice.msgGet(chat_chat_num);					// 채팅방 정보(대화목록, 작성자) 가져오기
 			entity = new ResponseEntity<>(ml, HttpStatus.OK);							// 변경된 채팅방 정보를 리턴
 		} catch(Exception e) {
 			e.printStackTrace();

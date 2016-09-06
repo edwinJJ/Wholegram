@@ -174,20 +174,18 @@ public class WSHandler extends TextWebSocketHandler {
 	@Transactional
 	private void sendMessage(WebSocketSession session, String msg) {
 		
-		
 		Interpretation interpre = new Interpretation();					// msg 해석
 		interpre.interpre_Msg(msg);								
+		
+		int chat_num = interpre.getmsg_Chatnum();						// 채팅방 번호 가져옴
+		List<Chat_userVO> userList = chatservice.userList(chat_num);	// 채팅방에 해당되는 유저 List를 가져옴
+		
+		chatservice.addDateInfo(chat_num);								// 지난 메시지들이 현재 날짜와 다른지 비교함. (다를경우 -> DB에 지난 메세지의 날짜를 알려주기 위한 토큰 입력)
 		
 		HashMap<String, Object> data = interpre.getinfo_Msg();			// 본인이 해당된 채팅방에 메시지 저장 + 메시지 읽은 유저에 본인 추가
 		chatservice.msgStorage(data);									
 		
-		int chat_num = interpre.getmsg_Chatnum();						// 채팅방 번호 가져옴
-		List<Chat_userVO> userList = new ArrayList<Chat_userVO>();		// 채팅방에 해당되는 유저 List를 가져옴
-		userList = chatservice.userList(chat_num);			
-		
-		
-		List<Msg_listVO> msglist = new ArrayList<Msg_listVO>();			// 본인이 해당된 채팅방으로부터 메시지 꺼내옴	
-		msglist = chatservice.addDateInfo(chat_num);					// 지난 메시지들이 현재 날짜와 다른지 비교함. (다를경우 -> DB에 지난 메세지의 날짜를 알려주기 위한 토큰 입력)
+		List<Msg_listVO> msglist = chatservice.msgGet(chat_num);		// 본인이 해당된 채팅방으로부터 메시지 꺼내옴
 		MessageJSON mj = new MessageJSON();								// DB에서 꺼내온 메시지들을 json으로 변환
 		String result = mj.GSON(msglist);								
 		
