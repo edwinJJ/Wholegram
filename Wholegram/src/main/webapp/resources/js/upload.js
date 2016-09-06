@@ -22,27 +22,28 @@
 	    
 	    $(document).ready(function(){
 			$('#file').change(function(e) {
-				  var file    = document.querySelector('input[type=file]').files[0];									// input type='file' 불러옴
-				  var reader  = new FileReader();																	
+				  var file    = document.querySelector('input[type=file]').files[0];											// input type='file' 불러옴 (input태그의 type이 file인것들 모두 불러오는데, 그중에서 첫번째 것)
+				  var reader  = new FileReader();
 				  var img = document.getElementById("img");
 				  if(file.size > MAX_SIZE){
 					  alert("제한용량(50MB)을 초과하였습니다. 현재파일용량"+parseInt(file.size/MEGABYTE)+"MB");
 				  }else{
-					  reader.readAsDataURL(file);																		// file을 DataURL형태로 읽음.
+					  reader.readAsDataURL(file);																				// file을 DataURL형태로 읽음.
 					  reader.onload = function  () {
-						  if(VIDEOTYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){ // 파일 타입이 비디오일 경우
+						if(VIDEOTYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){		 	// 파일 타입이 동영상(비디오)일 경우 -> file type을 "mp4" or "avi" 둘중 하나라도 있는지 체크함
 							  cvs.style.display = "none";
 							  vss.style.display = "block";
-							  document.getElementById("videotype").src=reader.result;
-							  dataurl = reader.result;
+							  document.getElementById("videotype").src=reader.result;											// file의 dataURL을 video태그 src에 넣어줌
+							  dataurl = reader.result;																			// file의 dataURL을 dataurl 전역 변수에 넣어줌.
 							  $("#delete2").css("display","block");
 							  $("#navi-tag").css("display","none");
 							  $("#navi-filter").css("display","none");
 							  $("#setTag").css("display","none");
 							  $("#filter").css("display","none");
 							  $("#direct").css("display","block");
-							  type = "m";																							// media 타입(동영상타입)
-							  } else if(IMAGETYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){	// 파일타입이 이미지일 경우
+							  type = "m";																						// media 타입(동영상타입)
+							  
+						} else if(IMAGETYPE.indexOf(file.type.substring(file.type.indexOf("/")+1,file.type.length))!=FALSE){	// 파일타입이 사진(이미지)일 경우 -> "jpg","jpeg","gif","png","bmp" 중에 하나라도 있는지 체크함
 								  img.src = reader.result;
 								  dataurl = reader.result;
 								  $("#delete").css("display","block");
@@ -51,14 +52,15 @@
 								  $("#setTag").css("display","block");
 								  $("#filter").css("display","none");
 								  $("#direct").css("display","none");
-								  type = "i";																						// Image 타입(사진타입)
-							  }	else{
-								  alert("지원하지 않는 파일 형식 입니다.")
-							  }
+								  type = "i";																					// Image 타입(사진타입)
+					    } else{
+					    	alert("지원하지 않는 파일 형식 입니다.")
+						}
 					  }
 				  }
 			});
 		});
+	    
 	    /* 브라우저 가 ie인지 아닌지 탐색*/
 	    $.browser={};(function(){ 
 	        jQuery.browser.msie=false;
@@ -185,7 +187,8 @@
 	    function upload(){
 	    	var nStart = new Date().getTime();	// 단순 업로드 시간 체크하기 위함(업로드하는 로직상 굳이 필요없음)
 	    	if(type=="i"){
-				dataurl = canvas.toDataURL();	// 이미지 타입일 경우 캔버스에서 데이터를 뽑아옴
+				dataurl = canvas.toDataURL();	// 이미지 타입일 경우 캔버스에서 데이터를 뽑아옴   -->> ??? canvas.toDataURL()로 dataurl을 뽑아오는데, 이전에 canvas에 dataurl을 어디서 넣어줬음?
+																						    // ??? + 그냥 dataurl을 위에서 이미지 선택했을때 (48라인)에서 설정해줬는데, 여기서 굳이 왜 또? 
 	    	}
 	    	if($("#file").val() == NULL){
 	    		alert("사진을 불러오세요");
@@ -193,12 +196,13 @@
 	    	}else if($("#content").val()==NULL){
 	    		alert("내용을 작성하세요");
 	    	}else{
-	    		var content = document.getElementById("content").value;
-		    	var json = JSON.stringify({
-		    			dataurl : dataurl,
-		    			atag : atag,
-		    			content : content,
-		    			type : type
+	    		var content = document.getElementById("content").value;						// 업로드할때 작성한 글 내용 가져옴
+		    	var json = JSON.stringify({													// 업로드할 데이터를 json형태로 설정 -> ??? stringify로 해주면 json형태의 text인데, parse로 하면 Object 형태가되서, ajax로 값을 못넘겨줘서 stringify로 해준건가?
+		    		
+		    			dataurl : dataurl,													// dataurl (사진or동영상의 dataurl)
+		    			atag : atag,														// atag    (사람 태그했을 경우)
+		    			content : content,													// 글내용    
+		    			type : type															// 사진or동영상 타입
 		    	});	
 		    	modal.style.display = "block";
 		    	$.ajax({ 
@@ -211,7 +215,7 @@
 		    	    success: function(result) {
 		    	       if(result){
 		    	    	   var nEnd =  new Date().getTime();      //종료시간 체크(단위 ms)
-		    		       var nDiff = nEnd - nStart;     		 //두 시간차 계산(단위 ms)
+		    		       var nDiff = nEnd - nStart;     		  //두시간차 계산(단위 ms)
 		    		       console.log(nDiff + "ms");
 		    		       window.location.replace('/board');
 		    	       }else

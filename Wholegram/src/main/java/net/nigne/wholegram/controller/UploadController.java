@@ -81,8 +81,10 @@ public class UploadController {
 	//Ajax로 파일 업로드 처리 
 	@ResponseBody
 	@RequestMapping(value = "/uploads", method = RequestMethod.POST)
-	public String uploadAjax(@RequestBody Map<String,Object> param,HttpServletRequest request) throws Exception{
-		System.out.println("get");
+	public String uploadAjax(@RequestBody Map<String,Object> param, HttpServletRequest request) throws Exception{
+		
+		System.out.println("entry : " + param.entrySet());
+		
 		HttpSession session = request.getSession();	
 		String uploadPath = "";
 		String test =param.get("content").toString();

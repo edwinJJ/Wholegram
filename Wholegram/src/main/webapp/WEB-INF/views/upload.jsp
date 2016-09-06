@@ -232,7 +232,7 @@
  		margin-bottom: -1px;
    }
    .msg_content2 {
-   		width:250px;
+   		width:325px;
    }
 </style>
 <body>
@@ -251,7 +251,7 @@
       
    <div class = "container">
       
-      <div id="textline"><h2>글쓰기</h2></div>
+      <div id="textline"><h2>Upload</h2></div>
       <div id = "canvas" class="canvas" >
          <i class="fa fa-refresh fa-3x" aria-hidden="true" id ="delete" style="display:none" onclick="deleteButtonShow()"></i> <!-- 파일 업로드시 나타남 -->
          
@@ -261,7 +261,6 @@
          <!-- view buffer -->
          <canvas id="myCanvas"  height="300px" width="300px" onclick="canvasEvent()"> <!-- 이미지태그에 있는 이미지를 불러올 장소 -->
          Your browser does not support the HTML5 canvas tag.</canvas>
-         <canvas id="myCanvas2"  height="300px" width="300px" style="display:none"></canvas>
          <div id ="panel" class="panel" style="display:none"> </div> <!-- 사람 태그 패널 -->
       </div>
       <div id="videoshow" class="videoshow" style="display:none"> <!-- 비디오 타입이 올라왔을경우 캔버스는 사라지고 이태그가 나타남. -->
