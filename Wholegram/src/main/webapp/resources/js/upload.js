@@ -1,8 +1,8 @@
 
-   		var canvas = document.getElementById("myCanvas"); // 캔버스 
-   		var context = canvas.getContext("2d"); // 캔버스에 출력할 이미지 타입 설정
-   	 	var img = document.getElementById("img"); // 이미지 태그 전체를 가져옴
-   	 	var ini = document.getElementById("int"); // 이미지 태그 전체를 가져옴
+   		var canvas = document.getElementById("myCanvas"); 	// 캔버스 
+   		var context = canvas.getContext("2d"); 				// 캔버스에 출력할 이미지 타입 설정
+   	 	var img = document.getElementById("img"); 			// 이미지 태그 전체를 가져옴
+   	 	var ini = document.getElementById("int"); 			// 이미지 태그 전체를 가져옴
 	    var panel = document.getElementById("panel");
 	    var cvs = document.getElementById("canvas");
 	    var vss = document.getElementById("videoshow");
@@ -13,7 +13,7 @@
 		var type ="";
 		var FALSE = -1;
 		var NULL ="";
-		var MAX_SIZE = 50000000; //upload limit 50mb
+		var MAX_SIZE = 50000000; 							//upload limit 50mb
 		var MEGABYTE = 1048576;
 		var VIDEOTYPE = ["mp4","avi"];
 		var IMAGETYPE = ["jpg","jpeg","gif","png","bmp"];
@@ -99,7 +99,7 @@
 	    }
 	    
 	    panel.addEventListener('click', function(e) { // 사람 태그를 누르고 검은 화면을 누를시 마우스의 좌표를 불러옴
-	        var pos = getMousePos(canvas, e),
+	        var pos = getMousePos(canvas, e),		// canvas 범위 내에서 마우스 위치 체크
 	            x = pos.x,
 	            y = pos.y;
 	        	setTag(x,y);
@@ -187,8 +187,8 @@
 	    function upload(){
 	    	var nStart = new Date().getTime();	// 단순 업로드 시간 체크하기 위함(업로드하는 로직상 굳이 필요없음)
 	    	if(type=="i"){
-				dataurl = canvas.toDataURL();	// 이미지 타입일 경우 캔버스에서 데이터를 뽑아옴   -->> ??? canvas.toDataURL()로 dataurl을 뽑아오는데, 이전에 canvas에 dataurl을 어디서 넣어줬음?
-																						    // ??? + 그냥 dataurl을 위에서 이미지 선택했을때 (48라인)에서 설정해줬는데, 여기서 굳이 왜 또? 
+				dataurl = canvas.toDataURL();	// 이미지 타입일 경우 캔버스에서 데이터를 뽑아옴   -->> 최초 input type='file' 통해서 사진을 올렸을 때, dataurl에 값을 한번 넣어주고, 그 이후 이미지에 filter 처리 해주었을 때는, dataurl 값이 바뀌지 않는다. 
+																							// (filter 효과를 줄때마다 dataurl값을 바꿔주면 처리량이 많아서 속도가 저하 프리징(멈춤현상)이 일어 날 수 있기 때문에 사진 업로드 하기 직전에 한 번만 바꿔준다.) 
 	    	}
 	    	if($("#file").val() == NULL){
 	    		alert("사진을 불러오세요");
@@ -200,7 +200,7 @@
 		    	var json = JSON.stringify({													// 업로드할 데이터를 json형태로 설정 -> ??? stringify로 해주면 json형태의 text인데, parse로 하면 Object 형태가되서, ajax로 값을 못넘겨줘서 stringify로 해준건가?
 		    		
 		    			dataurl : dataurl,													// dataurl (사진or동영상의 dataurl)
-		    			atag : atag,														// atag    (사람 태그했을 경우)
+		    			atag : atag,														// atag    (사진에 유저를 태그했을 경우)
 		    			content : content,													// 글내용    
 		    			type : type															// 사진or동영상 타입
 		    	});	
@@ -226,7 +226,6 @@
 		    	    }
 		    	});
 	    	}
-	    	    	
 	 	} 
 	    
 	    function panelInit(){ // 사람태그버튼을 누를시 클릭하는 패널을 현재 이미지의 크기에 맞게 조절
@@ -234,23 +233,25 @@
 			$("#canvas").css("height",canvas.height+ "px");
 		}
 	    
-	    // 사진에 태그넣기
+	    // 사진에 사람 태그한것을 a태그 형태로 만들어서 넣어주기
 	    function modalOK(){
 	    	var a = document.createElement('a');
 	    	$(a).attr('href',"/"+$("#tag").val()+"/").attr("text",$("#tag").val()).attr("title",$("#tag").val()).attr("class",".btn-primary");
-	    	a.innerHTML = $("#tag").val();
-	    	$(a).css("position","absolute").css("top",(($("#gety").val()/canvas.height)*100)+"%");
-	    	$(a).css("left",(($("#getx").val()/canvas.width)*100)+"%").css("color","white").css("z-index","333");
-	    	atag += a.outerHTML;
-	    	$(a).attr("onclick","return false;");
-	    	$("#panel").append(a);
-	    	$("#myModal").modal('hide');
+	    	a.innerHTML = $("#tag").val();																			// a태그 사이에 값을 써줌. (ex - <a> 여기에 써줌 </a>)
+	    	$(a).css("position","absolute").css("top",(($("#gety").val()/canvas.height)*100)+"%");					// y좌표 위치지정을 canvas내에서 %화 시켜준다. -> (사진 업로드시에는 문제 없지만, 다른 페이지(home or user페이지)에서는 사진의 크기가 변경된 경우가 있으니, 그 크기에 맞춰서 user태그된 위치를 알맞게 보여주려면 이런식으로 %화 시키주는 작업이 필요하다.
+	    	$(a).css("left",(($("#getx").val()/canvas.width)*100)+"%").css("color","white").css("z-index","333");	// x좌표도 마찬가지.
+	    	atag += a.outerHTML;	// 여기까지 a태그 값을  업로드할때 보내준다.
+	    	
+	    	
+	    	$(a).attr("onclick","return false;");	// 여기서 a태그의 속성을 추가한 이유 -> 사진업로드 직전에는 사진에 태그한 다른 user를 클릭해도 href속성이 작동하지 않게끔 하기 위해서...! 즉, 사진 업로드 직전에 사람태그하는 과정의 화면에서만 적용된다.
+	    	$("#panel").append(a);					// panel에 a태그 추가
+	    	$("#myModal").modal('hide');			// modal 닫아주기
 	    }
 	    
 	    // 클릭시 태그 입력 띄우기
 	    function setTag(x,y){
 	    	$("#myModal").modal('show');
-	    	$("#getx").val(parseInt(x)); // x좌표 삽입
+	    	$("#getx").val(parseInt(x)); // x좌표 삽입  // 넘어온 x,y값이 double or float 타입이어서 Integer로 형변환
 	    	$("#gety").val(parseInt(y)); // y좌표 삽입
 	    }
 	    
@@ -260,7 +261,7 @@
 	    		alert("사진을 불러오세요");
 	    		file.click();
 	    	}else{	    		
-				$("#panel").toggle();
+				$("#panel").toggle();										// panel를 display none과 block 사이를 toggle 시켜줌
 				console.log("test");
 				$.ajax({ 
 		    		type: 'POST',
@@ -295,6 +296,7 @@
 	    	});
 	    	document.getElementById("follower_list").innerHTML= temp;
 	    }
+	    
 	    // 사진에 달려있는 태그 전체를 삭제
 	    function deleteTag(){
 	    	if($("#file").val()==NULL){
@@ -304,7 +306,6 @@
 		    	$("#panel *").remove();
 		    	atag = $("#panel").text();
 	    	}
-	    	
 	    }
 	    
 	    // panel위에서 마우스 클릭시 클릭한 위치를 잡아주는 함수
@@ -342,6 +343,7 @@
 				$("#direct").show();
 	    	}
 		}
+		
 		//초기화면 설정
 		function set_init_size(img,canvas,context,panel){
 			var width = img.width;

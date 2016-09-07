@@ -87,58 +87,63 @@ public class UploadController {
 		
 		HttpSession session = request.getSession();	
 		String uploadPath = "";
-		String test =param.get("content").toString();
+		String test =param.get("content").toString();																	// 업로드 게시물 글 작성 내용
 		String temp=test;
 		List<String> ls = new ArrayList<String>();
-		List<String> compare = new ArrayList<String>();
-		osSetting(OS);														  //OS를 불러와서 OS에 맞게 경로 셋팅및 폴더가 없을 경우 생성
+		osSetting(OS);																									// OS를 불러와서 OS에 맞게 경로 셋팅 및 폴더가 없을 경우 생성
 		String user_id = (String)session.getAttribute("user_id");
 		try{
-			String rsq = param.get("dataurl").toString(); 					  // json에서 dataurl값을 String으로 불러옴
-			String type = rsq.substring(rsq.indexOf("/")+1,rsq.indexOf(";")); // dataurl에서 타입을 따로 불러옴
-			uploadPath = createUploadPath(type);
-			System.out.println(uploadPath);
-			byte[] imagedata = DatatypeConverter.parseBase64Binary(rsq.substring(rsq.indexOf(",") + 1)); // dataurl에서 data부분을 byte로 변환
-			UUID uid = UUID.randomUUID(); 									  // 랜덤으로 파일이름 생성
-			Path path = Paths.get(PATH+uploadPath+uid+"."+type); 			  // 저장경로 지정
+			String rsq = param.get("dataurl").toString(); 																// json에서 dataurl값을 String으로 불러옴
+			String type = rsq.substring(rsq.indexOf("/")+1,rsq.indexOf(";"));											// dataurl에서 타입을 따로 불러옴
+			uploadPath = createUploadPath(type);																		// 업로드할 파일의 디렉토리 경로 변경
 			
-			if(param.get("content").toString().indexOf("@")!=-1 || param.get("content").toString().indexOf("#")!=-1){ //@와 #가 있을시 알맞게 처리
+			byte[] imagedata = DatatypeConverter.parseBase64Binary(rsq.substring(rsq.indexOf(",") + 1)); 				/* dataurl에서 data부분을 byte로 변환 -> 모든 파일이 dataurl로 변환시킬 때 타입이 Base64로 변환된다. 그렇기 때문에 parseBase64Binary를 사용해서 binary타입으로 변환 하여 byte 변수로 받는다. 
+																														   dataurl 내용은 [data:image/png;base64,data내용...]  -> [data:확장자;base64,실제데이터내용...] 이런 형식으로 되어있다. */
+			
+			UUID uid = UUID.randomUUID(); 									  											// 랜덤으로 파일이름 생성
+			Path path = Paths.get(PATH+uploadPath+uid+"."+type); 			  											// Java.nio를 이용하여 업로드할 파일 저장경로를 path타입으로 지정
+			
+			if(param.get("content").toString().indexOf("@")!=-1 || param.get("content").toString().indexOf("#")!=-1){	//@와 #가 있을시 알맞게 처리
 				test =param.get("content").toString();
-				test = test.replaceAll("@", " @").replaceAll("#"," #").replaceFirst(" ","");
-				String[] test2 = test.split(" ");
-				temp=test;
- 				for(String s:test2){
-					if(s.indexOf("@")!=-1 || s.indexOf("#")!=-1){
-						if(!find(compare,s)){ 								  // 같은 단어가 있을시 처리 방지 
-							System.out.println(s);
-							System.out.println(find(compare,s));
-							if(s.indexOf("@")!=-1 ){
-									temp = temp.replaceAll(s, "<a href=/"+s.substring(1)+">"+s+" </a>");
-									if(!user_id.equals(s)){
-									ls.add(s.substring(1));
-									compare.add(s);
-									}
-							}else
-								temp = temp.replaceAll(s,"<a href=/hash/"+URLEncoder.encode(s,"UTF-8")+">"+s+" </a>");
-								compare.add(s);
+				test = test.replaceAll("@", " @").replaceAll("#"," #").replaceFirst(" ","");							// replaceFirst : 글 내용중에 맨앞에 공백이 생겨서 제거해줌, replaceAll : @ or #이 있을경우 앞에 한칸 띄어줌
+				String[] test2 = test.split(" ");																		// 공백 단위로 문자열 잘라줌
+				
+				temp = "";
+				for (String s : test2) {
+					if (s.indexOf("@") != -1 || s.indexOf("#") != -1) { 												// 글 내용중에 @ or # 있을경우
+						if (s.indexOf("@") != -1) { 																	// @가 있을경우
+							if (!user_id.equals(s)) { 																	// 유저 자신이 아닐경우
+								ls.add(s.substring(1)); 																// List<String> ls변수에 유저 아이디 추가
+							}
+							s = s.replace(s, "<a href=/" + s.substring(1) + ">" + s + " </a>");							// @내용을 a태그로 감싸준다
+							temp += s;
+						} else {																						// #이 있을경우
+							s = s.replace(s, "<a href=/hash/" + URLEncoder.encode(s, "UTF-8") + ">" + s + " </a>");		// #내용을 a태그로 감싸준다
+							temp += s;
 						}
+					} else {																							// 글 내용중에 @ or # 없을경우 -> 즉, 그냥 단순한 텍스트 내용일 경우
+						temp += s + " ";
 					}
 				}
 			}
 			
-
+			// TODO 존재하지 않는 user를 언급했을경우 예외처리 해주기
+			
 			BoardVO vo =new BoardVO();
-			vo.setUser_id((String) session.getAttribute("user_id")); // 로그인 된 아이디를 받아옴
-			vo.setContent(temp); // 변환된 내용을 입력
-			vo.setMedia(URLPATH+uploadPath+uid+"."+type); // 경로 저장
-			vo.setMedia_type(param.get("type").toString());
-			vo.setMedia_thumnail(URLPATH+"video_thumnail//"+uid+".png");
-			if(param.get("atag")!= EMPTY){
-				vo.setTag(param.get("atag").toString()); 
+			vo.setUser_id((String) session.getAttribute("user_id")); 	// 로그인 된 아이디를 받아옴
+			vo.setContent(temp); 										// 변환된 글 내용을 입력
+			vo.setMedia(URLPATH+uploadPath+uid+"."+type); 				// 파일이 저장된 경로
+			vo.setMedia_type(param.get("type").toString());				// 파일 타입
+			vo.setMedia_thumnail(URLPATH+"video_thumnail//"+uid+".png");// 동영상 파일일 경우 썸네일 저장 경로
+
+			if(param.get("atag")!= EMPTY){								// 사진에 유저를 태그한게 있을경우
+				vo.setTag(param.get("atag").toString()); 				// atag에는 유저id를 a태그로 감싼내용이 들어있다. (a태그에 속성 설정도 같이 되어있음)
 			}
-				bs.BoardUP(vo);
-				Files.write(path, imagedata); // 해당 경로로 이미지or 동영상을 저장
-			boolean Rotate = false;			  // 썸네일 이미지를 회전시킬지 안시킬지 결정하는 함수
+			
+			bs.BoardUP(vo);												// 게시물 업로드 (DB 등록)
+			Files.write(path, imagedata); 								// 해당 경로로 이미지 or 동영상을 저장(path에 저장되어있는 경로로 파일을 생성한다고 볼 수 있음)
+			boolean Rotate = false;			  							// 썸네일 이미지를 회전시킬지 안시킬지 결정하는 함수
+			
 			if(compareToDataType(type)){	  // 동영상일 경우
 				FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(PATH+uploadPath+uid+"."+type); // 해당경로에 있는 동영상을 불러옴
 				grabber.start();  																   // 프레임 캡쳐 시작
@@ -209,7 +214,7 @@ public class UploadController {
 		return entity;
 	}
 	
-	public static boolean find(List<String> buf,String idx){ // 아이디가 중복되어서 언급되거나 태그된 경우를 체크
+	public static boolean find(List<String> buf,String idx){ 		// 아이디가 중복되어서 언급되거나 태그된 경우를 체크
 		boolean flag = false;
 		
 		for(String s:buf){
@@ -219,14 +224,15 @@ public class UploadController {
 		
 		return flag;
 	}
-	public static void osSetting(String OS){ // OS 에 따라 경로를 설정해줌
-		if(OS.indexOf("win") >= 0){		     // OS가 윈도우일 경우
+	public static void osSetting(String OS){ 						// OS 에 따라 경로를 설정해줌
+		if(OS.indexOf("win") >= 0){		     						// OS가 윈도우일 경우
 			PATH = "C:\\item\\"; 
-			destination="C:\\item\\video_thumnail\\";
-			File video = new File(PATH+"video");
-			File image = new File(PATH+"image");
-			File videoThumnail = new File(PATH+"video_thumnail");
-			if(!video.exists()){
+			destination="C:\\item\\video_thumnail\\";				// 동영상 프레임캡쳐 할때 사용
+			File video = new File(PATH+"video");					// 동영상 파일 저장소
+			File image = new File(PATH+"image");					// 이미지 파일 저장소
+			File videoThumnail = new File(PATH+"video_thumnail");	// 동영상 파일 프레임캡쳐 저장소
+			
+			if(!video.exists()){									// 디렉토리 경로가 없을 경우 아래와 같이 경로(폴더)를 생성해줌. -> video or image or videoThumnail 아무거나 상관없다. 어차피 폴더가 없으면 다 같이 없거나, 있으면 다 같이 있거나 둘중 하나니깐
 				video.mkdir();
 				image.mkdir();
 				videoThumnail.mkdir();

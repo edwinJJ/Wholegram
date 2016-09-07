@@ -268,7 +268,7 @@
          <video id="videotype" width="600" height="400" src="" controls>   </video>
       </div>
       
-      <!-- Modal -->
+      <!-- Modal 사진에 사람 태그할때 팔로잉 리스트 보여줌-->
       <div class="modal fade" id="myModal" role="dialog"> <!-- Panel부분을 클릭시 나타날 사용자 입력 장소 -->
             <div class="modal-dialog modal-lg">
                <div class="modal-content">
