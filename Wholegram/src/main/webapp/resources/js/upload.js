@@ -1,6 +1,6 @@
 
    		var canvas = document.getElementById("myCanvas"); 	// 캔버스 
-   		var context = canvas.getContext("2d"); 				// 캔버스에 출력할 이미지 타입 설정
+   		var context = canvas.getContext("2d"); 				// 캔버스에 출력할 이미지 타입 설정 -> context자체가 이미지
    	 	var img = document.getElementById("img"); 			// 이미지 태그 전체를 가져옴
    	 	var ini = document.getElementById("int"); 			// 이미지 태그 전체를 가져옴
 	    var panel = document.getElementById("panel");
@@ -61,6 +61,12 @@
 			});
 		});
 	    
+	    // 사진 선택 후, 이미지가 로딩이 완료된 이후 캔버스에다가 이미지를 삽입	
+		document.getElementById("img").onload = function() {						// document.getElementById("img").onload -> img의 src에 dataurl이 모두load되었을시 동작
+		    set_size(img,canvas,context,panel);
+			//dataurl = canvas.toDataURL();
+		}; 
+	    
 	    /* 브라우저 가 ie인지 아닌지 탐색*/
 	    $.browser={};(function(){ 
 	        jQuery.browser.msie=false;
@@ -105,14 +111,6 @@
 	        	setTag(x,y);
 	    }, false);
 	    
-
-		
-		// 이미지가 로딩이 완료된 이후 캔버스에다가 이미지를 삽입	
-		document.getElementById("img").onload = function() {
-		    set_size(img,canvas,context,panel);
-			//dataurl = canvas.toDataURL();
-		}; 
-		
 		function replaceAll(str, searchStr, replaceStr) { //java replaceAll처럼 정의
 
 		    return str.split(searchStr).join(replaceStr);
@@ -204,7 +202,7 @@
 		    			content : content,													// 글내용    
 		    			type : type															// 사진or동영상 타입
 		    	});	
-		    	modal.style.display = "block";
+		    	modal.style.display = "block";												// 업로드하는 동안에 background에서 이미 돌아가고있지만 숨겨져있던 로딩이미지를 보여준다.
 		    	$.ajax({ 
 		    		type: 'POST',
 	                url: '/uploads',
@@ -214,8 +212,8 @@
 	                contentType : 'application/json; charset=utf-8',
 		    	    success: function(result) {
 		    	       if(result){
-		    	    	   var nEnd =  new Date().getTime();      //종료시간 체크(단위 ms)
-		    		       var nDiff = nEnd - nStart;     		  //두시간차 계산(단위 ms)
+		    	    	   var nEnd =  new Date().getTime();      //종료시간 체크(단위 ms) 단순 업로드 시간 체크하기 위함(업로드하는 로직상 굳이 필요없음)
+		    		       var nDiff = nEnd - nStart;     		  //두시간차 계산(단위 ms) 단순 업로드 시간 체크하기 위함(업로드하는 로직상 굳이 필요없음)
 		    		       console.log(nDiff + "ms");
 		    		       window.location.replace('/board');
 		    	       }else
@@ -228,7 +226,7 @@
 	    	}
 	 	} 
 	    
-	    function panelInit(){ // 사람태그버튼을 누를시 클릭하는 패널을 현재 이미지의 크기에 맞게 조절
+	    function panelInit(){ // 사진 선택후 사람태그 버튼을 누를시 나오는 패널(검은바탕)을 현재 이미지의 크기에 맞게 조절 (여기서 사실상 '+' 모양의 맞게 조절됨. 초기화시켜준다라는 생각으로)
 			$("#panel").css("width",canvas.width + "px").css("height",canvas.height + "px").css("margin-left",-1*canvas.width/2+ "px");
 			$("#canvas").css("height",canvas.height+ "px");
 		}
@@ -320,6 +318,7 @@
 			$("#direct").hide();
 		}
 		
+		/* 필터링 처리부분 클릭시 */
 		function clickFileter(){
 			if($("#file").val()==NULL){
 	    		alert("사진을 불러오세요");
@@ -360,20 +359,22 @@
 			$("#panel").css("margin-left",-1*canvas.width/2+ "px");
 		}
 		
-		// 캔버스에 이미지가 로드될때 사진의 크기를 파악하여 캔버스의 크기 변경 
+		// 캔버스에 이미지가 로드될때 사진의 크기를 파악하여 캔버스의 크기 변경 및 선택한 사진으로 이미지 초기화
 		function set_size(img,canvas,context,panel){
 			var MAX_WIDTH_SIZE=600;
 			var MAX_HEIGHT_SIZE=900;
-			var width = img.width;
-			var height = img.height;
-			if(width > 600 || height > 600){
-				if(width == height){
-					width = MAX_WIDTH_SIZE;
+			var width = img.width;						// 선택한 사진의 가로길이
+			var height = img.height;					// 선택한 사진의 세로길이
+			
+			if(width > 600 || height > 600){			// 가로 세로 길이 600 이상일 경우
+				
+				if(width == height){					// 가로 세로 길이 알맞게 지정( 가로==세로 일경우)
+					width = MAX_WIDTH_SIZE;			
 					height = MAX_WIDTH_SIZE;
 				}
 				
-				if(width > height){
-					var aa = (width/height)*0.4;
+				if(width > height){						// 가로 세로 길이 알맞게 지정 (가로 > 세로 일경우)
+					var aa = (width/height)*0.4;		
 					if(width/height < 1.2){
 						aa = 0.9;
 					}else if(width/height < 1.4){
@@ -386,7 +387,7 @@
 						height = 900;
 				}
 				
-				if(height > width){
+				if(height > width){						// 가로 세로 길이 알맞게 지정 (가로 < 세로 일경우)
 					var aa = (height/width)*0.4;
 					if(height>900)
 						height = 900;
@@ -403,10 +404,13 @@
 			}
 			canvas.width = width;
 			canvas.height = height;
-			context.drawImage(img, 0, 0,width,height);
-			panel.style.width=(width+2)+"px";
+			context.drawImage(img, 0, 0,width,height);		// 2D 이미지 만들기 drawImage(Image , 시작 x좌표, 시작 y좌표, 이미지 가로크기, 이미지 세로크기)
+
+			panel.style.width=(width+2)+"px";				// 사진 선택후 사람태그 버튼을 누를시 나오는 패널(검은바탕)을 현재 이미지의 크기에 맞게 조절
 			panel.style.height=(height+2)+"px";
-			$("#canvas").css("height",height+ "px");
+			
+			/* 이미지포함,  나타내는 영역들 크기 지정~ */
+			$("#canvas").css("height",height+ "px");		
 			$("#myCanvas").css("width",width+ "px");
 			$("#myCanvas").css("height",height+ "px");
 			$("#myCanvas").css("margin-left",-1*canvas.width/2+ "px");
@@ -415,18 +419,20 @@
 		
 		// 색상반전 필터
 		function color_reverse(){
-			 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-			    // invert colors
+			 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);		// context.getImageData -> (R, G, B) 형식의 3차원배열? 형식의 데이터를 리턴함 -> (시작 x좌표, 시작 y좌표, 이미지 가로크기, 이미지 세로크기)
+			   
+			 // invert colors
+			 /*색상 반전 시켜주는 로직*/
 			 var i;
 			 for (i = 0; i < imgData.data.length; i += 4) {
-				 imgData.data[i] = 255 - imgData.data[i]; // R
+				 imgData.data[i] = 255 - imgData.data[i]; 	  // R
 				 imgData.data[i+1] = 255 - imgData.data[i+1]; // G
 				 imgData.data[i+2] = 255 - imgData.data[i+2]; // B
-				 imgData.data[i+3] = 255; // A -> 투명도
+				 imgData.data[i+3] = 255; 					  // A -> 투명도
 			 }
-			 	context.putImageData(imgData, 0, 0);
-
+			 context.putImageData(imgData, 0, 0);			  // 변경된 ImageData를 다시 적용
 		}
+		
 		// 원상복구
 		function restore(){
 			set_size(img,canvas,context,panel);
@@ -475,7 +481,8 @@
 			 	context.putImageData(imgData, 0, 0);
 		}
 		
-		function sepia(){ // 사진을 누렇게
+		// 사진을 누렇게
+		function sepia(){ 
 			 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
 			    
 			 var i;

@@ -199,8 +199,7 @@ public class BoardController {
 			}
 			mav.addObject("bList", bList);
 			mav.addObject("replyResult", replyResult);
-			mav.setViewName("cloneHome");
-
+			mav.setViewName("cloneHome");										// 데이터를 가지고 cloneHome( home page에서 헤더가 빠지고 내용만 있는 부분으로 넘어감) -> 그것 자체를 원래 ajax로 이 메소드를 호출한 Homepage로 다시 가져간다 
 		} else {
 			mav.setViewName("login");
 		}

@@ -19,13 +19,11 @@
 	<select id="getScrollList" resultType="net.nigne.wholegram.domain.BoardVO">
 		select board_num,media,media_type,media_thumnail from board where user_id = #{item} order by board_num desc limit #{start},#{end} 
 	</select>
-	
-	
-	
+
 	<select id="SearchIterate" resultType="net.nigne.wholegram.domain.BoardVO">
 		select * from board where
 		<foreach item="item" index="index" collection="list" open="(" close=")" separator="or">
-            content like CONCAT("%",#{item}," %")
+            content like CONCAT("%",#{item}," %")	<!-- 해석 ex) %#test % 이렇게되므로 #test로 시작하고 마지막에" "(공백)으로 끝나는 것을 찾아라 -->
     	</foreach>
     	    or board_num in (select board_num from reply where content like CONCAT('%', #{item}, ' %'))  order by board_num desc limit 0,9
 	</select>
@@ -33,7 +31,7 @@
 	<select id="SearchScrollIterate" resultType="net.nigne.wholegram.domain.BoardVO">
 		select * from board where
 		<foreach item="item" index="index" collection="list" open="(" close=")" separator="or">
-            content like CONCAT("%",#{item}," %")
+            content like CONCAT("%",#{item}," %")	<!-- 해석 ex) %#test % 이렇게되므로 #test로 시작하고 마지막에" "(공백)으로 끝나는 것을 찾아라 -->
     	</foreach>
     	    or board_num in (select board_num from reply where content like CONCAT('%', #{item}, ' %')) order by board_num desc limit #{start},#{end}
 	</select>

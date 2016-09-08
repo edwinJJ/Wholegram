@@ -1,8 +1,8 @@
 package net.nigne.wholegram.common;
 
-public class HashSearchResult { //TODO vo·Î »ç¿ë°¡´ÉÇÒµí..?
-	private String tag; // ÅÂ±× Å°¿öµå
-	private int count;  // °Ë»öµÈ ÅÂ±×ÀÇ ¼ıÀÚ
+public class HashSearchResult {
+	private String tag; // íƒœê·¸ í‚¤ì›Œë“œ
+	private int count;  // ê²€ìƒ‰ëœ íƒœê·¸ì˜ ìˆ«ì
 	public String getTag() {
 		return tag;
 	}

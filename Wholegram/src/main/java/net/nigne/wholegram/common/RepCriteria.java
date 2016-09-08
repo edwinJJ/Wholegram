@@ -1,6 +1,6 @@
 package net.nigne.wholegram.common;
 
-public class RepCriteria { // ´ñ±Û¿¡ ½ºÅ©·Ñ ÁöÁ¤ÇØ³õÀ½,¼³Á¤µÈ ¼ıÀÚ¸¸Å­ ´ñ±ÛÀÇ ³»¿ëÀ» °¡Á®¿È
+public class RepCriteria { // ëŒ“ê¸€ì— ìŠ¤í¬ë¡¤ ì§€ì •í•´ë†“ìŒ, ì„¤ì •ëœ ìˆ«ìë§Œí¼ ëŒ“ê¸€ì˜ ë‚´ìš©ì„ ê°€ì ¸ì˜´
 	private int board_num; 
 	private int start;
 	private int end;

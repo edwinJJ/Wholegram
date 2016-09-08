@@ -69,8 +69,7 @@ public class FollowDAOImpl implements FollowDAO {
 
 	@Override
 	public boolean followCheck(Map<String, String> map) {
-		
-		return ("1".equals(session.selectOne(namespace + ".followCheck", map).toString())?true:false);
+		return ("1".equals(session.selectOne(namespace + ".followCheck", map).toString())?true:false);	// 1일경우 검색하려는 user를 내가 팔로우 하고있다는 의미 true
 	}
 	@Transactional
 	@Override

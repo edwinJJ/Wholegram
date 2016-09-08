@@ -3,8 +3,8 @@ package net.nigne.wholegram.common;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HashTagScrollCriteria {       //ÇØ½ÃÅÂ±× °Ë»öÀ» À§ÇÑ°Í
-	List<String> list = new ArrayList<>(); // ÇØ½ÃÅÂ±× ´Ü¾î ¸®½ºÆ®
+public class HashTagScrollCriteria {       // í•´ì‹œíƒœê·¸ ìŠ¤í¬ë¡¤ë§ ì²˜ë¦¬
+	List<String> list = new ArrayList<>(); // ë‹¤ì¤‘ ê²€ìƒ‰ì–´ ì €ì¥ìš©ë„ 
 	private int start;						
 	private int end;
 

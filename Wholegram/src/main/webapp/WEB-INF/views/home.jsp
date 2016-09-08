@@ -244,6 +244,7 @@
 		page = 1;
 	} 
 	
+	/* 스크롤이 맨 아래로 내려갔을 시 */
  	$(window).scroll(function() {
  		if( ( $(window).scrollTop() == $(document).height() - $(window).height() ) &&  $(window).scrollTop() != scrollCurrentTop ) {
  			var itemids = $.makeArray($("input[id='board_num']"));
@@ -253,6 +254,7 @@
 	    }
 	});  
 	
+	/* 게시물을 더 가져온다 */
  	function setBoardList( page ) { 
         $.ajax({
 			type : 'POST',

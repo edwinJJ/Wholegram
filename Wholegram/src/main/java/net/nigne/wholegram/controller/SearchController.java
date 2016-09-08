@@ -83,15 +83,12 @@ public class SearchController {
 		System.out.println(searchValue);
 		try {
 			response.setCharacterEncoding("utf-8");
-			String url = URLEncoder.encode(searchValue,"utf-8");
+			String url = URLEncoder.encode(searchValue,"utf-8");	// #태그 때문에 브라우저가 자기 자신을 가리키는것 방지
 			if(hashTagDetector(searchValue))
-				// 해시태그가 있을경우 해시태그 관련 페이지로 이동
-				response.sendRedirect("/hash/"+url); 
+				response.sendRedirect("/hash/"+url); 				// 해시태그가 있을경우 해시태그 관련 페이지로 이동 -> 즉, 게시물 검색
 			else
-				// 입력한 유저의 user영역으로 이동
-				response.sendRedirect("/"+url);
+				response.sendRedirect("/"+url);						// 입력한 유저의 user영역으로 이동 -> 즉, user 검색
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

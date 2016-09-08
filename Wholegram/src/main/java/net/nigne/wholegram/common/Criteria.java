@@ -1,6 +1,6 @@
 package net.nigne.wholegram.common;
 
-public class Criteria { // DB¿¡¼­ limit ¹üÀ§  ÁöÁ¤
+public class Criteria { // DBì—ì„œ limitë²”ìœ„ ì§€ì •
 	private String item; // keyword
 	private int start;
 	private int end;

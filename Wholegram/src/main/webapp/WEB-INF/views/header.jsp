@@ -6,7 +6,11 @@
 
 <div id="header" style="background: #FFFFFF; width: 100%">
    <a href="#" onclick="javascript: location.href='/board'"><span id="header-logo"><input type="image" src="/resources/Image/Wholegram.png" name="logo" class="header-logo_img"></span></a>
-   <form id = "search_form" name = "search_form" action="/search/" method="post" onsubmit="return false"><span id="header-search"><input type="search" id="autocomplete" name="searchValue" placeholder="search" onkeydown="javascript:if( event.keyCode == 13 ) search();" ></span></form>
+	<form id = "search_form" name = "search_form" action="/search/" method="post" onsubmit="return false">
+		<span id="header-search">
+			<input type="search" id="autocomplete" name="searchValue" placeholder="search" onkeydown="javascript:if( event.keyCode == 13 ) search();" >
+		</span>
+	</form>
    <span id ="btn_group">
       <a id="header-upload" href="/upload"><i class="fa fa-upload fa-2x" style="color:black;"></i></a>
       <a id="header-message" href="/message">

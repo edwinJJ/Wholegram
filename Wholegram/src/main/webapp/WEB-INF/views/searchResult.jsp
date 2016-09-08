@@ -375,21 +375,21 @@
 		<div class="container bootstrap snippet">
 			<div class="row">
 			<form name="frm" id="frm">
-			<c:forEach items="${list}" var="list">
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-					<a title="Image 1" href="#">
-						<c:choose>
-							<c:when test="${list.media_type == 'm'}">
-								<img class="thumbnail img-responsive board_items" src="${list.media_thumnail}" onclick="read(${list.board_num},0)">
-							</c:when>
-							<c:otherwise>
-								<img class="thumbnail img-responsive board_items" src="${list.media}" onclick="read(${list.board_num},0)">
-							</c:otherwise>
-						</c:choose>
-						<input type="hidden" id="bn" name="bn" value="${list.board_num}">
-					</a>
-				</div>
-			</c:forEach><!--  -->
+				<c:forEach items="${list}" var="list">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+						<a title="Image 1" href="#">
+							<c:choose>
+								<c:when test="${list.media_type == 'm'}">
+									<img class="thumbnail img-responsive board_items" src="${list.media_thumnail}" onclick="read(${list.board_num},0)">
+								</c:when>
+								<c:otherwise>
+									<img class="thumbnail img-responsive board_items" src="${list.media}" onclick="read(${list.board_num},0)">
+								</c:otherwise>
+							</c:choose>
+							<input type="hidden" id="bn" name="bn" value="${list.board_num}">
+						</a>
+					</div>
+				</c:forEach><!--  -->
 			</form>
 			</div>
 			
@@ -450,9 +450,9 @@
 	var thisPage = false;						// 메시지 페이지가 아니라는 의미
 	var VIDEO = "m";
 	var IMAGE = "i";
-	var FLAG = true;
+	var FLAG = true;							// 스크롤링으로 게시물을 더 가져올지 말지 구분하는 변수
 		function getBoardCount(){
-			return frm.bn.length;
+			return frm.bn.length;				// 게시물 1개당 bn이라는 id를 가진 hidden 타입의 태그가 숨어있는데, 그 개수를 세줌. -> 즉 게시물의 개수임.
 		}
 		function deleteReply( bno, rno ) {
 			$.ajax({
@@ -706,7 +706,7 @@
 		/* 브라우저 창의 스크롤 끝 부분일때 추가게시물을 가져옴 */
 		 $(window).scroll(function() {
 			 var no = getBoardCount();
-			 var hash = window.location.pathname.split( '/' );
+			 var hash = window.location.pathname.split( '/' );									// window 주소창에서 ip주소 이후부터의 주소 '/hash/~' 이렇게 시작함
 		   if(($(window).scrollTop() == $(document).height() - $(window).height())&& FLAG) {
 		        $.ajax({ 
 		    		type: 'POST',
