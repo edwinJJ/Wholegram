@@ -650,6 +650,7 @@
 	</script>
 </head>
 <body>
+<!-- 주석테스트 -->
 <!-- 상단의 head 부분 -->
 <c:choose>
 <c:when test="${sessionId eq 'admin' }">
